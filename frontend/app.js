@@ -4,24 +4,31 @@ let allCategories = [];
 let cart = JSON.parse(localStorage.getItem('shoplux_cart')) || [];
 let currentUser = JSON.parse(localStorage.getItem('shoplux_user')) || null;
 
-// Voucher & Shipping state
+// Shipping & Voucher
 let selectedShippingCost = 25000;
 let selectedShippingUnit = "ShopLux Express";
 let currentDiscount = 0;
 let appliedVoucherCode = "";
 
 const AVAILABLE_VOUCHERS = [
-  { code: "NEWBIE100", name: "Mã Người Mới", desc: "Giảm trực tiếp 100.000 ₫ cho tài khoản mới", discount: 100000, minOrder: 0 },
-  { code: "SHOPLUX50", name: "Ưu Đãi Đơn Đầu", desc: "Giảm 50.000 ₫ cho mọi đơn hàng", discount: 50000, minOrder: 0 },
-  { code: "FREESHIP", name: "Miễn Phí Vận Chuyển", desc: "Giảm 30.000 ₫ phí ship", discount: 30000, minOrder: 0 }
+  { code: "NEWBIE100", name: "Mã Người Mới", desc: "Giảm trực tiếp 100.000 ₫ cho tài khoản mới", discount: 100000 },
+  { code: "SHOPLUX50", name: "Ưu Đãi Đơn Đầu", desc: "Giảm 50.000 ₫ cho mọi đơn hàng", discount: 50000 },
+  { code: "FREESHIP", name: "Miễn Phí Vận Chuyển", desc: "Giảm 30.000 ₫ phí ship", discount: 30000 }
 ];
 
+// AUTH HEADER - HIỂN THỊ AVATAR VÀ TÊN DẪN VÀO TRANG CÁ NHÂN
 function renderAuth() {
   const container = document.getElementById('auth-section');
   if (!container) return;
   if (currentUser) {
+    const avatarImg = currentUser.avatar || "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=200&auto=format&fit=crop&q=80";
     container.innerHTML = `
-      <span class="font-bold text-white">👤 ${currentUser.fullname}</span>
+      <a href="?view=profile" class="flex items-center space-x-1.5 hover:opacity-85 transition bg-white/10 px-2 py-0.5 rounded-full">
+        <img src="${avatarImg}" class="w-5 h-5 rounded-full object-cover border border-white">
+        <span class="font-bold text-white max-w-[120px] truncate">${currentUser.fullname}</span>
+      </a>
+      <span>|</span>
+      <a href="?view=profile" class="hover:underline">Tài Khoản</a>
       <span>|</span>
       <button onclick="logout()" class="hover:underline">Đăng Xuất</button>
     `;
@@ -77,6 +84,7 @@ async function router() {
   if (productId) return renderProductDetailView(viewport, parseInt(productId));
 
   switch (view) {
+    case 'profile': renderProfileView(viewport); break;
     case 'login': renderLoginPage(viewport); break;
     case 'register': renderRegisterPage(viewport); break;
     case 'seller-channel': renderSellerChannelView(viewport); break;
@@ -86,6 +94,228 @@ async function router() {
     case 'support': renderSupportView(viewport); break;
     case 'cart': renderCheckoutView(viewport); break;
     default: renderHomeView(viewport); break;
+  }
+}
+
+// --- TRANG CÁ NHÂN (HỒ SƠ CỦA TÔI) ---
+function renderProfileView(container) {
+  if (!currentUser) {
+    alert("Vui lòng đăng nhập để truy cập trang cá nhân!");
+    window.location.href = '?view=login';
+    return;
+  }
+
+  const avatarSrc = currentUser.avatar || "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=200&auto=format&fit=crop&q=80";
+
+  container.innerHTML = `
+    <div class="max-w-6xl mx-auto px-4 py-6">
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-6">
+        
+        <!-- CỘT TRÁI: SIDEBAR THÔNG TIN TÀI KHOẢN -->
+        <div class="md:col-span-3 space-y-4">
+          <div class="flex items-center space-x-3 p-3 bg-white rounded shadow-sm">
+            <img id="sidebar-avatar" src="${avatarSrc}" class="w-12 h-12 rounded-full object-cover border border-gray-200 shadow-sm">
+            <div class="overflow-hidden">
+              <h4 id="sidebar-username" class="font-bold text-xs text-gray-800 truncate">${currentUser.username}</h4>
+              <a href="?view=profile" class="text-[11px] text-gray-400 hover:text-[#ee4d2d] flex items-center space-x-1">
+                <i class="fas fa-pen text-[10px]"></i>
+                <span>Sửa hồ sơ</span>
+              </a>
+            </div>
+          </div>
+
+          <div class="bg-white rounded shadow-sm p-3 space-y-2 text-xs">
+            <a href="?view=profile" class="flex items-center space-x-2 text-[#ee4d2d] font-bold p-2 bg-orange-50 rounded">
+              <i class="far fa-user text-sm"></i>
+              <span>Hồ Sơ Của Tôi</span>
+            </a>
+            <a href="?view=cart" class="flex items-center space-x-2 text-gray-700 hover:text-[#ee4d2d] p-2 transition">
+              <i class="fas fa-bag-shopping text-sm"></i>
+              <span>Đơn Mua</span>
+            </a>
+            <a href="?view=notifications" class="flex items-center space-x-2 text-gray-700 hover:text-[#ee4d2d] p-2 transition">
+              <i class="far fa-bell text-sm"></i>
+              <span>Kho Voucher & Thông Báo</span>
+            </a>
+            <a href="?view=support" class="flex items-center space-x-2 text-gray-700 hover:text-[#ee4d2d] p-2 transition">
+              <i class="far fa-circle-question text-sm"></i>
+              <span>Trung Tâm Trợ Giúp</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- CỘT PHẢI: KHU VỰC CHỈNH SỬA THÔNG TIN CHI TIẾT -->
+        <div class="md:col-span-9 bg-white p-6 rounded shadow-sm">
+          <div class="border-b pb-4 mb-6">
+            <h1 class="text-base font-bold text-gray-800">Hồ Sơ Của Tôi</h1>
+            <p class="text-xs text-gray-500 mt-0.5">Quản lý thông tin hồ sơ, tên đăng nhập và hình ảnh đại diện để bảo vệ tài khoản</p>
+          </div>
+
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            
+            <!-- Form thông tin chữ -->
+            <div class="lg:col-span-8 space-y-4 text-xs">
+              
+              <div class="grid grid-cols-3 items-center">
+                <label class="text-gray-500 font-medium">Tên đăng nhập (Username):</label>
+                <div class="col-span-2">
+                  <input id="profile-username" value="${currentUser.username || ''}" class="w-full border p-2 rounded text-xs focus:outline-[#ee4d2d]">
+                  <p class="text-[10px] text-gray-400 mt-1">Tên đăng nhập duy nhất dùng để đăng nhập vào ShopLux.</p>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-3 items-center">
+                <label class="text-gray-500 font-medium">Họ và tên:</label>
+                <div class="col-span-2">
+                  <input id="profile-fullname" value="${currentUser.fullname || ''}" class="w-full border p-2 rounded text-xs focus:outline-[#ee4d2d]">
+                </div>
+              </div>
+
+              <div class="grid grid-cols-3 items-center">
+                <label class="text-gray-500 font-medium">Số điện thoại:</label>
+                <div class="col-span-2">
+                  <input id="profile-phone" value="${currentUser.phone || ''}" placeholder="Nhập số điện thoại của bạn" class="w-full border p-2 rounded text-xs focus:outline-[#ee4d2d]">
+                </div>
+              </div>
+
+              <div class="grid grid-cols-3 items-center">
+                <label class="text-gray-500 font-medium">Năm sinh:</label>
+                <div class="col-span-2">
+                  <input id="profile-year" type="number" min="1930" max="2020" value="${currentUser.birthYear || '2000'}" class="w-full border p-2 rounded text-xs focus:outline-[#ee4d2d]">
+                </div>
+              </div>
+
+              <div class="grid grid-cols-3 items-center">
+                <label class="text-gray-500 font-medium">Giới tính:</label>
+                <div class="col-span-2 flex space-x-6">
+                  <label class="flex items-center space-x-1.5 cursor-pointer">
+                    <input type="radio" name="profile-gender" value="Nam" ${(currentUser.gender || 'Nam') === 'Nam' ? 'checked' : ''} class="text-[#ee4d2d]">
+                    <span>Nam</span>
+                  </label>
+                  <label class="flex items-center space-x-1.5 cursor-pointer">
+                    <input type="radio" name="profile-gender" value="Nữ" ${currentUser.gender === 'Nữ' ? 'checked' : ''} class="text-[#ee4d2d]">
+                    <span>Nữ</span>
+                  </label>
+                  <label class="flex items-center space-x-1.5 cursor-pointer">
+                    <input type="radio" name="profile-gender" value="Khác" ${currentUser.gender === 'Khác' ? 'checked' : ''} class="text-[#ee4d2d]">
+                    <span>Khác</span>
+                  </label>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-3 items-center">
+                <label class="text-gray-500 font-medium">Địa chỉ giao hàng mặc định:</label>
+                <div class="col-span-2">
+                  <textarea id="profile-address" rows="2" placeholder="Số nhà, Tên đường, Phường/Xã, Quận/Huyện, Tỉnh/TP" class="w-full border p-2 rounded text-xs focus:outline-[#ee4d2d]">${currentUser.address || ''}</textarea>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-3 items-center pt-2">
+                <div></div>
+                <div class="col-span-2">
+                  <button onclick="saveProfileChanges()" class="bg-[#ee4d2d] hover:bg-[#d73211] text-white px-8 py-2.5 rounded font-bold uppercase text-xs transition shadow">
+                    Lưu Thay Đổi
+                  </button>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- Cột chỉnh sửa Avatar -->
+            <div class="lg:col-span-4 border-l lg:pl-8 flex flex-col items-center justify-center text-center space-y-4">
+              <div class="relative group cursor-pointer">
+                <img id="avatar-preview" src="${avatarSrc}" class="w-28 h-28 rounded-full object-cover border-2 border-gray-200 shadow-md">
+                <div class="absolute inset-0 bg-black/40 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition text-white text-[11px] font-medium">
+                  Đổi Ảnh
+                </div>
+              </div>
+
+              <!-- Chọn tải ảnh từ máy tính hoặc nhập link -->
+              <div class="w-full space-y-2">
+                <input type="file" id="avatar-file-input" accept="image/*" onchange="handleAvatarFileUpload(event)" class="hidden">
+                <button onclick="document.getElementById('avatar-file-input').click()" class="w-full border border-gray-300 hover:border-[#ee4d2d] px-3 py-1.5 rounded text-xs text-gray-700 hover:text-[#ee4d2d] transition">
+                  📁 Chọn Ảnh Từ Máy Tính
+                </button>
+
+                <div class="pt-2 text-[11px] text-gray-400">Hoặc dán trực tiếp Link ảnh:</div>
+                <input id="avatar-url-input" value="${currentUser.avatar || ''}" onchange="previewAvatarUrl(this.value)" placeholder="https://..." class="w-full border p-1.5 rounded text-[11px] focus:outline-[#ee4d2d]">
+              </div>
+
+              <div class="text-[10px] text-gray-400 leading-relaxed text-left">
+                <p>• Định dạng: .JPEG, .PNG, .WEBP</p>
+                <p>• Dung lượng tối đa: 5 MB</p>
+                <p>• Ảnh vuông tỉ lệ 1:1 sẽ hiển thị đẹp nhất</p>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+  `;
+}
+
+// XỬ LÝ PREVIEW ẢNH KHI NHẬP LINK HOẶC UPLOAD
+function previewAvatarUrl(url) {
+  if (url && url.trim()) {
+    document.getElementById('avatar-preview').src = url.trim();
+  }
+}
+
+function handleAvatarFileUpload(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  if (file.size > 5 * 1024 * 1024) {
+    alert("Kích thước file ảnh vượt quá 5MB! Vui lòng chọn ảnh nhẹ hơn.");
+    return;
+  }
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const base64Data = e.target.result;
+    document.getElementById('avatar-preview').src = base64Data;
+    document.getElementById('avatar-url-input').value = base64Data;
+  };
+  reader.readAsDataURL(file);
+}
+
+// LƯU CẬP NHẬT THÔNG TIN HỒ SƠ
+async function saveProfileChanges() {
+  const username = document.getElementById('profile-username').value.trim();
+  const fullname = document.getElementById('profile-fullname').value.trim();
+  const phone = document.getElementById('profile-phone').value.trim();
+  const birthYear = document.getElementById('profile-year').value.trim();
+  const gender = document.querySelector('input[name="profile-gender"]:checked').value;
+  const address = document.getElementById('profile-address').value.trim();
+  const avatar = document.getElementById('avatar-url-input').value.trim() || document.getElementById('avatar-preview').src;
+
+  if (!username) return alert("Vui lòng không để trống tên đăng nhập!");
+  if (!fullname) return alert("Vui lòng không để trống họ và tên!");
+
+  const res = await fetch(`${API_URL}/auth/profile`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      oldUsername: currentUser.username,
+      username,
+      fullname,
+      avatar,
+      phone,
+      birthYear,
+      gender,
+      address
+    })
+  });
+
+  const data = await res.json();
+  if (data.success) {
+    currentUser = data.user;
+    localStorage.setItem('shoplux_user', JSON.stringify(currentUser));
+    renderAuth();
+    alert("🎉 Cập nhật hồ sơ cá nhân ShopLux thành công!");
+    router();
+  } else {
+    alert(data.message);
   }
 }
 
@@ -196,7 +426,7 @@ function renderProductCards(products) {
   `).join('');
 }
 
-// --- TRANG CHECKOUT & ĐẶT HÀNG TOÀN DIỆN ---
+// CHECKOUT VIEW
 function renderCheckoutView(container) {
   const itemsSubtotal = cart.reduce((sum, i) => sum + i.price * i.qty, 0);
   const totalPayment = Math.max(0, itemsSubtotal + selectedShippingCost - currentDiscount);
@@ -219,11 +449,8 @@ function renderCheckoutView(container) {
           </div>
         ` : `
           <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-            
-            <!-- CỘT TRÁI: THÔNG TIN KHÁCH HÀNG & PHƯƠNG THỨC -->
             <div class="lg:col-span-7 space-y-6">
               
-              <!-- 1. THÔNG TIN GIAO HÀNG BẮT BUỘC -->
               <div class="p-4 bg-gray-50 border rounded-sm">
                 <h3 class="font-bold text-xs text-gray-800 mb-3 flex items-center space-x-1.5 text-[#ee4d2d]">
                   <i class="fas fa-location-dot"></i>
@@ -236,73 +463,60 @@ function renderCheckoutView(container) {
                   </div>
                   <div>
                     <label class="block text-[11px] font-semibold text-gray-600 mb-1">Số điện thoại liên hệ <span class="text-red-500">*</span></label>
-                    <input id="order-phone" placeholder="Ví dụ: 0912345678" class="w-full border p-2 rounded text-xs focus:outline-[#ee4d2d]">
+                    <input id="order-phone" value="${currentUser && currentUser.phone ? currentUser.phone : ''}" placeholder="Ví dụ: 0912345678" class="w-full border p-2 rounded text-xs focus:outline-[#ee4d2d]">
                   </div>
                   <div>
                     <label class="block text-[11px] font-semibold text-gray-600 mb-1">Năm sinh người nhận <span class="text-red-500">*</span></label>
-                    <input id="order-year" type="number" min="1950" max="2020" placeholder="Ví dụ: 2002" class="w-full border p-2 rounded text-xs focus:outline-[#ee4d2d]">
+                    <input id="order-year" type="number" min="1950" max="2020" value="${currentUser && currentUser.birthYear ? currentUser.birthYear : '2000'}" class="w-full border p-2 rounded text-xs focus:outline-[#ee4d2d]">
                   </div>
                   <div>
                     <label class="block text-[11px] font-semibold text-gray-600 mb-1">Địa chỉ giao hàng chi tiết <span class="text-red-500">*</span></label>
-                    <input id="order-address" placeholder="Số nhà, Tên đường, Phường/Xã, Quận/Huyện, Tỉnh/TP" class="w-full border p-2 rounded text-xs focus:outline-[#ee4d2d]">
+                    <input id="order-address" value="${currentUser && currentUser.address ? currentUser.address : ''}" placeholder="Số nhà, Tên đường, Phường/Xã..." class="w-full border p-2 rounded text-xs focus:outline-[#ee4d2d]">
                   </div>
                 </div>
               </div>
 
-              <!-- 2. ĐƠN VỊ VẬN CHUYỂN -->
               <div class="p-4 bg-gray-50 border rounded-sm">
                 <h3 class="font-bold text-xs text-gray-800 mb-3 flex items-center space-x-1.5 text-blue-600">
                   <i class="fas fa-truck-fast"></i>
                   <span>2. CHỌN ĐƠN VỊ VẬN CHUYỂN</span>
                 </h3>
                 <div class="space-y-2 text-xs">
-                  <label class="flex items-center justify-between p-2.5 bg-white border rounded cursor-pointer hover:border-blue-500">
+                  <label class="flex items-center justify-between p-2.5 bg-white border rounded cursor-pointer">
                     <div class="flex items-center space-x-2">
                       <input type="radio" name="shipping-unit" value="ShopLux Express:25000" onchange="updateShipping(this.value)" checked class="text-[#ee4d2d]">
                       <div>
                         <p class="font-bold text-gray-800">ShopLux Express (Hỏa Tốc)</p>
-                        <span class="text-[10px] text-gray-400">Giao dự kiến: 1 - 2 ngày làm việc</span>
+                        <span class="text-[10px] text-gray-400">1 - 2 ngày làm việc</span>
                       </div>
                     </div>
                     <span class="font-bold text-gray-700">25.000 ₫</span>
                   </label>
 
-                  <label class="flex items-center justify-between p-2.5 bg-white border rounded cursor-pointer hover:border-blue-500">
+                  <label class="flex items-center justify-between p-2.5 bg-white border rounded cursor-pointer">
                     <div class="flex items-center space-x-2">
                       <input type="radio" name="shipping-unit" value="Giao Hàng Nhanh (GHN):22000" onchange="updateShipping(this.value)" class="text-[#ee4d2d]">
                       <div>
                         <p class="font-bold text-gray-800">Giao Hàng Nhanh (GHN)</p>
-                        <span class="text-[10px] text-gray-400">Giao dự kiến: 2 - 3 ngày làm việc</span>
+                        <span class="text-[10px] text-gray-400">2 - 3 ngày làm việc</span>
                       </div>
                     </div>
                     <span class="font-bold text-gray-700">22.000 ₫</span>
                   </label>
 
-                  <label class="flex items-center justify-between p-2.5 bg-white border rounded cursor-pointer hover:border-blue-500">
+                  <label class="flex items-center justify-between p-2.5 bg-white border rounded cursor-pointer">
                     <div class="flex items-center space-x-2">
                       <input type="radio" name="shipping-unit" value="Giao Hàng Tiết Kiệm (GHTK):18000" onchange="updateShipping(this.value)" class="text-[#ee4d2d]">
                       <div>
                         <p class="font-bold text-gray-800">Giao Hàng Tiết Kiệm (GHTK)</p>
-                        <span class="text-[10px] text-gray-400">Giao dự kiến: 3 - 4 ngày làm việc</span>
+                        <span class="text-[10px] text-gray-400">3 - 4 ngày làm việc</span>
                       </div>
                     </div>
                     <span class="font-bold text-gray-700">18.000 ₫</span>
                   </label>
-
-                  <label class="flex items-center justify-between p-2.5 bg-white border rounded cursor-pointer hover:border-blue-500">
-                    <div class="flex items-center space-x-2">
-                      <input type="radio" name="shipping-unit" value="Viettel Post:20000" onchange="updateShipping(this.value)" class="text-[#ee4d2d]">
-                      <div>
-                        <p class="font-bold text-gray-800">Viettel Post</p>
-                        <span class="text-[10px] text-gray-400">Mạng lưới giao tận xã phường toàn quốc</span>
-                      </div>
-                    </div>
-                    <span class="font-bold text-gray-700">20.000 ₫</span>
-                  </label>
                 </div>
               </div>
 
-              <!-- 3. PHƯƠNG THỨC THANH TOÁN -->
               <div class="p-4 bg-gray-50 border rounded-sm">
                 <h3 class="font-bold text-xs text-gray-800 mb-3 flex items-center space-x-1.5 text-green-600">
                   <i class="fas fa-credit-card"></i>
@@ -311,31 +525,26 @@ function renderCheckoutView(container) {
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
                   <label class="p-2.5 bg-white border rounded cursor-pointer flex items-center space-x-2">
                     <input type="radio" name="payment-method" value="Tiền mặt khi nhận hàng (COD)" checked>
-                    <span class="font-semibold text-gray-800">💵 Tiền mặt khi nhận hàng (COD)</span>
+                    <span class="font-semibold text-gray-800">💵 Tiền mặt (COD)</span>
                   </label>
-
                   <label class="p-2.5 bg-white border rounded cursor-pointer flex items-center space-x-2">
                     <input type="radio" name="payment-method" value="Chuyển khoản Ngân hàng (QR Code)">
-                    <span class="font-semibold text-gray-800">🏦 Chuyển khoản Ngân hàng (Vietcombank, Techcombank, MB...)</span>
+                    <span class="font-semibold text-gray-800">🏦 Chuyển khoản QR Ngân hàng</span>
                   </label>
-
                   <label class="p-2.5 bg-white border rounded cursor-pointer flex items-center space-x-2">
                     <input type="radio" name="payment-method" value="Ví điện tử MoMo">
-                    <span class="font-semibold text-gray-800">🟣 Ví điện tử MoMo</span>
+                    <span class="font-semibold text-gray-800">🟣 Ví MoMo</span>
                   </label>
-
                   <label class="p-2.5 bg-white border rounded cursor-pointer flex items-center space-x-2">
                     <input type="radio" name="payment-method" value="Ví ZaloPay / ShopeePay">
                     <span class="font-semibold text-gray-800">🔵 Ví ZaloPay / ShopeePay</span>
                   </label>
                 </div>
               </div>
+
             </div>
 
-            <!-- CỘT PHẢI: CHI TIẾT ĐƠN HÀNG & CHỌN VOUCHER -->
             <div class="lg:col-span-5 space-y-4">
-              
-              <!-- Danh sách sản phẩm -->
               <div class="border rounded p-4 bg-white">
                 <h3 class="font-bold text-xs text-gray-800 border-b pb-2 mb-3">Kiểm tra sản phẩm (${cart.length})</h3>
                 <div class="divide-y max-h-52 overflow-y-auto text-xs">
@@ -357,23 +566,15 @@ function renderCheckoutView(container) {
                 </div>
               </div>
 
-              <!-- KHU VỰC VOUCHER TÙY CHỌN & NHẬP TỰ DO -->
               <div class="p-4 bg-orange-50/70 border border-dashed border-[#ee4d2d] rounded-sm">
-                <div class="flex items-center justify-between mb-2">
-                  <h4 class="font-bold text-xs text-[#ee4d2d] flex items-center space-x-1">
-                    <span>🎟️</span>
-                    <span>SHOPLUX VOUCHER & MÃ GIẢM GIÁ</span>
-                  </h4>
-                </div>
-
-                <!-- Danh sách voucher có sẵn để click chọn -->
+                <h4 class="font-bold text-xs text-[#ee4d2d] mb-2">🎟️ SHOPLUX VOUCHER</h4>
                 <div class="space-y-1.5 mb-3">
                   ${AVAILABLE_VOUCHERS.map(v => `
                     <div onclick="selectVoucher('${v.code}')" class="p-2 bg-white rounded border cursor-pointer hover:border-[#ee4d2d] flex items-center justify-between text-[11px] ${appliedVoucherCode === v.code ? 'border-[#ee4d2d] bg-orange-50 font-bold' : ''}">
                       <div>
                         <span class="font-bold text-[#ee4d2d]">[${v.code}]</span>
                         <span class="text-gray-700 ml-1">${v.name}</span>
-                        <p class="text-[10px] text-gray-400 mt-0.5">${v.desc}</p>
+                        <p class="text-[10px] text-gray-400">${v.desc}</p>
                       </div>
                       <button class="px-2 py-0.5 text-[10px] rounded ${appliedVoucherCode === v.code ? 'bg-[#ee4d2d] text-white' : 'bg-gray-100 text-gray-700'}">
                         ${appliedVoucherCode === v.code ? 'Đã Chọn' : 'Dùng Ngay'}
@@ -381,41 +582,35 @@ function renderCheckoutView(container) {
                     </div>
                   `).join('')}
                 </div>
-
-                <!-- Ô nhập mã riêng -->
                 <div class="flex space-x-1 text-xs">
-                  <input id="custom-voucher-code" placeholder="Hoặc nhập mã riêng..." class="border p-2 rounded text-xs flex-1 uppercase focus:outline-[#ee4d2d]">
-                  <button onclick="applyCustomVoucher()" class="bg-[#ee4d2d] hover:bg-[#d73211] text-white px-4 py-2 rounded font-bold transition text-xs">Áp Dụng</button>
+                  <input id="custom-voucher-code" placeholder="Mã giảm giá khác..." class="border p-2 rounded text-xs flex-1 uppercase focus:outline-[#ee4d2d]">
+                  <button onclick="applyCustomVoucher()" class="bg-[#ee4d2d] text-white px-4 py-2 rounded font-bold text-xs">Áp Dụng</button>
                 </div>
               </div>
 
-              <!-- BẢNG TỔNG KẾT TIỀN -->
               <div class="bg-gray-50 border p-4 rounded text-xs space-y-2">
                 <div class="flex justify-between text-gray-600">
                   <span>Tiền sản phẩm:</span>
                   <span>${itemsSubtotal.toLocaleString()} ₫</span>
                 </div>
                 <div class="flex justify-between text-gray-600">
-                  <span>Đơn vị ship (<span id="shipping-unit-label">${selectedShippingUnit}</span>):</span>
+                  <span>Phí ship (<span id="shipping-unit-label">${selectedShippingUnit}</span>):</span>
                   <span id="shipping-cost-label">${selectedShippingCost.toLocaleString()} ₫</span>
                 </div>
                 <div class="flex justify-between text-green-600 font-bold">
-                  <span>Voucher giảm giá (<span id="voucher-code-label">${appliedVoucherCode || 'Chưa áp dụng'}</span>):</span>
+                  <span>Voucher giảm:</span>
                   <span id="discount-label">-${currentDiscount.toLocaleString()} ₫</span>
                 </div>
                 <div class="border-t pt-3 flex justify-between items-baseline">
                   <span class="font-bold text-sm text-gray-800">Tổng thanh toán:</span>
                   <span id="total-payment-label" class="text-2xl font-black text-[#ee4d2d]">${totalPayment.toLocaleString()} ₫</span>
                 </div>
-
-                <button onclick="submitOrder()" class="w-full mt-4 bg-[#ee4d2d] hover:bg-[#d73211] text-white py-3 rounded font-bold uppercase text-xs tracking-wider shadow-md transition">
+                <button onclick="submitOrder()" class="w-full mt-4 bg-[#ee4d2d] hover:bg-[#d73211] text-white py-3 rounded font-bold uppercase text-xs tracking-wider shadow transition">
                   ĐẶT HÀNG NGAY
                 </button>
-                <p class="text-[10px] text-gray-400 text-center mt-2">Nhấn "Đặt hàng ngay" đồng nghĩa với việc bạn đồng ý tuân theo Điều khoản ShopLux</p>
               </div>
 
             </div>
-
           </div>
         `}
       </div>
@@ -423,7 +618,6 @@ function renderCheckoutView(container) {
   `;
 }
 
-// XỬ LÝ SHIPPING & VOUCHER DYNAMIC
 function updateShipping(val) {
   const [unit, cost] = val.split(':');
   selectedShippingUnit = unit;
@@ -446,14 +640,12 @@ function selectVoucher(code) {
 
 function applyCustomVoucher() {
   const code = document.getElementById('custom-voucher-code').value.trim().toUpperCase();
-  if (!code) return alert("Vui lòng nhập mã voucher!");
-  
   const found = AVAILABLE_VOUCHERS.find(v => v.code === code);
   if (found) {
     selectVoucher(found.code);
-    alert(`Áp dụng thành công "${found.name}"! Giảm ${found.discount.toLocaleString()} ₫`);
+    alert(`Áp dụng thành công "${found.name}"!`);
   } else {
-    alert("Mã giảm giá không hợp lệ hoặc đã hết lượt dùng!");
+    alert("Mã giảm giá không hợp lệ!");
   }
 }
 
@@ -463,74 +655,42 @@ function recalculateOrder() {
 
   const shippingUnitLabel = document.getElementById('shipping-unit-label');
   const shippingCostLabel = document.getElementById('shipping-cost-label');
-  const voucherCodeLabel = document.getElementById('voucher-code-label');
   const discountLabel = document.getElementById('discount-label');
   const totalPaymentLabel = document.getElementById('total-payment-label');
 
   if (shippingUnitLabel) shippingUnitLabel.innerText = selectedShippingUnit;
   if (shippingCostLabel) shippingCostLabel.innerText = `${selectedShippingCost.toLocaleString()} ₫`;
-  if (voucherCodeLabel) voucherCodeLabel.innerText = appliedVoucherCode || 'Chưa áp dụng';
   if (discountLabel) discountLabel.innerText = `-${currentDiscount.toLocaleString()} ₫`;
   if (totalPaymentLabel) totalPaymentLabel.innerText = `${totalPayment.toLocaleString()} ₫`;
 }
 
-// XÁC THỰC RÀNG BUỘC THÔNG TIN VÀ GỬI ĐƠN HÀNG
 function submitOrder() {
   const fullname = document.getElementById('order-fullname').value.trim();
   const phone = document.getElementById('order-phone').value.trim();
   const year = document.getElementById('order-year').value.trim();
   const address = document.getElementById('order-address').value.trim();
 
-  // Kiểm tra bắt buộc đầy đủ thông tin
-  if (!fullname) {
-    alert("⚠️ Lỗi: Vui lòng nhập Họ và tên người nhận!");
-    document.getElementById('order-fullname').focus();
-    return;
-  }
-
-  // Ràng buộc số điện thoại
-  const phoneRegex = /^[0-9]{9,11}$/;
-  if (!phone || !phoneRegex.test(phone)) {
-    alert("⚠️ Lỗi: Số điện thoại không hợp lệ! Vui lòng nhập số điện thoại gồm 10 số.");
-    document.getElementById('order-phone').focus();
-    return;
-  }
-
-  // Ràng buộc năm sinh
+  if (!fullname) return alert("Vui lòng nhập Họ và tên người nhận!"), document.getElementById('order-fullname').focus();
+  if (!phone || !/^[0-9]{9,11}$/.test(phone)) return alert("Số điện thoại không hợp lệ! Vui lòng nhập 10 số."), document.getElementById('order-phone').focus();
   const yearNum = parseInt(year);
-  const currentYear = new Date().getFullYear();
-  if (!year || isNaN(yearNum) || yearNum < 1920 || yearNum > currentYear - 10) {
-    alert(`⚠️ Lỗi: Năm sinh không hợp lệ! Vui lòng nhập năm sinh hợp lệ (ví dụ: 1995, 2002).`);
-    document.getElementById('order-year').focus();
-    return;
-  }
+  if (!year || isNaN(yearNum) || yearNum < 1920 || yearNum > 2016) return alert("Năm sinh không hợp lệ!"), document.getElementById('order-year').focus();
+  if (!address || address.length < 8) return alert("Vui lòng nhập địa chỉ giao hàng chi tiết!"), document.getElementById('order-address').focus();
 
-  // Ràng buộc địa chỉ
-  if (!address || address.length < 8) {
-    alert("⚠️ Lỗi: Vui lòng nhập địa chỉ giao hàng chi tiết để shipper có thể giao tới tận nhà!");
-    document.getElementById('order-address').focus();
-    return;
-  }
-
-  // Lấy phương thức thanh toán đã chọn
   const paymentMethod = document.querySelector('input[name="payment-method"]:checked').value;
   const itemsSubtotal = cart.reduce((sum, i) => sum + i.price * i.qty, 0);
   const totalPayment = Math.max(0, itemsSubtotal + selectedShippingCost - currentDiscount);
 
-  // Hiển thị thông báo xác nhận thành công
   alert(
     `🎉 ĐẶT HÀNG THÀNH CÔNG!\n\n` +
-    `👤 Người nhận: ${fullname} (Năm sinh: ${yearNum})\n` +
-    `📞 Số điện thoại: ${phone}\n` +
-    `📍 Địa chỉ giao: ${address}\n` +
-    `🚚 Đơn vị vận chuyển: ${selectedShippingUnit}\n` +
-    `🎟️ Voucher: ${appliedVoucherCode || 'Không áp dụng'}\n` +
-    `💳 Thanh toán qua: ${paymentMethod}\n` +
-    `💰 TỔNG THANH TOÁN: ${totalPayment.toLocaleString()} ₫\n\n` +
-    `Cảm ơn bạn đã mua sắm cùng ShopLux!`
+    `👤 Người nhận: ${fullname} (${yearNum})\n` +
+    `📞 SĐT: ${phone}\n` +
+    `📍 Địa chỉ: ${address}\n` +
+    `🚚 Vận chuyển: ${selectedShippingUnit}\n` +
+    `🎟️ Voucher: ${appliedVoucherCode || 'Không'}\n` +
+    `💳 Thanh toán: ${paymentMethod}\n` +
+    `💰 TỔNG TIỀN: ${totalPayment.toLocaleString()} ₫`
   );
 
-  // Dọn dẹp giỏ hàng
   cart = [];
   appliedVoucherCode = "";
   currentDiscount = 0;
@@ -538,7 +698,7 @@ function submitOrder() {
   window.location.href = '/';
 }
 
-// CÁC HÀM TIỆN ÍCH KHÁC
+// LOGIN & REGISTER PAGES
 function renderLoginPage(container) {
   container.innerHTML = `
     <div class="w-full">
@@ -564,7 +724,7 @@ function renderLoginPage(container) {
           <div class="bg-white p-8 rounded shadow-2xl w-full max-w-sm">
             <h3 class="text-lg font-bold text-gray-800 mb-6">Đăng Nhập</h3>
             <div class="space-y-4">
-              <input id="login-user" type="text" placeholder="Email/Số điện thoại/Tên đăng nhập" class="w-full border p-3 rounded text-xs focus:outline-[#ee4d2d]">
+              <input id="login-user" type="text" placeholder="Tên đăng nhập" class="w-full border p-3 rounded text-xs focus:outline-[#ee4d2d]">
               <input id="login-pass" type="password" placeholder="Mật khẩu" class="w-full border p-3 rounded text-xs focus:outline-[#ee4d2d]">
               <button onclick="handleLoginSubmit()" class="w-full bg-[#ee4d2d] hover:bg-[#d73211] text-white py-3 rounded font-bold uppercase text-xs transition">
                 ĐĂNG NHẬP
@@ -606,7 +766,7 @@ function renderRegisterPage(container) {
             <h3 class="text-lg font-bold text-gray-800 mb-6">Đăng Ký Tài Khoản</h3>
             <div class="space-y-4">
               <input id="reg-name" type="text" placeholder="Họ và tên của bạn" class="w-full border p-3 rounded text-xs focus:outline-[#ee4d2d]">
-              <input id="reg-user" type="text" placeholder="Số điện thoại / Tên đăng nhập" class="w-full border p-3 rounded text-xs focus:outline-[#ee4d2d]">
+              <input id="reg-user" type="text" placeholder="Tên đăng nhập" class="w-full border p-3 rounded text-xs focus:outline-[#ee4d2d]">
               <input id="reg-pass" type="password" placeholder="Mật khẩu" class="w-full border p-3 rounded text-xs focus:outline-[#ee4d2d]">
               <button onclick="handleRegisterSubmit()" class="w-full bg-[#ee4d2d] hover:bg-[#d73211] text-white py-3 rounded font-bold uppercase text-xs transition">
                 TIẾP THEO
@@ -647,7 +807,7 @@ async function handleRegisterSubmit() {
   const fullname = document.getElementById('reg-name').value.trim();
   const username = document.getElementById('reg-user').value.trim();
   const password = document.getElementById('reg-pass').value.trim();
-  if (!fullname || !username || !password) return alert("Vui lòng nhập đầy đủ thông tin!");
+  if (!fullname || !username || !password) return alert("Vui lòng nhập đầy đủ họ tên, tên đăng nhập và mật khẩu!");
 
   const res = await fetch(`${API_URL}/auth/register`, {
     method: 'POST',
@@ -823,7 +983,7 @@ function renderSupportView(container) {
   `;
 }
 
-// CART UTILITIES
+// CART ACTIONS
 function addToCartAndNotify(id) {
   const p = allProducts.find(item => item.id === id);
   const exist = cart.find(item => item.id === id);

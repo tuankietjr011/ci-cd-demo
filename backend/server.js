@@ -3,7 +3,7 @@ const cors = require('cors');
 
 const app = express();
 app.use(cors());
-app.use(express.json());
+app.use(express.json({ limit: '10mb' }));
 
 const users = [];
 
@@ -101,7 +101,9 @@ app.post('/api/auth/register', (req, res) => {
   const { fullname, username, password } = req.body;
   if (!fullname || !username || !password) return res.status(400).json({ success: false, message: "Vui lòng nhập đủ thông tin!" });
   if (users.find(u => u.username === username)) return res.status(400).json({ success: false, message: "Tên đăng nhập đã tồn tại!" });
-  users.push({ fullname, username, password });
+  
+  const defaultAvatar = "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=200&auto=format&fit=crop&q=80";
+  users.push({ fullname, username, password, avatar: defaultAvatar, phone: "", birthYear: "2000", gender: "Nam", address: "" });
   res.json({ success: true, message: "Đăng ký thành công!" });
 });
 
@@ -109,7 +111,53 @@ app.post('/api/auth/login', (req, res) => {
   const { username, password } = req.body;
   const user = users.find(u => u.username === username && u.password === password);
   if (!user) return res.status(401).json({ success: false, message: "Tên đăng nhập hoặc mật khẩu không đúng!" });
-  res.json({ success: true, user: { fullname: user.fullname, username: user.username } });
+  
+  res.json({ 
+    success: true, 
+    user: { 
+      fullname: user.fullname, 
+      username: user.username,
+      avatar: user.avatar || "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=200&auto=format&fit=crop&q=80",
+      phone: user.phone || "",
+      birthYear: user.birthYear || "2000",
+      gender: user.gender || "Nam",
+      address: user.address || ""
+    } 
+  });
+});
+
+// API CẬP NHẬT TRANG CÁ NHÂN (HỒ SƠ)
+app.put('/api/auth/profile', (req, res) => {
+  const { oldUsername, username, fullname, avatar, phone, birthYear, gender, address } = req.body;
+  let user = users.find(u => u.username === oldUsername);
+  
+  if (user) {
+    // Nếu đổi username, kiểm tra xem có trùng người khác không
+    if (username !== oldUsername && users.find(u => u.username === username)) {
+      return res.status(400).json({ success: false, message: "Tên đăng nhập mới đã được người khác sử dụng!" });
+    }
+    user.username = username || user.username;
+    user.fullname = fullname || user.fullname;
+    user.avatar = avatar || user.avatar;
+    user.phone = phone || user.phone;
+    user.birthYear = birthYear || user.birthYear;
+    user.gender = gender || user.gender;
+    user.address = address || user.address;
+  }
+
+  res.json({
+    success: true,
+    message: "Cập nhật hồ sơ cá nhân thành công!",
+    user: {
+      username: username || oldUsername,
+      fullname: fullname || (user ? user.fullname : "Khách Hàng"),
+      avatar: avatar || "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=200&auto=format&fit=crop&q=80",
+      phone: phone || "",
+      birthYear: birthYear || "2000",
+      gender: gender || "Nam",
+      address: address || ""
+    }
+  });
 });
 
 module.exports = app;
