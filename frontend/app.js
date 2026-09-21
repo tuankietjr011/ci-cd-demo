@@ -4,6 +4,9 @@ let allCategories = [];
 let cart = JSON.parse(localStorage.getItem('shoplux_cart')) || [];
 let currentUser = JSON.parse(localStorage.getItem('shoplux_user')) || null;
 
+// Trạng thái hiển thị form sửa địa chỉ (mặc định false nếu đã có đủ thông tin)
+let isEditingAddress = false;
+
 // Shipping & Voucher
 let selectedShippingCost = 25000;
 let selectedShippingUnit = "ShopLux Express";
@@ -16,7 +19,7 @@ const AVAILABLE_VOUCHERS = [
   { code: "FREESHIP", name: "Miễn Phí Vận Chuyển", desc: "Giảm 30.000 ₫ phí ship", discount: 30000 }
 ];
 
-// AUTH HEADER - HIỂN THỊ AVATAR VÀ TÊN DẪN VÀO TRANG CÁ NHÂN
+// AUTH HEADER
 function renderAuth() {
   const container = document.getElementById('auth-section');
   if (!container) return;
@@ -52,6 +55,20 @@ function navigateToSearch(event) {
   event.preventDefault();
   const keyword = document.getElementById('search-input').value.trim();
   window.location.href = keyword ? `?search=${encodeURIComponent(keyword)}` : '/';
+}
+
+// KIỂM TRA NGƯỜI DÙNG ĐÃ ĐỦ THÔNG TIN CHƯA
+function hasFullShippingInfo() {
+  if (!currentUser) return false;
+  return !!(
+    currentUser.fullname && 
+    currentUser.fullname.trim() &&
+    currentUser.phone && 
+    currentUser.phone.trim().length >= 9 &&
+    currentUser.birthYear && 
+    currentUser.address && 
+    currentUser.address.trim().length >= 6
+  );
 }
 
 // ROUTER
@@ -97,7 +114,388 @@ async function router() {
   }
 }
 
-// --- TRANG CÁ NHÂN (HỒ SƠ CỦA TÔI) ---
+// --- TRANG CHECKOUT: TỰ ĐỘNG NHẬN DIỆN THÔNG TIN ĐÃ CÓ HOẶC CẦN NHẬP ---
+function renderCheckoutView(container) {
+  const itemsSubtotal = cart.reduce((sum, i) => sum + i.price * i.qty, 0);
+  const totalPayment = Math.max(0, itemsSubtotal + selectedShippingCost - currentDiscount);
+  const isInfoComplete = hasFullShippingInfo();
+
+  container.innerHTML = `
+    <div class="max-w-6xl mx-auto px-4 py-6">
+      <div class="bg-white p-6 rounded shadow-sm">
+        <div class="flex items-center justify-between border-b pb-3 mb-6">
+          <h1 class="text-base font-bold text-gray-800 flex items-center space-x-2">
+            <span class="text-[#ee4d2d]">🛒</span>
+            <span>Thanh Toán & Đặt Hàng ShopLux</span>
+          </h1>
+          <a href="/" class="text-xs text-[#ee4d2d] hover:underline">← Tiếp tục mua sắm</a>
+        </div>
+
+        ${cart.length === 0 ? `
+          <div class="text-center py-16 text-gray-400">
+            <p class="text-sm mb-4">Giỏ hàng của bạn đang trống.</p>
+            <a href="/" class="bg-[#ee4d2d] text-white px-6 py-2.5 rounded font-bold uppercase text-xs hover:bg-[#d73211] transition">Khám Phá Sản Phẩm Ngay</a>
+          </div>
+        ` : `
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            
+            <!-- CỘT TRÁI: THÔNG TIN GIAO HÀNG & PHƯƠNG THỨC -->
+            <div class="lg:col-span-7 space-y-6">
+              
+              <!-- 1. THÔNG TIN NGƯỜI NHẬN -->
+              <div class="p-4 bg-gray-50 border rounded-sm">
+                <div class="flex items-center justify-between mb-3">
+                  <h3 class="font-bold text-xs flex items-center space-x-1.5 text-[#ee4d2d]">
+                    <i class="fas fa-location-dot"></i>
+                    <span>1. ĐỊA CHỈ NHẬN HÀNG</span>
+                  </h3>
+                  ${(isInfoComplete && !isEditingAddress) ? `
+                    <button onclick="toggleEditAddress(true)" class="text-[11px] text-[#ee4d2d] font-bold hover:underline flex items-center space-x-1">
+                      <i class="fas fa-pen text-[10px]"></i>
+                      <span>Thay đổi</span>
+                    </button>
+                  ` : ''}
+                </div>
+
+                ${(isInfoComplete && !isEditingAddress) ? `
+                  <!-- ĐÃ CÓ ĐẦY ĐỦ THÔNG TIN: HIỂN THỊ DẠNG THẺ XÁC NHẬN GỌN GÀNG -->
+                  <div class="bg-white p-3.5 border rounded border-orange-200 text-xs space-y-1 relative">
+                    <div class="flex items-center space-x-2">
+                      <span class="font-bold text-gray-900">${currentUser.fullname}</span>
+                      <span class="text-gray-400">|</span>
+                      <span class="font-bold text-gray-800">${currentUser.phone}</span>
+                      <span class="text-[10px] bg-orange-100 text-[#ee4d2d] font-bold px-1.5 py-0.2 rounded">Năm sinh: ${currentUser.birthYear}</span>
+                    </div>
+                    <p class="text-gray-600 mt-1 flex items-start space-x-1">
+                      <span class="text-gray-400">📍</span>
+                      <span>${currentUser.address}</span>
+                    </p>
+                    <span class="inline-block mt-1 text-[10px] text-green-600 font-medium">✓ Đã lấy từ hồ sơ tài khoản của bạn</span>
+                  </div>
+                ` : `
+                  <!-- CHƯA ĐỦ THÔNG TIN HOẶC ĐANG CHỌN THAY ĐỔI: HIỂN THỊ FORM ĐỂ NHẬP -->
+                  <div class="space-y-3">
+                    <div class="bg-amber-50 border border-amber-200 text-amber-800 text-[11px] p-2 rounded">
+                      ⚠️ ${currentUser ? 'Vui lòng hoàn tất thông tin nhận hàng để shipper giao tận nơi:' : 'Bạn chưa có thông tin nhận hàng. Vui lòng nhập để đặt hàng:'}
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                      <div>
+                        <label class="block text-[11px] font-semibold text-gray-600 mb-1">Họ và tên người nhận <span class="text-red-500">*</span></label>
+                        <input id="order-fullname" value="${currentUser ? (currentUser.fullname || '') : ''}" placeholder="Ví dụ: Nguyễn Văn A" class="w-full border p-2 rounded text-xs focus:outline-[#ee4d2d]">
+                      </div>
+                      <div>
+                        <label class="block text-[11px] font-semibold text-gray-600 mb-1">Số điện thoại liên hệ <span class="text-red-500">*</span></label>
+                        <input id="order-phone" value="${currentUser ? (currentUser.phone || '') : ''}" placeholder="Ví dụ: 0912345678" class="w-full border p-2 rounded text-xs focus:outline-[#ee4d2d]">
+                      </div>
+                      <div>
+                        <label class="block text-[11px] font-semibold text-gray-600 mb-1">Năm sinh người nhận <span class="text-red-500">*</span></label>
+                        <input id="order-year" type="number" min="1930" max="2018" value="${currentUser ? (currentUser.birthYear || '2000') : '2000'}" class="w-full border p-2 rounded text-xs focus:outline-[#ee4d2d]">
+                      </div>
+                      <div>
+                        <label class="block text-[11px] font-semibold text-gray-600 mb-1">Địa chỉ nhận hàng cụ thể <span class="text-red-500">*</span></label>
+                        <input id="order-address" value="${currentUser ? (currentUser.address || '') : ''}" placeholder="Số nhà, Tên đường, Phường/Xã, Tỉnh/TP" class="w-full border p-2 rounded text-xs focus:outline-[#ee4d2d]">
+                      </div>
+                    </div>
+                    ${isInfoComplete ? `
+                      <button onclick="toggleEditAddress(false)" class="text-[11px] text-gray-500 hover:underline">Hủy chỉnh sửa, dùng địa chỉ cũ</button>
+                    ` : ''}
+                  </div>
+                `}
+              </div>
+
+              <!-- 2. CHỌN ĐƠN VỊ VẬN CHUYỂN -->
+              <div class="p-4 bg-gray-50 border rounded-sm">
+                <h3 class="font-bold text-xs text-gray-800 mb-3 flex items-center space-x-1.5 text-blue-600">
+                  <i class="fas fa-truck-fast"></i>
+                  <span>2. CHỌN ĐƠN VỊ VẬN CHUYỂN</span>
+                </h3>
+                <div class="space-y-2 text-xs">
+                  <label class="flex items-center justify-between p-2.5 bg-white border rounded cursor-pointer hover:border-blue-500">
+                    <div class="flex items-center space-x-2">
+                      <input type="radio" name="shipping-unit" value="ShopLux Express:25000" onchange="updateShipping(this.value)" checked class="text-[#ee4d2d]">
+                      <div>
+                        <p class="font-bold text-gray-800">ShopLux Express (Hỏa Tốc)</p>
+                        <span class="text-[10px] text-gray-400">1 - 2 ngày làm việc</span>
+                      </div>
+                    </div>
+                    <span class="font-bold text-gray-700">25.000 ₫</span>
+                  </label>
+
+                  <label class="flex items-center justify-between p-2.5 bg-white border rounded cursor-pointer hover:border-blue-500">
+                    <div class="flex items-center space-x-2">
+                      <input type="radio" name="shipping-unit" value="Giao Hàng Nhanh (GHN):22000" onchange="updateShipping(this.value)" class="text-[#ee4d2d]">
+                      <div>
+                        <p class="font-bold text-gray-800">Giao Hàng Nhanh (GHN)</p>
+                        <span class="text-[10px] text-gray-400">2 - 3 ngày làm việc</span>
+                      </div>
+                    </div>
+                    <span class="font-bold text-gray-700">22.000 ₫</span>
+                  </label>
+
+                  <label class="flex items-center justify-between p-2.5 bg-white border rounded cursor-pointer hover:border-blue-500">
+                    <div class="flex items-center space-x-2">
+                      <input type="radio" name="shipping-unit" value="Giao Hàng Tiết Kiệm (GHTK):18000" onchange="updateShipping(this.value)" class="text-[#ee4d2d]">
+                      <div>
+                        <p class="font-bold text-gray-800">Giao Hàng Tiết Kiệm (GHTK)</p>
+                        <span class="text-[10px] text-gray-400">3 - 4 ngày làm việc</span>
+                      </div>
+                    </div>
+                    <span class="font-bold text-gray-700">18.000 ₫</span>
+                  </label>
+
+                  <label class="flex items-center justify-between p-2.5 bg-white border rounded cursor-pointer hover:border-blue-500">
+                    <div class="flex items-center space-x-2">
+                      <input type="radio" name="shipping-unit" value="Viettel Post:20000" onchange="updateShipping(this.value)" class="text-[#ee4d2d]">
+                      <div>
+                        <p class="font-bold text-gray-800">Viettel Post</p>
+                        <span class="text-[10px] text-gray-400">Giao hàng toàn quốc</span>
+                      </div>
+                    </div>
+                    <span class="font-bold text-gray-700">20.000 ₫</span>
+                  </label>
+                </div>
+              </div>
+
+              <!-- 3. PHƯƠNG THỨC THANH TOÁN -->
+              <div class="p-4 bg-gray-50 border rounded-sm">
+                <h3 class="font-bold text-xs text-gray-800 mb-3 flex items-center space-x-1.5 text-green-600">
+                  <i class="fas fa-credit-card"></i>
+                  <span>3. PHƯƠNG THỨC THANH TOÁN</span>
+                </h3>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+                  <label class="p-2.5 bg-white border rounded cursor-pointer flex items-center space-x-2">
+                    <input type="radio" name="payment-method" value="Tiền mặt khi nhận hàng (COD)" checked>
+                    <span class="font-semibold text-gray-800">💵 Tiền mặt (COD)</span>
+                  </label>
+                  <label class="p-2.5 bg-white border rounded cursor-pointer flex items-center space-x-2">
+                    <input type="radio" name="payment-method" value="Chuyển khoản Ngân hàng (QR Code)">
+                    <span class="font-semibold text-gray-800">🏦 Chuyển khoản QR Ngân hàng</span>
+                  </label>
+                  <label class="p-2.5 bg-white border rounded cursor-pointer flex items-center space-x-2">
+                    <input type="radio" name="payment-method" value="Ví điện tử MoMo">
+                    <span class="font-semibold text-gray-800">🟣 Ví MoMo</span>
+                  </label>
+                  <label class="p-2.5 bg-white border rounded cursor-pointer flex items-center space-x-2">
+                    <input type="radio" name="payment-method" value="Ví ZaloPay / ShopeePay">
+                    <span class="font-semibold text-gray-800">🔵 Ví ZaloPay / ShopeePay</span>
+                  </label>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- CỘT PHẢI: CHI TIẾT SẢN PHẨM & VOUCHER -->
+            <div class="lg:col-span-5 space-y-4">
+              <div class="border rounded p-4 bg-white">
+                <h3 class="font-bold text-xs text-gray-800 border-b pb-2 mb-3">Kiểm tra sản phẩm (${cart.length})</h3>
+                <div class="divide-y max-h-52 overflow-y-auto text-xs">
+                  ${cart.map(i => `
+                    <div class="py-2.5 flex justify-between items-center">
+                      <div class="flex items-center space-x-2">
+                        <img src="${i.image}" class="w-10 h-10 object-cover rounded border">
+                        <div class="max-w-[150px]">
+                          <p class="font-medium truncate">${i.name}</p>
+                          <span class="text-[#ee4d2d]">${i.price.toLocaleString()} ₫ x ${i.qty}</span>
+                        </div>
+                      </div>
+                      <div class="flex items-center space-x-2">
+                        <span class="font-bold text-gray-700">${(i.price * i.qty).toLocaleString()} ₫</span>
+                        <button onclick="removeCartItem(${i.id})" class="text-red-500 font-bold ml-1 hover:underline">×</button>
+                      </div>
+                    </div>
+                  `).join('')}
+                </div>
+              </div>
+
+              <!-- VOUCHER -->
+              <div class="p-4 bg-orange-50/70 border border-dashed border-[#ee4d2d] rounded-sm">
+                <h4 class="font-bold text-xs text-[#ee4d2d] mb-2">🎟️ SHOPLUX VOUCHER</h4>
+                <div class="space-y-1.5 mb-3">
+                  ${AVAILABLE_VOUCHERS.map(v => `
+                    <div onclick="selectVoucher('${v.code}')" class="p-2 bg-white rounded border cursor-pointer hover:border-[#ee4d2d] flex items-center justify-between text-[11px] ${appliedVoucherCode === v.code ? 'border-[#ee4d2d] bg-orange-50 font-bold' : ''}">
+                      <div>
+                        <span class="font-bold text-[#ee4d2d]">[${v.code}]</span>
+                        <span class="text-gray-700 ml-1">${v.name}</span>
+                        <p class="text-[10px] text-gray-400">${v.desc}</p>
+                      </div>
+                      <button class="px-2 py-0.5 text-[10px] rounded ${appliedVoucherCode === v.code ? 'bg-[#ee4d2d] text-white' : 'bg-gray-100 text-gray-700'}">
+                        ${appliedVoucherCode === v.code ? 'Đã Chọn' : 'Dùng Ngay'}
+                      </button>
+                    </div>
+                  `).join('')}
+                </div>
+                <div class="flex space-x-1 text-xs">
+                  <input id="custom-voucher-code" placeholder="Mã giảm giá khác..." class="border p-2 rounded text-xs flex-1 uppercase focus:outline-[#ee4d2d]">
+                  <button onclick="applyCustomVoucher()" class="bg-[#ee4d2d] text-white px-4 py-2 rounded font-bold text-xs">Áp Dụng</button>
+                </div>
+              </div>
+
+              <!-- TỔNG KẾT TIỀN & NÚT ĐẶT HÀNG -->
+              <div class="bg-gray-50 border p-4 rounded text-xs space-y-2">
+                <div class="flex justify-between text-gray-600">
+                  <span>Tiền sản phẩm:</span>
+                  <span>${itemsSubtotal.toLocaleString()} ₫</span>
+                </div>
+                <div class="flex justify-between text-gray-600">
+                  <span>Phí ship (<span id="shipping-unit-label">${selectedShippingUnit}</span>):</span>
+                  <span id="shipping-cost-label">${selectedShippingCost.toLocaleString()} ₫</span>
+                </div>
+                <div class="flex justify-between text-green-600 font-bold">
+                  <span>Voucher giảm:</span>
+                  <span id="discount-label">-${currentDiscount.toLocaleString()} ₫</span>
+                </div>
+                <div class="border-t pt-3 flex justify-between items-baseline">
+                  <span class="font-bold text-sm text-gray-800">Tổng thanh toán:</span>
+                  <span id="total-payment-label" class="text-2xl font-black text-[#ee4d2d]">${totalPayment.toLocaleString()} ₫</span>
+                </div>
+                <button onclick="submitOrder()" class="w-full mt-4 bg-[#ee4d2d] hover:bg-[#d73211] text-white py-3 rounded font-bold uppercase text-xs tracking-wider shadow transition">
+                  ĐẶT HÀNG NGAY
+                </button>
+              </div>
+
+            </div>
+          </div>
+        `}
+      </div>
+    </div>
+  `;
+}
+
+function toggleEditAddress(state) {
+  isEditingAddress = state;
+  const viewport = document.getElementById('app-viewport');
+  renderCheckoutView(viewport);
+}
+
+// XỬ LÝ ĐẶT HÀNG THÔNG MINH
+async function submitOrder() {
+  let fullname = "";
+  let phone = "";
+  let year = "";
+  let address = "";
+
+  const isInfoComplete = hasFullShippingInfo();
+
+  if (isInfoComplete && !isEditingAddress) {
+    // Nếu người dùng đã có sẵn thông tin đầy đủ, tự động lấy luôn từ tài khoản
+    fullname = currentUser.fullname;
+    phone = currentUser.phone;
+    year = currentUser.birthYear;
+    address = currentUser.address;
+  } else {
+    // Nếu chưa có hoặc đang mở form sửa, lấy từ các ô input và kiểm tra chặt chẽ
+    const nameEl = document.getElementById('order-fullname');
+    const phoneEl = document.getElementById('order-phone');
+    const yearEl = document.getElementById('order-year');
+    const addrEl = document.getElementById('order-address');
+
+    fullname = nameEl ? nameEl.value.trim() : "";
+    phone = phoneEl ? phoneEl.value.trim() : "";
+    year = yearEl ? yearEl.value.trim() : "";
+    address = addrEl ? addrEl.value.trim() : "";
+
+    if (!fullname) return alert("⚠️ Vui lòng nhập Họ và tên người nhận!"), nameEl && nameEl.focus();
+    if (!phone || !/^[0-9]{9,11}$/.test(phone)) return alert("⚠️ Số điện thoại không hợp lệ! Vui lòng nhập số gồm 10 chữ số."), phoneEl && phoneEl.focus();
+    const yearNum = parseInt(year);
+    if (!year || isNaN(yearNum) || yearNum < 1920 || yearNum > 2018) return alert("⚠️ Năm sinh không hợp lệ!"), yearEl && yearEl.focus();
+    if (!address || address.length < 6) return alert("⚠️ Vui lòng nhập địa chỉ nhận hàng chi tiết!"), addrEl && addrEl.focus();
+
+    // Tự động lưu thông tin này vào Profile người dùng để lần sau không bao giờ phải gõ lại
+    if (currentUser) {
+      currentUser.fullname = fullname;
+      currentUser.phone = phone;
+      currentUser.birthYear = year;
+      currentUser.address = address;
+      localStorage.setItem('shoplux_user', JSON.stringify(currentUser));
+      
+      // Đồng bộ ngầm lên backend
+      fetch(`${API_URL}/auth/profile`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          oldUsername: currentUser.username,
+          username: currentUser.username,
+          fullname,
+          phone,
+          birthYear: year,
+          address,
+          avatar: currentUser.avatar
+        })
+      });
+    }
+  }
+
+  const paymentMethod = document.querySelector('input[name="payment-method"]:checked').value;
+  const itemsSubtotal = cart.reduce((sum, i) => sum + i.price * i.qty, 0);
+  const totalPayment = Math.max(0, itemsSubtotal + selectedShippingCost - currentDiscount);
+
+  alert(
+    `🎉 ĐẶT HÀNG THÀNH CÔNG!\n\n` +
+    `👤 Người nhận: ${fullname} (Năm sinh: ${year})\n` +
+    `📞 SĐT: ${phone}\n` +
+    `📍 Địa chỉ giao: ${address}\n` +
+    `🚚 Vận chuyển: ${selectedShippingUnit}\n` +
+    `🎟️ Voucher: ${appliedVoucherCode || 'Không có'}\n` +
+    `💳 Thanh toán qua: ${paymentMethod}\n` +
+    `💰 TỔNG TIỀN THANH TOÁN: ${totalPayment.toLocaleString()} ₫\n\n` +
+    `Cảm ơn bạn đã tin tưởng mua sắm tại ShopLux!`
+  );
+
+  cart = [];
+  appliedVoucherCode = "";
+  currentDiscount = 0;
+  isEditingAddress = false;
+  saveCart();
+  window.location.href = '/';
+}
+
+function updateShipping(val) {
+  const [unit, cost] = val.split(':');
+  selectedShippingUnit = unit;
+  selectedShippingCost = parseInt(cost);
+  recalculateOrder();
+}
+
+function selectVoucher(code) {
+  const v = AVAILABLE_VOUCHERS.find(item => item.code === code);
+  if (!v) return;
+  if (appliedVoucherCode === code) {
+    appliedVoucherCode = "";
+    currentDiscount = 0;
+  } else {
+    appliedVoucherCode = code;
+    currentDiscount = v.discount;
+  }
+  recalculateOrder();
+}
+
+function applyCustomVoucher() {
+  const code = document.getElementById('custom-voucher-code').value.trim().toUpperCase();
+  const found = AVAILABLE_VOUCHERS.find(v => v.code === code);
+  if (found) {
+    selectVoucher(found.code);
+    alert(`Áp dụng thành công "${found.name}"!`);
+  } else {
+    alert("Mã giảm giá không hợp lệ!");
+  }
+}
+
+function recalculateOrder() {
+  const itemsSubtotal = cart.reduce((sum, i) => sum + i.price * i.qty, 0);
+  const totalPayment = Math.max(0, itemsSubtotal + selectedShippingCost - currentDiscount);
+
+  const shippingUnitLabel = document.getElementById('shipping-unit-label');
+  const shippingCostLabel = document.getElementById('shipping-cost-label');
+  const discountLabel = document.getElementById('discount-label');
+  const totalPaymentLabel = document.getElementById('total-payment-label');
+
+  if (shippingUnitLabel) shippingUnitLabel.innerText = selectedShippingUnit;
+  if (shippingCostLabel) shippingCostLabel.innerText = `${selectedShippingCost.toLocaleString()} ₫`;
+  if (discountLabel) discountLabel.innerText = `-${currentDiscount.toLocaleString()} ₫`;
+  if (totalPaymentLabel) totalPaymentLabel.innerText = `${totalPayment.toLocaleString()} ₫`;
+}
+
+// PROFILE VIEW
 function renderProfileView(container) {
   if (!currentUser) {
     alert("Vui lòng đăng nhập để truy cập trang cá nhân!");
@@ -110,57 +508,32 @@ function renderProfileView(container) {
   container.innerHTML = `
     <div class="max-w-6xl mx-auto px-4 py-6">
       <div class="grid grid-cols-1 md:grid-cols-12 gap-6">
-        
-        <!-- CỘT TRÁI: SIDEBAR THÔNG TIN TÀI KHOẢN -->
         <div class="md:col-span-3 space-y-4">
           <div class="flex items-center space-x-3 p-3 bg-white rounded shadow-sm">
-            <img id="sidebar-avatar" src="${avatarSrc}" class="w-12 h-12 rounded-full object-cover border border-gray-200 shadow-sm">
+            <img src="${avatarSrc}" class="w-12 h-12 rounded-full object-cover border border-gray-200">
             <div class="overflow-hidden">
-              <h4 id="sidebar-username" class="font-bold text-xs text-gray-800 truncate">${currentUser.username}</h4>
-              <a href="?view=profile" class="text-[11px] text-gray-400 hover:text-[#ee4d2d] flex items-center space-x-1">
-                <i class="fas fa-pen text-[10px]"></i>
-                <span>Sửa hồ sơ</span>
-              </a>
+              <h4 class="font-bold text-xs text-gray-800 truncate">${currentUser.username}</h4>
+              <span class="text-[11px] text-[#ee4d2d] flex items-center space-x-1"><i class="fas fa-pen text-[10px]"></i><span>Sửa hồ sơ</span></span>
             </div>
           </div>
-
           <div class="bg-white rounded shadow-sm p-3 space-y-2 text-xs">
-            <a href="?view=profile" class="flex items-center space-x-2 text-[#ee4d2d] font-bold p-2 bg-orange-50 rounded">
-              <i class="far fa-user text-sm"></i>
-              <span>Hồ Sơ Của Tôi</span>
-            </a>
-            <a href="?view=cart" class="flex items-center space-x-2 text-gray-700 hover:text-[#ee4d2d] p-2 transition">
-              <i class="fas fa-bag-shopping text-sm"></i>
-              <span>Đơn Mua</span>
-            </a>
-            <a href="?view=notifications" class="flex items-center space-x-2 text-gray-700 hover:text-[#ee4d2d] p-2 transition">
-              <i class="far fa-bell text-sm"></i>
-              <span>Kho Voucher & Thông Báo</span>
-            </a>
-            <a href="?view=support" class="flex items-center space-x-2 text-gray-700 hover:text-[#ee4d2d] p-2 transition">
-              <i class="far fa-circle-question text-sm"></i>
-              <span>Trung Tâm Trợ Giúp</span>
-            </a>
+            <a href="?view=profile" class="flex items-center space-x-2 text-[#ee4d2d] font-bold p-2 bg-orange-50 rounded"><i class="far fa-user"></i><span>Hồ Sơ Của Tôi</span></a>
+            <a href="?view=cart" class="flex items-center space-x-2 text-gray-700 hover:text-[#ee4d2d] p-2"><i class="fas fa-bag-shopping"></i><span>Đơn Mua</span></a>
           </div>
         </div>
 
-        <!-- CỘT PHẢI: KHU VỰC CHỈNH SỬA THÔNG TIN CHI TIẾT -->
         <div class="md:col-span-9 bg-white p-6 rounded shadow-sm">
           <div class="border-b pb-4 mb-6">
             <h1 class="text-base font-bold text-gray-800">Hồ Sơ Của Tôi</h1>
-            <p class="text-xs text-gray-500 mt-0.5">Quản lý thông tin hồ sơ, tên đăng nhập và hình ảnh đại diện để bảo vệ tài khoản</p>
+            <p class="text-xs text-gray-500 mt-0.5">Cập nhật đầy đủ thông tin để khi mua hàng không cần phải nhập lại</p>
           </div>
 
           <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-            
-            <!-- Form thông tin chữ -->
             <div class="lg:col-span-8 space-y-4 text-xs">
-              
               <div class="grid grid-cols-3 items-center">
-                <label class="text-gray-500 font-medium">Tên đăng nhập (Username):</label>
+                <label class="text-gray-500 font-medium">Tên đăng nhập:</label>
                 <div class="col-span-2">
                   <input id="profile-username" value="${currentUser.username || ''}" class="w-full border p-2 rounded text-xs focus:outline-[#ee4d2d]">
-                  <p class="text-[10px] text-gray-400 mt-1">Tên đăng nhập duy nhất dùng để đăng nhập vào ShopLux.</p>
                 </div>
               </div>
 
@@ -174,136 +547,77 @@ function renderProfileView(container) {
               <div class="grid grid-cols-3 items-center">
                 <label class="text-gray-500 font-medium">Số điện thoại:</label>
                 <div class="col-span-2">
-                  <input id="profile-phone" value="${currentUser.phone || ''}" placeholder="Nhập số điện thoại của bạn" class="w-full border p-2 rounded text-xs focus:outline-[#ee4d2d]">
+                  <input id="profile-phone" value="${currentUser.phone || ''}" placeholder="Nhập SĐT nhận hàng" class="w-full border p-2 rounded text-xs focus:outline-[#ee4d2d]">
                 </div>
               </div>
 
               <div class="grid grid-cols-3 items-center">
                 <label class="text-gray-500 font-medium">Năm sinh:</label>
                 <div class="col-span-2">
-                  <input id="profile-year" type="number" min="1930" max="2020" value="${currentUser.birthYear || '2000'}" class="w-full border p-2 rounded text-xs focus:outline-[#ee4d2d]">
+                  <input id="profile-year" type="number" min="1930" max="2018" value="${currentUser.birthYear || '2000'}" class="w-full border p-2 rounded text-xs focus:outline-[#ee4d2d]">
                 </div>
               </div>
 
               <div class="grid grid-cols-3 items-center">
-                <label class="text-gray-500 font-medium">Giới tính:</label>
-                <div class="col-span-2 flex space-x-6">
-                  <label class="flex items-center space-x-1.5 cursor-pointer">
-                    <input type="radio" name="profile-gender" value="Nam" ${(currentUser.gender || 'Nam') === 'Nam' ? 'checked' : ''} class="text-[#ee4d2d]">
-                    <span>Nam</span>
-                  </label>
-                  <label class="flex items-center space-x-1.5 cursor-pointer">
-                    <input type="radio" name="profile-gender" value="Nữ" ${currentUser.gender === 'Nữ' ? 'checked' : ''} class="text-[#ee4d2d]">
-                    <span>Nữ</span>
-                  </label>
-                  <label class="flex items-center space-x-1.5 cursor-pointer">
-                    <input type="radio" name="profile-gender" value="Khác" ${currentUser.gender === 'Khác' ? 'checked' : ''} class="text-[#ee4d2d]">
-                    <span>Khác</span>
-                  </label>
-                </div>
-              </div>
-
-              <div class="grid grid-cols-3 items-center">
-                <label class="text-gray-500 font-medium">Địa chỉ giao hàng mặc định:</label>
+                <label class="text-gray-500 font-medium">Địa chỉ giao hàng:</label>
                 <div class="col-span-2">
-                  <textarea id="profile-address" rows="2" placeholder="Số nhà, Tên đường, Phường/Xã, Quận/Huyện, Tỉnh/TP" class="w-full border p-2 rounded text-xs focus:outline-[#ee4d2d]">${currentUser.address || ''}</textarea>
+                  <textarea id="profile-address" rows="2" placeholder="Số nhà, Tên đường, Phường/Xã..." class="w-full border p-2 rounded text-xs focus:outline-[#ee4d2d]">${currentUser.address || ''}</textarea>
                 </div>
               </div>
 
               <div class="grid grid-cols-3 items-center pt-2">
                 <div></div>
                 <div class="col-span-2">
-                  <button onclick="saveProfileChanges()" class="bg-[#ee4d2d] hover:bg-[#d73211] text-white px-8 py-2.5 rounded font-bold uppercase text-xs transition shadow">
-                    Lưu Thay Đổi
-                  </button>
+                  <button onclick="saveProfileChanges()" class="bg-[#ee4d2d] text-white px-8 py-2.5 rounded font-bold uppercase text-xs transition">Lưu Thay Đổi</button>
                 </div>
               </div>
-
             </div>
 
-            <!-- Cột chỉnh sửa Avatar -->
             <div class="lg:col-span-4 border-l lg:pl-8 flex flex-col items-center justify-center text-center space-y-4">
-              <div class="relative group cursor-pointer">
-                <img id="avatar-preview" src="${avatarSrc}" class="w-28 h-28 rounded-full object-cover border-2 border-gray-200 shadow-md">
-                <div class="absolute inset-0 bg-black/40 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition text-white text-[11px] font-medium">
-                  Đổi Ảnh
-                </div>
-              </div>
-
-              <!-- Chọn tải ảnh từ máy tính hoặc nhập link -->
-              <div class="w-full space-y-2">
-                <input type="file" id="avatar-file-input" accept="image/*" onchange="handleAvatarFileUpload(event)" class="hidden">
-                <button onclick="document.getElementById('avatar-file-input').click()" class="w-full border border-gray-300 hover:border-[#ee4d2d] px-3 py-1.5 rounded text-xs text-gray-700 hover:text-[#ee4d2d] transition">
-                  📁 Chọn Ảnh Từ Máy Tính
-                </button>
-
-                <div class="pt-2 text-[11px] text-gray-400">Hoặc dán trực tiếp Link ảnh:</div>
-                <input id="avatar-url-input" value="${currentUser.avatar || ''}" onchange="previewAvatarUrl(this.value)" placeholder="https://..." class="w-full border p-1.5 rounded text-[11px] focus:outline-[#ee4d2d]">
-              </div>
-
-              <div class="text-[10px] text-gray-400 leading-relaxed text-left">
-                <p>• Định dạng: .JPEG, .PNG, .WEBP</p>
-                <p>• Dung lượng tối đa: 5 MB</p>
-                <p>• Ảnh vuông tỉ lệ 1:1 sẽ hiển thị đẹp nhất</p>
-              </div>
+              <img id="avatar-preview" src="${avatarSrc}" class="w-28 h-28 rounded-full object-cover border-2 border-gray-200">
+              <input type="file" id="avatar-file-input" accept="image/*" onchange="handleAvatarFileUpload(event)" class="hidden">
+              <button onclick="document.getElementById('avatar-file-input').click()" class="w-full border px-3 py-1.5 rounded text-xs text-gray-700 hover:text-[#ee4d2d]">📁 Chọn Ảnh Từ Máy</button>
+              <input id="avatar-url-input" value="${currentUser.avatar || ''}" onchange="previewAvatarUrl(this.value)" placeholder="Hoặc dán Link ảnh..." class="w-full border p-1.5 rounded text-[11px] focus:outline-[#ee4d2d]">
             </div>
-
           </div>
         </div>
-
       </div>
     </div>
   `;
 }
 
-// XỬ LÝ PREVIEW ẢNH KHI NHẬP LINK HOẶC UPLOAD
 function previewAvatarUrl(url) {
-  if (url && url.trim()) {
-    document.getElementById('avatar-preview').src = url.trim();
-  }
+  if (url && url.trim()) document.getElementById('avatar-preview').src = url.trim();
 }
 
 function handleAvatarFileUpload(event) {
   const file = event.target.files[0];
   if (!file) return;
-  if (file.size > 5 * 1024 * 1024) {
-    alert("Kích thước file ảnh vượt quá 5MB! Vui lòng chọn ảnh nhẹ hơn.");
-    return;
-  }
   const reader = new FileReader();
   reader.onload = function(e) {
-    const base64Data = e.target.result;
-    document.getElementById('avatar-preview').src = base64Data;
-    document.getElementById('avatar-url-input').value = base64Data;
+    document.getElementById('avatar-preview').src = e.target.result;
+    document.getElementById('avatar-url-input').value = e.target.result;
   };
   reader.readAsDataURL(file);
 }
 
-// LƯU CẬP NHẬT THÔNG TIN HỒ SƠ
 async function saveProfileChanges() {
   const username = document.getElementById('profile-username').value.trim();
   const fullname = document.getElementById('profile-fullname').value.trim();
   const phone = document.getElementById('profile-phone').value.trim();
   const birthYear = document.getElementById('profile-year').value.trim();
-  const gender = document.querySelector('input[name="profile-gender"]:checked').value;
   const address = document.getElementById('profile-address').value.trim();
   const avatar = document.getElementById('avatar-url-input').value.trim() || document.getElementById('avatar-preview').src;
 
-  if (!username) return alert("Vui lòng không để trống tên đăng nhập!");
-  if (!fullname) return alert("Vui lòng không để trống họ và tên!");
+  if (!username) return alert("Vui lòng nhập tên đăng nhập!");
+  if (!fullname) return alert("Vui lòng nhập họ và tên!");
 
   const res = await fetch(`${API_URL}/auth/profile`, {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       oldUsername: currentUser.username,
-      username,
-      fullname,
-      avatar,
-      phone,
-      birthYear,
-      gender,
-      address
+      username, fullname, avatar, phone, birthYear, address
     })
   });
 
@@ -312,7 +626,7 @@ async function saveProfileChanges() {
     currentUser = data.user;
     localStorage.setItem('shoplux_user', JSON.stringify(currentUser));
     renderAuth();
-    alert("🎉 Cập nhật hồ sơ cá nhân ShopLux thành công!");
+    alert("🎉 Cập nhật hồ sơ cá nhân thành công!");
     router();
   } else {
     alert(data.message);
@@ -424,278 +738,6 @@ function renderProductCards(products) {
       </div>
     </div>
   `).join('');
-}
-
-// CHECKOUT VIEW
-function renderCheckoutView(container) {
-  const itemsSubtotal = cart.reduce((sum, i) => sum + i.price * i.qty, 0);
-  const totalPayment = Math.max(0, itemsSubtotal + selectedShippingCost - currentDiscount);
-
-  container.innerHTML = `
-    <div class="max-w-6xl mx-auto px-4 py-6">
-      <div class="bg-white p-6 rounded shadow-sm">
-        <div class="flex items-center justify-between border-b pb-3 mb-6">
-          <h1 class="text-base font-bold text-gray-800 flex items-center space-x-2">
-            <span class="text-[#ee4d2d]">🛒</span>
-            <span>Thanh Toán & Đặt Hàng ShopLux</span>
-          </h1>
-          <a href="/" class="text-xs text-[#ee4d2d] hover:underline">← Tiếp tục mua sắm</a>
-        </div>
-
-        ${cart.length === 0 ? `
-          <div class="text-center py-16 text-gray-400">
-            <p class="text-sm mb-4">Giỏ hàng của bạn đang trống.</p>
-            <a href="/" class="bg-[#ee4d2d] text-white px-6 py-2.5 rounded font-bold uppercase text-xs hover:bg-[#d73211] transition">Khám Phá Sản Phẩm Ngay</a>
-          </div>
-        ` : `
-          <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-            <div class="lg:col-span-7 space-y-6">
-              
-              <div class="p-4 bg-gray-50 border rounded-sm">
-                <h3 class="font-bold text-xs text-gray-800 mb-3 flex items-center space-x-1.5 text-[#ee4d2d]">
-                  <i class="fas fa-location-dot"></i>
-                  <span>1. THÔNG TIN NGƯỜI NHẬN (BẮT BUỘC)</span>
-                </h3>
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <div>
-                    <label class="block text-[11px] font-semibold text-gray-600 mb-1">Họ và tên người nhận <span class="text-red-500">*</span></label>
-                    <input id="order-fullname" value="${currentUser ? currentUser.fullname : ''}" placeholder="Ví dụ: Nguyễn Văn A" class="w-full border p-2 rounded text-xs focus:outline-[#ee4d2d]">
-                  </div>
-                  <div>
-                    <label class="block text-[11px] font-semibold text-gray-600 mb-1">Số điện thoại liên hệ <span class="text-red-500">*</span></label>
-                    <input id="order-phone" value="${currentUser && currentUser.phone ? currentUser.phone : ''}" placeholder="Ví dụ: 0912345678" class="w-full border p-2 rounded text-xs focus:outline-[#ee4d2d]">
-                  </div>
-                  <div>
-                    <label class="block text-[11px] font-semibold text-gray-600 mb-1">Năm sinh người nhận <span class="text-red-500">*</span></label>
-                    <input id="order-year" type="number" min="1950" max="2020" value="${currentUser && currentUser.birthYear ? currentUser.birthYear : '2000'}" class="w-full border p-2 rounded text-xs focus:outline-[#ee4d2d]">
-                  </div>
-                  <div>
-                    <label class="block text-[11px] font-semibold text-gray-600 mb-1">Địa chỉ giao hàng chi tiết <span class="text-red-500">*</span></label>
-                    <input id="order-address" value="${currentUser && currentUser.address ? currentUser.address : ''}" placeholder="Số nhà, Tên đường, Phường/Xã..." class="w-full border p-2 rounded text-xs focus:outline-[#ee4d2d]">
-                  </div>
-                </div>
-              </div>
-
-              <div class="p-4 bg-gray-50 border rounded-sm">
-                <h3 class="font-bold text-xs text-gray-800 mb-3 flex items-center space-x-1.5 text-blue-600">
-                  <i class="fas fa-truck-fast"></i>
-                  <span>2. CHỌN ĐƠN VỊ VẬN CHUYỂN</span>
-                </h3>
-                <div class="space-y-2 text-xs">
-                  <label class="flex items-center justify-between p-2.5 bg-white border rounded cursor-pointer">
-                    <div class="flex items-center space-x-2">
-                      <input type="radio" name="shipping-unit" value="ShopLux Express:25000" onchange="updateShipping(this.value)" checked class="text-[#ee4d2d]">
-                      <div>
-                        <p class="font-bold text-gray-800">ShopLux Express (Hỏa Tốc)</p>
-                        <span class="text-[10px] text-gray-400">1 - 2 ngày làm việc</span>
-                      </div>
-                    </div>
-                    <span class="font-bold text-gray-700">25.000 ₫</span>
-                  </label>
-
-                  <label class="flex items-center justify-between p-2.5 bg-white border rounded cursor-pointer">
-                    <div class="flex items-center space-x-2">
-                      <input type="radio" name="shipping-unit" value="Giao Hàng Nhanh (GHN):22000" onchange="updateShipping(this.value)" class="text-[#ee4d2d]">
-                      <div>
-                        <p class="font-bold text-gray-800">Giao Hàng Nhanh (GHN)</p>
-                        <span class="text-[10px] text-gray-400">2 - 3 ngày làm việc</span>
-                      </div>
-                    </div>
-                    <span class="font-bold text-gray-700">22.000 ₫</span>
-                  </label>
-
-                  <label class="flex items-center justify-between p-2.5 bg-white border rounded cursor-pointer">
-                    <div class="flex items-center space-x-2">
-                      <input type="radio" name="shipping-unit" value="Giao Hàng Tiết Kiệm (GHTK):18000" onchange="updateShipping(this.value)" class="text-[#ee4d2d]">
-                      <div>
-                        <p class="font-bold text-gray-800">Giao Hàng Tiết Kiệm (GHTK)</p>
-                        <span class="text-[10px] text-gray-400">3 - 4 ngày làm việc</span>
-                      </div>
-                    </div>
-                    <span class="font-bold text-gray-700">18.000 ₫</span>
-                  </label>
-                </div>
-              </div>
-
-              <div class="p-4 bg-gray-50 border rounded-sm">
-                <h3 class="font-bold text-xs text-gray-800 mb-3 flex items-center space-x-1.5 text-green-600">
-                  <i class="fas fa-credit-card"></i>
-                  <span>3. PHƯƠNG THỨC THANH TOÁN</span>
-                </h3>
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
-                  <label class="p-2.5 bg-white border rounded cursor-pointer flex items-center space-x-2">
-                    <input type="radio" name="payment-method" value="Tiền mặt khi nhận hàng (COD)" checked>
-                    <span class="font-semibold text-gray-800">💵 Tiền mặt (COD)</span>
-                  </label>
-                  <label class="p-2.5 bg-white border rounded cursor-pointer flex items-center space-x-2">
-                    <input type="radio" name="payment-method" value="Chuyển khoản Ngân hàng (QR Code)">
-                    <span class="font-semibold text-gray-800">🏦 Chuyển khoản QR Ngân hàng</span>
-                  </label>
-                  <label class="p-2.5 bg-white border rounded cursor-pointer flex items-center space-x-2">
-                    <input type="radio" name="payment-method" value="Ví điện tử MoMo">
-                    <span class="font-semibold text-gray-800">🟣 Ví MoMo</span>
-                  </label>
-                  <label class="p-2.5 bg-white border rounded cursor-pointer flex items-center space-x-2">
-                    <input type="radio" name="payment-method" value="Ví ZaloPay / ShopeePay">
-                    <span class="font-semibold text-gray-800">🔵 Ví ZaloPay / ShopeePay</span>
-                  </label>
-                </div>
-              </div>
-
-            </div>
-
-            <div class="lg:col-span-5 space-y-4">
-              <div class="border rounded p-4 bg-white">
-                <h3 class="font-bold text-xs text-gray-800 border-b pb-2 mb-3">Kiểm tra sản phẩm (${cart.length})</h3>
-                <div class="divide-y max-h-52 overflow-y-auto text-xs">
-                  ${cart.map(i => `
-                    <div class="py-2.5 flex justify-between items-center">
-                      <div class="flex items-center space-x-2">
-                        <img src="${i.image}" class="w-10 h-10 object-cover rounded border">
-                        <div class="max-w-[150px]">
-                          <p class="font-medium truncate">${i.name}</p>
-                          <span class="text-[#ee4d2d]">${i.price.toLocaleString()} ₫ x ${i.qty}</span>
-                        </div>
-                      </div>
-                      <div class="flex items-center space-x-2">
-                        <span class="font-bold text-gray-700">${(i.price * i.qty).toLocaleString()} ₫</span>
-                        <button onclick="removeCartItem(${i.id})" class="text-red-500 font-bold ml-1 hover:underline">×</button>
-                      </div>
-                    </div>
-                  `).join('')}
-                </div>
-              </div>
-
-              <div class="p-4 bg-orange-50/70 border border-dashed border-[#ee4d2d] rounded-sm">
-                <h4 class="font-bold text-xs text-[#ee4d2d] mb-2">🎟️ SHOPLUX VOUCHER</h4>
-                <div class="space-y-1.5 mb-3">
-                  ${AVAILABLE_VOUCHERS.map(v => `
-                    <div onclick="selectVoucher('${v.code}')" class="p-2 bg-white rounded border cursor-pointer hover:border-[#ee4d2d] flex items-center justify-between text-[11px] ${appliedVoucherCode === v.code ? 'border-[#ee4d2d] bg-orange-50 font-bold' : ''}">
-                      <div>
-                        <span class="font-bold text-[#ee4d2d]">[${v.code}]</span>
-                        <span class="text-gray-700 ml-1">${v.name}</span>
-                        <p class="text-[10px] text-gray-400">${v.desc}</p>
-                      </div>
-                      <button class="px-2 py-0.5 text-[10px] rounded ${appliedVoucherCode === v.code ? 'bg-[#ee4d2d] text-white' : 'bg-gray-100 text-gray-700'}">
-                        ${appliedVoucherCode === v.code ? 'Đã Chọn' : 'Dùng Ngay'}
-                      </button>
-                    </div>
-                  `).join('')}
-                </div>
-                <div class="flex space-x-1 text-xs">
-                  <input id="custom-voucher-code" placeholder="Mã giảm giá khác..." class="border p-2 rounded text-xs flex-1 uppercase focus:outline-[#ee4d2d]">
-                  <button onclick="applyCustomVoucher()" class="bg-[#ee4d2d] text-white px-4 py-2 rounded font-bold text-xs">Áp Dụng</button>
-                </div>
-              </div>
-
-              <div class="bg-gray-50 border p-4 rounded text-xs space-y-2">
-                <div class="flex justify-between text-gray-600">
-                  <span>Tiền sản phẩm:</span>
-                  <span>${itemsSubtotal.toLocaleString()} ₫</span>
-                </div>
-                <div class="flex justify-between text-gray-600">
-                  <span>Phí ship (<span id="shipping-unit-label">${selectedShippingUnit}</span>):</span>
-                  <span id="shipping-cost-label">${selectedShippingCost.toLocaleString()} ₫</span>
-                </div>
-                <div class="flex justify-between text-green-600 font-bold">
-                  <span>Voucher giảm:</span>
-                  <span id="discount-label">-${currentDiscount.toLocaleString()} ₫</span>
-                </div>
-                <div class="border-t pt-3 flex justify-between items-baseline">
-                  <span class="font-bold text-sm text-gray-800">Tổng thanh toán:</span>
-                  <span id="total-payment-label" class="text-2xl font-black text-[#ee4d2d]">${totalPayment.toLocaleString()} ₫</span>
-                </div>
-                <button onclick="submitOrder()" class="w-full mt-4 bg-[#ee4d2d] hover:bg-[#d73211] text-white py-3 rounded font-bold uppercase text-xs tracking-wider shadow transition">
-                  ĐẶT HÀNG NGAY
-                </button>
-              </div>
-
-            </div>
-          </div>
-        `}
-      </div>
-    </div>
-  `;
-}
-
-function updateShipping(val) {
-  const [unit, cost] = val.split(':');
-  selectedShippingUnit = unit;
-  selectedShippingCost = parseInt(cost);
-  recalculateOrder();
-}
-
-function selectVoucher(code) {
-  const v = AVAILABLE_VOUCHERS.find(item => item.code === code);
-  if (!v) return;
-  if (appliedVoucherCode === code) {
-    appliedVoucherCode = "";
-    currentDiscount = 0;
-  } else {
-    appliedVoucherCode = code;
-    currentDiscount = v.discount;
-  }
-  recalculateOrder();
-}
-
-function applyCustomVoucher() {
-  const code = document.getElementById('custom-voucher-code').value.trim().toUpperCase();
-  const found = AVAILABLE_VOUCHERS.find(v => v.code === code);
-  if (found) {
-    selectVoucher(found.code);
-    alert(`Áp dụng thành công "${found.name}"!`);
-  } else {
-    alert("Mã giảm giá không hợp lệ!");
-  }
-}
-
-function recalculateOrder() {
-  const itemsSubtotal = cart.reduce((sum, i) => sum + i.price * i.qty, 0);
-  const totalPayment = Math.max(0, itemsSubtotal + selectedShippingCost - currentDiscount);
-
-  const shippingUnitLabel = document.getElementById('shipping-unit-label');
-  const shippingCostLabel = document.getElementById('shipping-cost-label');
-  const discountLabel = document.getElementById('discount-label');
-  const totalPaymentLabel = document.getElementById('total-payment-label');
-
-  if (shippingUnitLabel) shippingUnitLabel.innerText = selectedShippingUnit;
-  if (shippingCostLabel) shippingCostLabel.innerText = `${selectedShippingCost.toLocaleString()} ₫`;
-  if (discountLabel) discountLabel.innerText = `-${currentDiscount.toLocaleString()} ₫`;
-  if (totalPaymentLabel) totalPaymentLabel.innerText = `${totalPayment.toLocaleString()} ₫`;
-}
-
-function submitOrder() {
-  const fullname = document.getElementById('order-fullname').value.trim();
-  const phone = document.getElementById('order-phone').value.trim();
-  const year = document.getElementById('order-year').value.trim();
-  const address = document.getElementById('order-address').value.trim();
-
-  if (!fullname) return alert("Vui lòng nhập Họ và tên người nhận!"), document.getElementById('order-fullname').focus();
-  if (!phone || !/^[0-9]{9,11}$/.test(phone)) return alert("Số điện thoại không hợp lệ! Vui lòng nhập 10 số."), document.getElementById('order-phone').focus();
-  const yearNum = parseInt(year);
-  if (!year || isNaN(yearNum) || yearNum < 1920 || yearNum > 2016) return alert("Năm sinh không hợp lệ!"), document.getElementById('order-year').focus();
-  if (!address || address.length < 8) return alert("Vui lòng nhập địa chỉ giao hàng chi tiết!"), document.getElementById('order-address').focus();
-
-  const paymentMethod = document.querySelector('input[name="payment-method"]:checked').value;
-  const itemsSubtotal = cart.reduce((sum, i) => sum + i.price * i.qty, 0);
-  const totalPayment = Math.max(0, itemsSubtotal + selectedShippingCost - currentDiscount);
-
-  alert(
-    `🎉 ĐẶT HÀNG THÀNH CÔNG!\n\n` +
-    `👤 Người nhận: ${fullname} (${yearNum})\n` +
-    `📞 SĐT: ${phone}\n` +
-    `📍 Địa chỉ: ${address}\n` +
-    `🚚 Vận chuyển: ${selectedShippingUnit}\n` +
-    `🎟️ Voucher: ${appliedVoucherCode || 'Không'}\n` +
-    `💳 Thanh toán: ${paymentMethod}\n` +
-    `💰 TỔNG TIỀN: ${totalPayment.toLocaleString()} ₫`
-  );
-
-  cart = [];
-  appliedVoucherCode = "";
-  currentDiscount = 0;
-  saveCart();
-  window.location.href = '/';
 }
 
 // LOGIN & REGISTER PAGES
@@ -902,22 +944,10 @@ function renderSellerChannelView(container) {
       <div class="bg-white p-8 rounded shadow-sm">
         <h1 class="text-xl font-bold text-gray-800 border-b pb-4 mb-6">Kênh Quản Trị Người Bán (ShopLux Seller Centre)</h1>
         <div class="grid grid-cols-1 sm:grid-cols-4 gap-4 text-center">
-          <div class="p-4 bg-orange-50 rounded border border-orange-200">
-            <span class="text-2xl font-black text-[#ee4d2d]">12</span>
-            <p class="text-xs text-gray-600 mt-1">Chờ Xác Nhận</p>
-          </div>
-          <div class="p-4 bg-blue-50 rounded border border-blue-200">
-            <span class="text-2xl font-black text-blue-600">8</span>
-            <p class="text-xs text-gray-600 mt-1">Chờ Lấy Hàng</p>
-          </div>
-          <div class="p-4 bg-green-50 rounded border border-green-200">
-            <span class="text-2xl font-black text-green-600">146</span>
-            <p class="text-xs text-gray-600 mt-1">Đã Giao Thành Công</p>
-          </div>
-          <div class="p-4 bg-purple-50 rounded border border-purple-200">
-            <span class="text-2xl font-black text-purple-600">28.450.000 ₫</span>
-            <p class="text-xs text-gray-600 mt-1">Doanh Thu Tháng</p>
-          </div>
+          <div class="p-4 bg-orange-50 rounded border border-orange-200"><span class="text-2xl font-black text-[#ee4d2d]">12</span><p class="text-xs text-gray-600 mt-1">Chờ Xác Nhận</p></div>
+          <div class="p-4 bg-blue-50 rounded border border-blue-200"><span class="text-2xl font-black text-blue-600">8</span><p class="text-xs text-gray-600 mt-1">Chờ Lấy Hàng</p></div>
+          <div class="p-4 bg-green-50 rounded border border-green-200"><span class="text-2xl font-black text-green-600">146</span><p class="text-xs text-gray-600 mt-1">Đã Giao Thành Công</p></div>
+          <div class="p-4 bg-purple-50 rounded border border-purple-200"><span class="text-2xl font-black text-purple-600">28.450.000 ₫</span><p class="text-xs text-gray-600 mt-1">Doanh Thu Tháng</p></div>
         </div>
       </div>
     </div>
@@ -945,8 +975,7 @@ function renderConnectView(container) {
     <div class="max-w-6xl mx-auto px-4 py-6">
       <div class="bg-white p-8 rounded shadow-sm text-center max-w-lg mx-auto">
         <h1 class="text-lg font-bold text-gray-800 mb-2">Kết Nối Với ShopLux</h1>
-        <p class="text-xs text-gray-500 mb-6">Theo dõi mạng xã hội để cập nhật khuyến mãi mới nhất.</p>
-        <div class="flex justify-center space-x-4 text-xs font-semibold">
+        <div class="flex justify-center space-x-4 text-xs font-semibold mt-4">
           <a href="https://facebook.com" target="_blank" class="px-4 py-2 bg-blue-600 text-white rounded">Facebook</a>
           <a href="https://instagram.com" target="_blank" class="px-4 py-2 bg-pink-600 text-white rounded">Instagram</a>
           <a href="https://tiktok.com" target="_blank" class="px-4 py-2 bg-black text-white rounded">TikTok</a>
