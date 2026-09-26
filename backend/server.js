@@ -2,10 +2,16 @@ const express = require('express');
 const cors = require('cors');
 
 const app = express();
+
 app.use(cors());
 app.use(express.json({ limit: '10mb' }));
 
+// =====================================================
+// DATA
+// =====================================================
+
 const users = [];
+const orders = [];
 
 const categories = [
   { id: 0, name: "Tất Cả", icon: "🔥" },
@@ -94,48 +100,140 @@ const products = [
   }
 ];
 
-app.get('/api/categories', (req, res) => res.json({ success: true, data: categories }));
-app.get('/api/products', (req, res) => res.json({ success: true, data: products }));
+// =====================================================
+// CATEGORY + PRODUCT API
+// =====================================================
 
-app.post('/api/auth/register', (req, res) => {
-  const { fullname, username, password } = req.body;
-  if (!fullname || !username || !password) return res.status(400).json({ success: false, message: "Vui lòng nhập đủ thông tin!" });
-  if (users.find(u => u.username === username)) return res.status(400).json({ success: false, message: "Tên đăng nhập đã tồn tại!" });
-  
-  const defaultAvatar = "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=200&auto=format&fit=crop&q=80";
-  users.push({ fullname, username, password, avatar: defaultAvatar, phone: "", birthYear: "2000", gender: "Nam", address: "" });
-  res.json({ success: true, message: "Đăng ký thành công!" });
+app.get('/api/categories', (req, res) => {
+  res.json({
+    success: true,
+    data: categories
+  });
 });
 
+app.get('/api/products', (req, res) => {
+  res.json({
+    success: true,
+    data: products
+  });
+});
+
+// =====================================================
+// AUTH - REGISTER
+// =====================================================
+
+app.post('/api/auth/register', (req, res) => {
+  const {
+    fullname,
+    username,
+    password
+  } = req.body;
+
+  if (!fullname || !username || !password) {
+    return res.status(400).json({
+      success: false,
+      message: "Vui lòng nhập đủ thông tin!"
+    });
+  }
+
+  if (users.find(u => u.username === username)) {
+    return res.status(400).json({
+      success: false,
+      message: "Tên đăng nhập đã tồn tại!"
+    });
+  }
+
+  const defaultAvatar =
+    "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=200&auto=format&fit=crop&q=80";
+
+  users.push({
+    fullname,
+    username,
+    password,
+    avatar: defaultAvatar,
+    phone: "",
+    birthYear: "2000",
+    gender: "Nam",
+    address: ""
+  });
+
+  res.json({
+    success: true,
+    message: "Đăng ký thành công!"
+  });
+});
+
+// =====================================================
+// AUTH - LOGIN
+// =====================================================
+
 app.post('/api/auth/login', (req, res) => {
-  const { username, password } = req.body;
-  const user = users.find(u => u.username === username && u.password === password);
-  if (!user) return res.status(401).json({ success: false, message: "Tên đăng nhập hoặc mật khẩu không đúng!" });
-  
-  res.json({ 
-    success: true, 
-    user: { 
-      fullname: user.fullname, 
+  const {
+    username,
+    password
+  } = req.body;
+
+  const user = users.find(
+    u =>
+      u.username === username &&
+      u.password === password
+  );
+
+  if (!user) {
+    return res.status(401).json({
+      success: false,
+      message: "Tên đăng nhập hoặc mật khẩu không đúng!"
+    });
+  }
+
+  res.json({
+    success: true,
+    user: {
+      fullname: user.fullname,
       username: user.username,
-      avatar: user.avatar || "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=200&auto=format&fit=crop&q=80",
+      avatar:
+        user.avatar ||
+        "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=200&auto=format&fit=crop&q=80",
       phone: user.phone || "",
       birthYear: user.birthYear || "2000",
       gender: user.gender || "Nam",
       address: user.address || ""
-    } 
+    }
   });
 });
 
-// API CẬP NHẬT TRANG CÁ NHÂN (HỒ SƠ)
+// =====================================================
+// UPDATE PROFILE
+// =====================================================
+
 app.put('/api/auth/profile', (req, res) => {
-  const { oldUsername, username, fullname, avatar, phone, birthYear, gender, address } = req.body;
-  let user = users.find(u => u.username === oldUsername);
-  
+  const {
+    oldUsername,
+    username,
+    fullname,
+    avatar,
+    phone,
+    birthYear,
+    gender,
+    address
+  } = req.body;
+
+  let user = users.find(
+    u => u.username === oldUsername
+  );
+
   if (user) {
-    // Nếu đổi username, kiểm tra xem có trùng người khác không
-    if (username !== oldUsername && users.find(u => u.username === username)) {
-      return res.status(400).json({ success: false, message: "Tên đăng nhập mới đã được người khác sử dụng!" });
+
+    if (
+      username !== oldUsername &&
+      users.find(u => u.username === username)
+    ) {
+      return res.status(400).json({
+        success: false,
+        message: "Tên đăng nhập mới đã được người khác sử dụng!"
+      });
     }
+
     user.username = username || user.username;
     user.fullname = fullname || user.fullname;
     user.avatar = avatar || user.avatar;
@@ -150,8 +248,12 @@ app.put('/api/auth/profile', (req, res) => {
     message: "Cập nhật hồ sơ cá nhân thành công!",
     user: {
       username: username || oldUsername,
-      fullname: fullname || (user ? user.fullname : "Khách Hàng"),
-      avatar: avatar || "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=200&auto=format&fit=crop&q=80",
+      fullname:
+        fullname ||
+        (user ? user.fullname : "Khách Hàng"),
+      avatar:
+        avatar ||
+        "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=200&auto=format&fit=crop&q=80",
       phone: phone || "",
       birthYear: birthYear || "2000",
       gender: gender || "Nam",
@@ -159,5 +261,487 @@ app.put('/api/auth/profile', (req, res) => {
     }
   });
 });
+
+// =====================================================
+// ADMIN CONFIG
+// =====================================================
+
+const ADMIN_USERNAME = "admin";
+const ADMIN_PASSWORD = "admin123";
+
+const ADMIN_TOKEN = "shoplux-admin-token-2026";
+
+// =====================================================
+// ADMIN AUTH MIDDLEWARE
+// =====================================================
+
+function requireAdmin(req, res, next) {
+
+  const authHeader = req.headers.authorization;
+
+  if (!authHeader) {
+    return res.status(401).json({
+      success: false,
+      message: "Chưa đăng nhập Admin!"
+    });
+  }
+
+  const token = authHeader.replace("Bearer ", "");
+
+  if (token !== ADMIN_TOKEN) {
+    return res.status(403).json({
+      success: false,
+      message: "Token Admin không hợp lệ!"
+    });
+  }
+
+  next();
+}
+
+// =====================================================
+// ADMIN LOGIN
+// =====================================================
+
+app.post('/api/admin/login', (req, res) => {
+
+  const {
+    username,
+    password
+  } = req.body;
+
+  if (
+    username !== ADMIN_USERNAME ||
+    password !== ADMIN_PASSWORD
+  ) {
+    return res.status(401).json({
+      success: false,
+      message: "Sai tài khoản hoặc mật khẩu Admin!"
+    });
+  }
+
+  res.json({
+    success: true,
+    message: "Đăng nhập Admin thành công!",
+    token: ADMIN_TOKEN,
+
+    admin: {
+      username: ADMIN_USERNAME,
+      name: "ShopLux Administrator"
+    }
+  });
+});
+
+// =====================================================
+// ADMIN - GET ALL DATA
+// =====================================================
+
+app.get('/api/admin/data', requireAdmin, (req, res) => {
+
+  res.json({
+    success: true,
+
+    products,
+    users,
+    orders,
+
+    categories
+  });
+});
+
+// =====================================================
+// ADMIN - DASHBOARD
+// =====================================================
+
+app.get('/api/admin/dashboard', requireAdmin, (req, res) => {
+
+  const totalProducts = products.length;
+
+  const totalUsers = users.length;
+
+  const totalOrders = orders.length;
+
+  const totalRevenue = orders.reduce(
+    (sum, order) =>
+      sum + Number(order.total || 0),
+    0
+  );
+
+  const pendingOrders = orders.filter(
+    order => order.status === "Chờ xác nhận"
+  ).length;
+
+  const completedOrders = orders.filter(
+    order => order.status === "Hoàn thành"
+  ).length;
+
+  res.json({
+    success: true,
+
+    data: {
+      totalProducts,
+      totalUsers,
+      totalOrders,
+      totalRevenue,
+      pendingOrders,
+      completedOrders
+    }
+  });
+});
+
+// =====================================================
+// ADMIN - ADD PRODUCT
+// =====================================================
+
+app.post('/api/admin/products', requireAdmin, (req, res) => {
+
+  const {
+    categoryId,
+    name,
+    price,
+    originalPrice,
+    discount,
+    rating,
+    sold,
+    image,
+    desc
+  } = req.body;
+
+  if (!name || !price) {
+    return res.status(400).json({
+      success: false,
+      message: "Tên sản phẩm và giá là bắt buộc!"
+    });
+  }
+
+  const newId =
+    products.length > 0
+      ? Math.max(...products.map(p => p.id)) + 1
+      : 1;
+
+  const product = {
+    id: newId,
+    categoryId: Number(categoryId) || 1,
+    name,
+    price: Number(price),
+    originalPrice: Number(originalPrice) || Number(price),
+    discount: discount || "",
+    rating: Number(rating) || 5,
+    sold: sold || "0",
+    image:
+      image ||
+      "https://via.placeholder.com/500",
+    desc: desc || ""
+  };
+
+  products.push(product);
+
+  res.json({
+    success: true,
+    message: "Thêm sản phẩm thành công!",
+    product
+  });
+});
+
+// =====================================================
+// ADMIN - UPDATE PRODUCT
+// =====================================================
+
+app.put('/api/admin/products/:id', requireAdmin, (req, res) => {
+
+  const id = Number(req.params.id);
+
+  const product = products.find(
+    p => p.id === id
+  );
+
+  if (!product) {
+    return res.status(404).json({
+      success: false,
+      message: "Không tìm thấy sản phẩm!"
+    });
+  }
+
+  const {
+    categoryId,
+    name,
+    price,
+    originalPrice,
+    discount,
+    rating,
+    sold,
+    image,
+    desc
+  } = req.body;
+
+  product.categoryId =
+    Number(categoryId) || product.categoryId;
+
+  product.name =
+    name || product.name;
+
+  product.price =
+    price !== undefined
+      ? Number(price)
+      : product.price;
+
+  product.originalPrice =
+    originalPrice !== undefined
+      ? Number(originalPrice)
+      : product.originalPrice;
+
+  product.discount =
+    discount !== undefined
+      ? discount
+      : product.discount;
+
+  product.rating =
+    rating !== undefined
+      ? Number(rating)
+      : product.rating;
+
+  product.sold =
+    sold !== undefined
+      ? sold
+      : product.sold;
+
+  product.image =
+    image || product.image;
+
+  product.desc =
+    desc !== undefined
+      ? desc
+      : product.desc;
+
+  res.json({
+    success: true,
+    message: "Cập nhật sản phẩm thành công!",
+    product
+  });
+});
+
+// =====================================================
+// ADMIN - DELETE PRODUCT
+// =====================================================
+
+app.delete('/api/admin/products/:id', requireAdmin, (req, res) => {
+
+  const id = Number(req.params.id);
+
+  const index = products.findIndex(
+    p => p.id === id
+  );
+
+  if (index === -1) {
+    return res.status(404).json({
+      success: false,
+      message: "Không tìm thấy sản phẩm!"
+    });
+  }
+
+  products.splice(index, 1);
+
+  res.json({
+    success: true,
+    message: "Xóa sản phẩm thành công!"
+  });
+});
+
+// =====================================================
+// CUSTOMER - CREATE ORDER
+// =====================================================
+
+app.post('/api/orders', (req, res) => {
+
+  const {
+    username,
+    customer,
+    items,
+    total,
+    address,
+    phone
+  } = req.body;
+
+  if (!items || !items.length) {
+    return res.status(400).json({
+      success: false,
+      message: "Đơn hàng không có sản phẩm!"
+    });
+  }
+
+  const order = {
+    id:
+      "ORD-" +
+      Date.now(),
+
+    username:
+      username || "guest",
+
+    customer:
+      customer || "Khách hàng",
+
+    items,
+
+    total:
+      Number(total) || 0,
+
+    address:
+      address || "",
+
+    phone:
+      phone || "",
+
+    status:
+      "Chờ xác nhận",
+
+    createdAt:
+      new Date().toISOString()
+  };
+
+  orders.push(order);
+
+  res.json({
+    success: true,
+    message: "Đặt hàng thành công!",
+    order
+  });
+});
+
+// =====================================================
+// ADMIN - GET ORDERS
+// =====================================================
+
+app.get('/api/admin/orders', requireAdmin, (req, res) => {
+
+  res.json({
+    success: true,
+    data: orders
+  });
+});
+
+// =====================================================
+// ADMIN - UPDATE ORDER STATUS
+// =====================================================
+
+app.put('/api/admin/orders/:orderId', requireAdmin, (req, res) => {
+
+  const orderId = req.params.orderId;
+
+  const order = orders.find(
+    o => String(o.id) === String(orderId)
+  );
+
+  if (!order) {
+    return res.status(404).json({
+      success: false,
+      message: "Không tìm thấy đơn hàng!"
+    });
+  }
+
+  const {
+    status
+  } = req.body;
+
+  const allowedStatuses = [
+    "Chờ xác nhận",
+    "Đang xử lý",
+    "Đang giao",
+    "Hoàn thành",
+    "Đã hủy"
+  ];
+
+  if (!allowedStatuses.includes(status)) {
+    return res.status(400).json({
+      success: false,
+      message: "Trạng thái đơn hàng không hợp lệ!"
+    });
+  }
+
+  order.status = status;
+
+  res.json({
+    success: true,
+    message: "Cập nhật trạng thái đơn hàng thành công!",
+    order
+  });
+});
+
+// =====================================================
+// ADMIN - DELETE ORDER
+// =====================================================
+
+app.delete('/api/admin/orders/:orderId', requireAdmin, (req, res) => {
+
+  const orderId = req.params.orderId;
+
+  const index = orders.findIndex(
+    o => String(o.id) === String(orderId)
+  );
+
+  if (index === -1) {
+    return res.status(404).json({
+      success: false,
+      message: "Không tìm thấy đơn hàng!"
+    });
+  }
+
+  orders.splice(index, 1);
+
+  res.json({
+    success: true,
+    message: "Xóa đơn hàng thành công!"
+  });
+});
+
+// =====================================================
+// ADMIN - GET USERS
+// =====================================================
+
+app.get('/api/admin/users', requireAdmin, (req, res) => {
+
+  res.json({
+    success: true,
+
+    data: users.map(user => ({
+      fullname: user.fullname,
+      username: user.username,
+      avatar: user.avatar,
+      phone: user.phone,
+      birthYear: user.birthYear,
+      gender: user.gender,
+      address: user.address
+    }))
+  });
+});
+
+// =====================================================
+// ADMIN - DELETE USER
+// =====================================================
+
+app.delete('/api/admin/users/:username', requireAdmin, (req, res) => {
+
+  const username = req.params.username;
+
+  const index = users.findIndex(
+    user => user.username === username
+  );
+
+  if (index === -1) {
+    return res.status(404).json({
+      success: false,
+      message: "Không tìm thấy người dùng!"
+    });
+  }
+
+  users.splice(index, 1);
+
+  res.json({
+    success: true,
+    message: "Xóa người dùng thành công!"
+  });
+});
+
+// =====================================================
+// EXPORT
+// =====================================================
 
 module.exports = app;
