@@ -73,7 +73,66 @@
         <h3 class="font-black text-xs text-[#d0011b] border-b pb-2">THÊM SẢN PHẨM MỚI</h3>
         <input id="p-name" placeholder="Tên sản phẩm *" class="w-full border p-2 rounded focus:outline-[#d0011b]">
         <input id="p-price" type="number" placeholder="Giá bán (₫) *" class="w-full border p-2 rounded focus:outline-[#d0011b]">
-        <input id="p-img" placeholder="Link ảnh URL" class="w-full border p-2 rounded focus:outline-[#d0011b]">
+        
+
+<!-- SHOPLUX ADMIN CATEGORY V2 -->
+
+<div
+  id="shopluxCategoryArea"
+  style="margin-bottom: 14px;"
+>
+  <select
+    id="shopluxCategory"
+    style="
+      width:100%;
+      padding:11px;
+      border:1px solid #ddd;
+      border-radius:5px;
+      margin-bottom:10px;
+      background:white;
+    "
+  >
+    <option value="1">
+      Thời Trang
+    </option>
+
+    <option value="2">
+      Điện Thoại
+    </option>
+
+    <option value="3">
+      Thiết Bị Điện Tử
+    </option>
+
+    <option value="4">
+      Đồng Hồ
+    </option>
+  </select>
+
+  <select
+    id="shopluxSubcategory"
+    style="
+      width:100%;
+      padding:11px;
+      border:1px solid #ddd;
+      border-radius:5px;
+      background:white;
+    "
+  ></select>
+
+  <div
+    id="shopluxCategoryHint"
+    style="
+      font-size:11px;
+      color:#888;
+      margin-top:6px;
+    "
+  >
+    Danh mục sẽ tự nhận diện theo tên sản phẩm.
+  </div>
+</div>
+
+<input id="p-img" placeholder="Link ảnh URL" class="w-full border p-2 rounded focus:outline-[#d0011b]">
         <textarea id="p-desc" placeholder="Mô tả tóm tắt..." class="w-full border p-2 rounded focus:outline-[#d0011b]" rows="2"></textarea>
         <button onclick="createProduct()" class="w-full bg-[#d0011b] hover:bg-red-700 text-white py-2 rounded font-bold uppercase transition">Đăng Bán Ngay</button>
       </div>
@@ -190,5 +249,356 @@
 
     checkAuth();
   </script>
+
+
+<script>
+// ============================================================
+// SHOPLUX ADMIN CATEGORY V2
+// ============================================================
+
+const SHOPLUX_ADMIN_SUBCATEGORIES = {
+  1: [
+    ["ao-thun", "Áo thun"],
+    ["do-bong-da", "Đồ bóng đá"],
+    ["ao-so-mi", "Áo sơ mi"],
+    ["quan-jeans", "Quần jeans"],
+    ["ao-khoac", "Áo khoác"],
+    ["khac", "Khác"]
+  ],
+
+  2: [
+    ["iphone", "iPhone"],
+    ["samsung", "Samsung"],
+    ["xiaomi", "Xiaomi"],
+    ["oppo", "OPPO"],
+    ["vivo", "Vivo"],
+    ["phu-kien-dien-thoai", "Phụ kiện điện thoại"],
+    ["khac", "Khác"]
+  ],
+
+  3: [
+    ["tai-nghe", "Tai nghe"],
+    ["ban-phim", "Bàn phím"],
+    ["chuot", "Chuột"],
+    ["laptop", "Laptop"],
+    ["loa", "Loa"],
+    ["man-hinh", "Màn hình"],
+    ["khac", "Khác"]
+  ],
+
+  4: [
+    ["dong-ho-thong-minh", "Đồng hồ thông minh"],
+    ["dong-ho-nam", "Đồng hồ nam"],
+    ["dong-ho-nu", "Đồng hồ nữ"],
+    ["dong-ho-the-thao", "Đồng hồ thể thao"],
+    ["khac", "Khác"]
+  ]
+};
+
+function shopluxNormalize(value = "") {
+  return String(value)
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/đ/g, "d")
+    .trim();
+}
+
+function shopluxAdminDetect(name) {
+  const t = shopluxNormalize(name);
+
+  if (
+    t.includes("bong da") ||
+    t.includes("da banh") ||
+    t.includes("jersey") ||
+    t.includes("football") ||
+    t.includes("soccer")
+  ) {
+    return [1, "do-bong-da"];
+  }
+
+  if (
+    t.includes("ao thun") ||
+    t.includes("t-shirt") ||
+    t.includes("polo")
+  ) {
+    return [1, "ao-thun"];
+  }
+
+  if (t.includes("so mi")) {
+    return [1, "ao-so-mi"];
+  }
+
+  if (
+    t.includes("jean") ||
+    t.includes("denim")
+  ) {
+    return [1, "quan-jeans"];
+  }
+
+  if (
+    t.includes("ao khoac") ||
+    t.includes("hoodie") ||
+    t.includes("jacket")
+  ) {
+    return [1, "ao-khoac"];
+  }
+
+  if (t.includes("iphone")) {
+    return [2, "iphone"];
+  }
+
+  if (
+    t.includes("samsung") ||
+    t.includes("galaxy")
+  ) {
+    return [2, "samsung"];
+  }
+
+  if (
+    t.includes("xiaomi") ||
+    t.includes("redmi") ||
+    t.includes("poco")
+  ) {
+    return [2, "xiaomi"];
+  }
+
+  if (t.includes("oppo")) {
+    return [2, "oppo"];
+  }
+
+  if (t.includes("vivo")) {
+    return [2, "vivo"];
+  }
+
+  if (
+    t.includes("tai nghe") ||
+    t.includes("airpods") ||
+    t.includes("headphone")
+  ) {
+    return [3, "tai-nghe"];
+  }
+
+  if (
+    t.includes("ban phim") ||
+    t.includes("keyboard")
+  ) {
+    return [3, "ban-phim"];
+  }
+
+  if (
+    t.includes("chuot") ||
+    t.includes("mouse")
+  ) {
+    return [3, "chuot"];
+  }
+
+  if (
+    t.includes("laptop") ||
+    t.includes("macbook")
+  ) {
+    return [3, "laptop"];
+  }
+
+  if (
+    t.includes("loa bluetooth") ||
+    t.includes("speaker")
+  ) {
+    return [3, "loa"];
+  }
+
+  if (
+    t.includes("man hinh") ||
+    t.includes("monitor")
+  ) {
+    return [3, "man-hinh"];
+  }
+
+  if (
+    t.includes("apple watch") ||
+    t.includes("smartwatch") ||
+    t.includes("galaxy watch") ||
+    t.includes("dong ho thong minh")
+  ) {
+    return [4, "dong-ho-thong-minh"];
+  }
+
+  if (t.includes("dong ho nam")) {
+    return [4, "dong-ho-nam"];
+  }
+
+  if (t.includes("dong ho nu")) {
+    return [4, "dong-ho-nu"];
+  }
+
+  if (t.includes("dong ho the thao")) {
+    return [4, "dong-ho-the-thao"];
+  }
+
+  return null;
+}
+
+function shopluxRenderSubcategories(
+  categoryId,
+  selected = null
+) {
+  const select =
+    document.getElementById(
+      "shopluxSubcategory"
+    );
+
+  if (!select) return;
+
+  const items =
+    SHOPLUX_ADMIN_SUBCATEGORIES[
+      Number(categoryId)
+    ] || [];
+
+  select.innerHTML = "";
+
+  items.forEach(([value, label]) => {
+    const option =
+      document.createElement("option");
+
+    option.value = value;
+    option.textContent = label;
+
+    if (value === selected) {
+      option.selected = true;
+    }
+
+    select.appendChild(option);
+  });
+}
+
+function shopluxSetCategory(
+  categoryId,
+  subcategoryId
+) {
+  const category =
+    document.getElementById(
+      "shopluxCategory"
+    );
+
+  if (!category) return;
+
+  category.value =
+    String(categoryId);
+
+  shopluxRenderSubcategories(
+    categoryId,
+    subcategoryId
+  );
+}
+
+document.addEventListener(
+  "DOMContentLoaded",
+  function () {
+
+    const category =
+      document.getElementById(
+        "shopluxCategory"
+      );
+
+    if (category) {
+      shopluxRenderSubcategories(
+        category.value
+      );
+
+      category.addEventListener(
+        "change",
+        function () {
+          shopluxRenderSubcategories(
+            this.value
+          );
+        }
+      );
+    }
+
+    // Tìm ô tên sản phẩm hiện tại
+    const inputs =
+      document.querySelectorAll("input");
+
+    let nameInput = null;
+
+    inputs.forEach(input => {
+      const placeholder =
+        shopluxNormalize(
+          input.placeholder || ""
+        );
+
+      if (
+        placeholder.includes(
+          "ten san pham"
+        )
+      ) {
+        nameInput = input;
+      }
+    });
+
+    if (nameInput) {
+      nameInput.addEventListener(
+        "input",
+        function () {
+          const detected =
+            shopluxAdminDetect(
+              this.value
+            );
+
+          if (detected) {
+            shopluxSetCategory(
+              detected[0],
+              detected[1]
+            );
+          }
+        }
+      );
+    }
+  }
+);
+
+// Dùng được bởi code submit hiện tại
+window.shopluxGetSelectedCategory =
+  function (productName = "") {
+
+    const detected =
+      shopluxAdminDetect(productName);
+
+    if (detected) {
+      return {
+        categoryId: detected[0],
+        subcategoryId: detected[1]
+      };
+    }
+
+    const category =
+      document.getElementById(
+        "shopluxCategory"
+      );
+
+    const subcategory =
+      document.getElementById(
+        "shopluxSubcategory"
+      );
+
+    return {
+      categoryId:
+        category
+          ? Number(category.value)
+          : 1,
+
+      subcategoryId:
+        subcategory
+          ? subcategory.value
+          : "khac"
+    };
+  };
+
+// ============================================================
+// END SHOPLUX ADMIN CATEGORY V2
+// ============================================================
+</script>
+
+
 </body>
 </html>

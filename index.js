@@ -54,6 +54,305 @@ let products = [
   { id: 5, categoryId: 4, name: "Đồng Hồ Thông Minh AMOLED Nghe Gọi Tiếng Việt", price: 890000, originalPrice: 1590000, discount: "-44%", rating: 4.9, sold: "2,1k", image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500&q=80", desc: "Màn hình Always-on Display." }
 ];
 
+
+
+// ============================================================
+// SHOPLUX CATEGORY SYSTEM V2
+// ============================================================
+
+const subcategories = {
+  1: [
+    { id: "ao-thun", name: "Áo thun" },
+    { id: "do-bong-da", name: "Đồ bóng đá" },
+    { id: "ao-so-mi", name: "Áo sơ mi" },
+    { id: "quan-jeans", name: "Quần jeans" },
+    { id: "ao-khoac", name: "Áo khoác" },
+    { id: "khac", name: "Khác" }
+  ],
+
+  2: [
+    { id: "iphone", name: "iPhone" },
+    { id: "samsung", name: "Samsung" },
+    { id: "xiaomi", name: "Xiaomi" },
+    { id: "oppo", name: "OPPO" },
+    { id: "vivo", name: "Vivo" },
+    { id: "phu-kien-dien-thoai", name: "Phụ kiện điện thoại" },
+    { id: "khac", name: "Khác" }
+  ],
+
+  3: [
+    { id: "tai-nghe", name: "Tai nghe" },
+    { id: "ban-phim", name: "Bàn phím" },
+    { id: "chuot", name: "Chuột" },
+    { id: "laptop", name: "Laptop" },
+    { id: "loa", name: "Loa" },
+    { id: "man-hinh", name: "Màn hình" },
+    { id: "khac", name: "Khác" }
+  ],
+
+  4: [
+    { id: "dong-ho-thong-minh", name: "Đồng hồ thông minh" },
+    { id: "dong-ho-nam", name: "Đồng hồ nam" },
+    { id: "dong-ho-nu", name: "Đồng hồ nữ" },
+    { id: "dong-ho-the-thao", name: "Đồng hồ thể thao" },
+    { id: "khac", name: "Khác" }
+  ]
+};
+
+function normalizeProductText(value = "") {
+  return String(value)
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/đ/g, "d")
+    .trim();
+}
+
+function autoClassifyProduct(name = "") {
+  const text = normalizeProductText(name);
+
+  // ============================
+  // THỜI TRANG
+  // ============================
+
+  if (
+    text.includes("bong da") ||
+    text.includes("da banh") ||
+    text.includes("jersey") ||
+    text.includes("football") ||
+    text.includes("soccer") ||
+    text.includes("ao clb") ||
+    text.includes("ao doi tuyen")
+  ) {
+    return {
+      categoryId: 1,
+      subcategoryId: "do-bong-da"
+    };
+  }
+
+  if (
+    text.includes("ao thun") ||
+    text.includes("t-shirt") ||
+    text.includes("tshirt") ||
+    text.includes("polo")
+  ) {
+    return {
+      categoryId: 1,
+      subcategoryId: "ao-thun"
+    };
+  }
+
+  if (
+    text.includes("so mi")
+  ) {
+    return {
+      categoryId: 1,
+      subcategoryId: "ao-so-mi"
+    };
+  }
+
+  if (
+    text.includes("jean") ||
+    text.includes("denim")
+  ) {
+    return {
+      categoryId: 1,
+      subcategoryId: "quan-jeans"
+    };
+  }
+
+  if (
+    text.includes("ao khoac") ||
+    text.includes("hoodie") ||
+    text.includes("jacket")
+  ) {
+    return {
+      categoryId: 1,
+      subcategoryId: "ao-khoac"
+    };
+  }
+
+  // ============================
+  // ĐIỆN THOẠI
+  // ============================
+
+  if (
+    text.includes("iphone") ||
+    text.includes("apple phone")
+  ) {
+    return {
+      categoryId: 2,
+      subcategoryId: "iphone"
+    };
+  }
+
+  if (
+    text.includes("samsung galaxy") ||
+    text.includes("galaxy s") ||
+    text.includes("galaxy a") ||
+    text.includes("galaxy z")
+  ) {
+    return {
+      categoryId: 2,
+      subcategoryId: "samsung"
+    };
+  }
+
+  if (
+    text.includes("xiaomi") ||
+    text.includes("redmi") ||
+    text.includes("poco")
+  ) {
+    return {
+      categoryId: 2,
+      subcategoryId: "xiaomi"
+    };
+  }
+
+  if (text.includes("oppo")) {
+    return {
+      categoryId: 2,
+      subcategoryId: "oppo"
+    };
+  }
+
+  if (text.includes("vivo")) {
+    return {
+      categoryId: 2,
+      subcategoryId: "vivo"
+    };
+  }
+
+  if (
+    text.includes("op lung") ||
+    text.includes("cu sac") ||
+    text.includes("sac dien thoai") ||
+    text.includes("kinh cuong luc")
+  ) {
+    return {
+      categoryId: 2,
+      subcategoryId: "phu-kien-dien-thoai"
+    };
+  }
+
+  // ============================
+  // THIẾT BỊ ĐIỆN TỬ
+  // ============================
+
+  if (
+    text.includes("tai nghe") ||
+    text.includes("airpods") ||
+    text.includes("headphone") ||
+    text.includes("earphone")
+  ) {
+    return {
+      categoryId: 3,
+      subcategoryId: "tai-nghe"
+    };
+  }
+
+  if (
+    text.includes("ban phim") ||
+    text.includes("keyboard")
+  ) {
+    return {
+      categoryId: 3,
+      subcategoryId: "ban-phim"
+    };
+  }
+
+  if (
+    text.includes("chuot") ||
+    text.includes("mouse")
+  ) {
+    return {
+      categoryId: 3,
+      subcategoryId: "chuot"
+    };
+  }
+
+  if (
+    text.includes("laptop") ||
+    text.includes("macbook")
+  ) {
+    return {
+      categoryId: 3,
+      subcategoryId: "laptop"
+    };
+  }
+
+  if (
+    text.includes("loa bluetooth") ||
+    text.includes("speaker")
+  ) {
+    return {
+      categoryId: 3,
+      subcategoryId: "loa"
+    };
+  }
+
+  if (
+    text.includes("man hinh") ||
+    text.includes("monitor")
+  ) {
+    return {
+      categoryId: 3,
+      subcategoryId: "man-hinh"
+    };
+  }
+
+  // ============================
+  // ĐỒNG HỒ
+  // ============================
+
+  if (
+    text.includes("apple watch") ||
+    text.includes("smartwatch") ||
+    text.includes("smart watch") ||
+    text.includes("galaxy watch") ||
+    text.includes("dong ho thong minh")
+  ) {
+    return {
+      categoryId: 4,
+      subcategoryId: "dong-ho-thong-minh"
+    };
+  }
+
+  if (
+    text.includes("dong ho nam")
+  ) {
+    return {
+      categoryId: 4,
+      subcategoryId: "dong-ho-nam"
+    };
+  }
+
+  if (
+    text.includes("dong ho nu")
+  ) {
+    return {
+      categoryId: 4,
+      subcategoryId: "dong-ho-nu"
+    };
+  }
+
+  if (
+    text.includes("dong ho the thao") ||
+    text.includes("sport watch")
+  ) {
+    return {
+      categoryId: 4,
+      subcategoryId: "dong-ho-the-thao"
+    };
+  }
+
+  return null;
+}
+
+// ============================================================
+// END SHOPLUX CATEGORY SYSTEM V2
+// ============================================================
+
 const categories = [
   { id: 0, name: "Tất Cả", icon: "🔥" },
   { id: 1, name: "Thời Trang", icon: "👕" },
@@ -63,6 +362,28 @@ const categories = [
 ];
 
 app.get("/api/categories", (req, res) => res.json({ success: true, data: categories }));
+
+
+// ============================================================
+// API DANH MỤC CON
+// ============================================================
+
+app.get("/api/subcategories", (req, res) => {
+  res.json({
+    success: true,
+    data: subcategories
+  });
+});
+
+app.get("/api/subcategories/:categoryId", (req, res) => {
+  const categoryId = Number(req.params.categoryId);
+
+  res.json({
+    success: true,
+    data: subcategories[categoryId] || []
+  });
+});
+
 app.get("/api/products", (req, res) => res.json({ success: true, data: products }));
 
 app.post("/api/auth/login", (req, res) => {
