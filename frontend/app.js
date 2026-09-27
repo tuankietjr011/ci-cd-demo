@@ -1,1131 +1,658 @@
-const API_URL = '/api';
+// ==========================================
+// SHOPLUX - FRONTEND APP.JS
+// ==========================================
+
+const API = "/api";
+
 let allProducts = [];
 let allCategories = [];
-let cart = JSON.parse(localStorage.getItem('shoplux_cart')) || [];
-let currentUser = JSON.parse(localStorage.getItem('shoplux_user')) || null;
+let cart = JSON.parse(localStorage.getItem("shoplux_cart") || "[]");
 
-// Trạng thái hiển thị form sửa địa chỉ (mặc định false nếu đã có đủ thông tin)
-let isEditingAddress = false;
+// ==========================================
+// HELPERS
+// ==========================================
 
-// Shipping & Voucher
-let selectedShippingCost = 25000;
-let selectedShippingUnit = "ShopLux Express";
-let currentDiscount = 0;
-let appliedVoucherCode = "";
-
-const AVAILABLE_VOUCHERS = [
-  { code: "NEWBIE100", name: "Mã Người Mới", desc: "Giảm trực tiếp 100.000 ₫ cho tài khoản mới", discount: 100000 },
-  { code: "SHOPLUX50", name: "Ưu Đãi Đơn Đầu", desc: "Giảm 50.000 ₫ cho mọi đơn hàng", discount: 50000 },
-  { code: "FREESHIP", name: "Miễn Phí Vận Chuyển", desc: "Giảm 30.000 ₫ phí ship", discount: 30000 }
-];
-
-// AUTH HEADER
-function renderAuth() {
-  const container = document.getElementById('auth-section');
-  if (!container) return;
-  if (currentUser) {
-    const avatarImg = currentUser.avatar || "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=200&auto=format&fit=crop&q=80";
-    container.innerHTML = `
-      <a href="?view=profile" class="flex items-center space-x-1.5 hover:opacity-85 transition bg-white/10 px-2 py-0.5 rounded-full">
-        <img src="${avatarImg}" class="w-5 h-5 rounded-full object-cover border border-white">
-        <span class="font-bold text-white max-w-[120px] truncate">${currentUser.fullname}</span>
-      </a>
-      <span>|</span>
-      <a href="?view=profile" class="hover:underline">Tài Khoản</a>
-      <span>|</span>
-      <button onclick="logout()" class="hover:underline">Đăng Xuất</button>
-    `;
-  } else {
-    container.innerHTML = `
-      <a href="?view=register" class="hover:underline">Đăng Ký</a>
-      <span>|</span>
-      <a href="?view=login" class="hover:underline">Đăng Nhập</a>
-    `;
-  }
+function formatPrice(value) {
+  return Number(value || 0).toLocaleString("vi-VN") + " ₫";
 }
 
-function logout() {
-  currentUser = null;
-  localStorage.removeItem('shoplux_user');
-  renderAuth();
-  window.location.href = '/';
+function normalizeText(value = "") {
+  return String(value)
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/đ/g, "d")
+    .trim();
 }
 
-function navigateToSearch(event) {
-  event.preventDefault();
-  const keyword = document.getElementById('search-input').value.trim();
-  window.location.href = keyword ? `?search=${encodeURIComponent(keyword)}` : '/';
+function escapeHtml(value = "") {
+  return String(value)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
 }
 
-// KIỂM TRA NGƯỜI DÙNG ĐÃ ĐỦ THÔNG TIN CHƯA
-function hasFullShippingInfo() {
-  if (!currentUser) return false;
-  return !!(
-    currentUser.fullname && 
-    currentUser.fullname.trim() &&
-    currentUser.phone && 
-    currentUser.phone.trim().length >= 9 &&
-    currentUser.birthYear && 
-    currentUser.address && 
-    currentUser.address.trim().length >= 6
-  );
-}
-
-// ROUTER
-async function router() {
-  renderAuth();
-  updateCartBadge();
-
-  const [prodRes, catRes] = await Promise.all([
-    fetch(`${API_URL}/products`),
-    fetch(`${API_URL}/categories`)
-  ]);
-  allProducts = (await prodRes.json()).data;
-  allCategories = (await catRes.json()).data;
-
-  const params = new URLSearchParams(window.location.search);
-  const view = params.get('view');
-  const search = params.get('search');
-  const productId = params.get('id');
-
-  const viewport = document.getElementById('app-viewport');
-  const header = document.getElementById('main-header');
-
-  if (view === 'login' || view === 'register') {
-    if (header) header.classList.add('hidden');
-  } else {
-    if (header) header.classList.remove('hidden');
-  }
-
-  if (search !== null) return renderSearchView(viewport, search);
-  if (productId) return renderProductDetailView(viewport, parseInt(productId));
-
-  switch (view) {
-    case 'profile': renderProfileView(viewport); break;
-    case 'login': renderLoginPage(viewport); break;
-    case 'register': renderRegisterPage(viewport); break;
-    case 'seller-channel': renderSellerChannelView(viewport); break;
-    case 'be-seller': renderBeSellerView(viewport); break;
-    case 'connect': renderConnectView(viewport); break;
-    case 'notifications': renderNotificationsView(viewport); break;
-    case 'support': renderSupportView(viewport); break;
-    case 'cart': renderCheckoutView(viewport); break;
-    default: renderHomeView(viewport); break;
-  }
-}
-
-// --- TRANG CHECKOUT: TỰ ĐỘNG NHẬN DIỆN THÔNG TIN ĐÃ CÓ HOẶC CẦN NHẬP ---
-function renderCheckoutView(container) {
-  const itemsSubtotal = cart.reduce((sum, i) => sum + i.price * i.qty, 0);
-  const totalPayment = Math.max(0, itemsSubtotal + selectedShippingCost - currentDiscount);
-  const isInfoComplete = hasFullShippingInfo();
-
-  container.innerHTML = `
-    <div class="max-w-6xl mx-auto px-4 py-6">
-      <div class="bg-white p-6 rounded shadow-sm">
-        <div class="flex items-center justify-between border-b pb-3 mb-6">
-          <h1 class="text-base font-bold text-gray-800 flex items-center space-x-2">
-            <span class="text-[#ee4d2d]">🛒</span>
-            <span>Thanh Toán & Đặt Hàng ShopLux</span>
-          </h1>
-          <a href="/" class="text-xs text-[#ee4d2d] hover:underline">← Tiếp tục mua sắm</a>
-        </div>
-
-        ${cart.length === 0 ? `
-          <div class="text-center py-16 text-gray-400">
-            <p class="text-sm mb-4">Giỏ hàng của bạn đang trống.</p>
-            <a href="/" class="bg-[#ee4d2d] text-white px-6 py-2.5 rounded font-bold uppercase text-xs hover:bg-[#d73211] transition">Khám Phá Sản Phẩm Ngay</a>
-          </div>
-        ` : `
-          <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-            
-            <!-- CỘT TRÁI: THÔNG TIN GIAO HÀNG & PHƯƠNG THỨC -->
-            <div class="lg:col-span-7 space-y-6">
-              
-              <!-- 1. THÔNG TIN NGƯỜI NHẬN -->
-              <div class="p-4 bg-gray-50 border rounded-sm">
-                <div class="flex items-center justify-between mb-3">
-                  <h3 class="font-bold text-xs flex items-center space-x-1.5 text-[#ee4d2d]">
-                    <i class="fas fa-location-dot"></i>
-                    <span>1. ĐỊA CHỈ NHẬN HÀNG</span>
-                  </h3>
-                  ${(isInfoComplete && !isEditingAddress) ? `
-                    <button onclick="toggleEditAddress(true)" class="text-[11px] text-[#ee4d2d] font-bold hover:underline flex items-center space-x-1">
-                      <i class="fas fa-pen text-[10px]"></i>
-                      <span>Thay đổi</span>
-                    </button>
-                  ` : ''}
-                </div>
-
-                ${(isInfoComplete && !isEditingAddress) ? `
-                  <!-- ĐÃ CÓ ĐẦY ĐỦ THÔNG TIN: HIỂN THỊ DẠNG THẺ XÁC NHẬN GỌN GÀNG -->
-                  <div class="bg-white p-3.5 border rounded border-orange-200 text-xs space-y-1 relative">
-                    <div class="flex items-center space-x-2">
-                      <span class="font-bold text-gray-900">${currentUser.fullname}</span>
-                      <span class="text-gray-400">|</span>
-                      <span class="font-bold text-gray-800">${currentUser.phone}</span>
-                      <span class="text-[10px] bg-orange-100 text-[#ee4d2d] font-bold px-1.5 py-0.2 rounded">Năm sinh: ${currentUser.birthYear}</span>
-                    </div>
-                    <p class="text-gray-600 mt-1 flex items-start space-x-1">
-                      <span class="text-gray-400">📍</span>
-                      <span>${currentUser.address}</span>
-                    </p>
-                    <span class="inline-block mt-1 text-[10px] text-green-600 font-medium">✓ Đã lấy từ hồ sơ tài khoản của bạn</span>
-                  </div>
-                ` : `
-                  <!-- CHƯA ĐỦ THÔNG TIN HOẶC ĐANG CHỌN THAY ĐỔI: HIỂN THỊ FORM ĐỂ NHẬP -->
-                  <div class="space-y-3">
-                    <div class="bg-amber-50 border border-amber-200 text-amber-800 text-[11px] p-2 rounded">
-                      ⚠️ ${currentUser ? 'Vui lòng hoàn tất thông tin nhận hàng để shipper giao tận nơi:' : 'Bạn chưa có thông tin nhận hàng. Vui lòng nhập để đặt hàng:'}
-                    </div>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-                      <div>
-                        <label class="block text-[11px] font-semibold text-gray-600 mb-1">Họ và tên người nhận <span class="text-red-500">*</span></label>
-                        <input id="order-fullname" value="${currentUser ? (currentUser.fullname || '') : ''}" placeholder="Ví dụ: Nguyễn Văn A" class="w-full border p-2 rounded text-xs focus:outline-[#ee4d2d]">
-                      </div>
-                      <div>
-                        <label class="block text-[11px] font-semibold text-gray-600 mb-1">Số điện thoại liên hệ <span class="text-red-500">*</span></label>
-                        <input id="order-phone" value="${currentUser ? (currentUser.phone || '') : ''}" placeholder="Ví dụ: 0912345678" class="w-full border p-2 rounded text-xs focus:outline-[#ee4d2d]">
-                      </div>
-                      <div>
-                        <label class="block text-[11px] font-semibold text-gray-600 mb-1">Năm sinh người nhận <span class="text-red-500">*</span></label>
-                        <input id="order-year" type="number" min="1930" max="2018" value="${currentUser ? (currentUser.birthYear || '2000') : '2000'}" class="w-full border p-2 rounded text-xs focus:outline-[#ee4d2d]">
-                      </div>
-                      <div>
-                        <label class="block text-[11px] font-semibold text-gray-600 mb-1">Địa chỉ nhận hàng cụ thể <span class="text-red-500">*</span></label>
-                        <input id="order-address" value="${currentUser ? (currentUser.address || '') : ''}" placeholder="Số nhà, Tên đường, Phường/Xã, Tỉnh/TP" class="w-full border p-2 rounded text-xs focus:outline-[#ee4d2d]">
-                      </div>
-                    </div>
-                    ${isInfoComplete ? `
-                      <button onclick="toggleEditAddress(false)" class="text-[11px] text-gray-500 hover:underline">Hủy chỉnh sửa, dùng địa chỉ cũ</button>
-                    ` : ''}
-                  </div>
-                `}
-              </div>
-
-              <!-- 2. CHỌN ĐƠN VỊ VẬN CHUYỂN -->
-              <div class="p-4 bg-gray-50 border rounded-sm">
-                <h3 class="font-bold text-xs text-gray-800 mb-3 flex items-center space-x-1.5 text-blue-600">
-                  <i class="fas fa-truck-fast"></i>
-                  <span>2. CHỌN ĐƠN VỊ VẬN CHUYỂN</span>
-                </h3>
-                <div class="space-y-2 text-xs">
-                  <label class="flex items-center justify-between p-2.5 bg-white border rounded cursor-pointer hover:border-blue-500">
-                    <div class="flex items-center space-x-2">
-                      <input type="radio" name="shipping-unit" value="ShopLux Express:25000" onchange="updateShipping(this.value)" checked class="text-[#ee4d2d]">
-                      <div>
-                        <p class="font-bold text-gray-800">ShopLux Express (Hỏa Tốc)</p>
-                        <span class="text-[10px] text-gray-400">1 - 2 ngày làm việc</span>
-                      </div>
-                    </div>
-                    <span class="font-bold text-gray-700">25.000 ₫</span>
-                  </label>
-
-                  <label class="flex items-center justify-between p-2.5 bg-white border rounded cursor-pointer hover:border-blue-500">
-                    <div class="flex items-center space-x-2">
-                      <input type="radio" name="shipping-unit" value="Giao Hàng Nhanh (GHN):22000" onchange="updateShipping(this.value)" class="text-[#ee4d2d]">
-                      <div>
-                        <p class="font-bold text-gray-800">Giao Hàng Nhanh (GHN)</p>
-                        <span class="text-[10px] text-gray-400">2 - 3 ngày làm việc</span>
-                      </div>
-                    </div>
-                    <span class="font-bold text-gray-700">22.000 ₫</span>
-                  </label>
-
-                  <label class="flex items-center justify-between p-2.5 bg-white border rounded cursor-pointer hover:border-blue-500">
-                    <div class="flex items-center space-x-2">
-                      <input type="radio" name="shipping-unit" value="Giao Hàng Tiết Kiệm (GHTK):18000" onchange="updateShipping(this.value)" class="text-[#ee4d2d]">
-                      <div>
-                        <p class="font-bold text-gray-800">Giao Hàng Tiết Kiệm (GHTK)</p>
-                        <span class="text-[10px] text-gray-400">3 - 4 ngày làm việc</span>
-                      </div>
-                    </div>
-                    <span class="font-bold text-gray-700">18.000 ₫</span>
-                  </label>
-
-                  <label class="flex items-center justify-between p-2.5 bg-white border rounded cursor-pointer hover:border-blue-500">
-                    <div class="flex items-center space-x-2">
-                      <input type="radio" name="shipping-unit" value="Viettel Post:20000" onchange="updateShipping(this.value)" class="text-[#ee4d2d]">
-                      <div>
-                        <p class="font-bold text-gray-800">Viettel Post</p>
-                        <span class="text-[10px] text-gray-400">Giao hàng toàn quốc</span>
-                      </div>
-                    </div>
-                    <span class="font-bold text-gray-700">20.000 ₫</span>
-                  </label>
-                </div>
-              </div>
-
-              <!-- 3. PHƯƠNG THỨC THANH TOÁN -->
-              <div class="p-4 bg-gray-50 border rounded-sm">
-                <h3 class="font-bold text-xs text-gray-800 mb-3 flex items-center space-x-1.5 text-green-600">
-                  <i class="fas fa-credit-card"></i>
-                  <span>3. PHƯƠNG THỨC THANH TOÁN</span>
-                </h3>
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
-                  <label class="p-2.5 bg-white border rounded cursor-pointer flex items-center space-x-2">
-                    <input type="radio" name="payment-method" value="Tiền mặt khi nhận hàng (COD)" checked>
-                    <span class="font-semibold text-gray-800">💵 Tiền mặt (COD)</span>
-                  </label>
-                  <label class="p-2.5 bg-white border rounded cursor-pointer flex items-center space-x-2">
-                    <input type="radio" name="payment-method" value="Chuyển khoản Ngân hàng (QR Code)">
-                    <span class="font-semibold text-gray-800">🏦 Chuyển khoản QR Ngân hàng</span>
-                  </label>
-                  <label class="p-2.5 bg-white border rounded cursor-pointer flex items-center space-x-2">
-                    <input type="radio" name="payment-method" value="Ví điện tử MoMo">
-                    <span class="font-semibold text-gray-800">🟣 Ví MoMo</span>
-                  </label>
-                  <label class="p-2.5 bg-white border rounded cursor-pointer flex items-center space-x-2">
-                    <input type="radio" name="payment-method" value="Ví ZaloPay / ShopeePay">
-                    <span class="font-semibold text-gray-800">🔵 Ví ZaloPay / ShopeePay</span>
-                  </label>
-                </div>
-              </div>
-
-            </div>
-
-            <!-- CỘT PHẢI: CHI TIẾT SẢN PHẨM & VOUCHER -->
-            <div class="lg:col-span-5 space-y-4">
-              <div class="border rounded p-4 bg-white">
-                <h3 class="font-bold text-xs text-gray-800 border-b pb-2 mb-3">Kiểm tra sản phẩm (${cart.length})</h3>
-                <div class="divide-y max-h-52 overflow-y-auto text-xs">
-                  ${cart.map(i => `
-                    <div class="py-2.5 flex justify-between items-center">
-                      <div class="flex items-center space-x-2">
-                        <img src="${i.image}" class="w-10 h-10 object-cover rounded border">
-                        <div class="max-w-[150px]">
-                          <p class="font-medium truncate">${i.name}</p>
-                          <span class="text-[#ee4d2d]">${i.price.toLocaleString()} ₫ x ${i.qty}</span>
-                        </div>
-                      </div>
-                      <div class="flex items-center space-x-2">
-                        <span class="font-bold text-gray-700">${(i.price * i.qty).toLocaleString()} ₫</span>
-                        <button onclick="removeCartItem(${i.id})" class="text-red-500 font-bold ml-1 hover:underline">×</button>
-                      </div>
-                    </div>
-                  `).join('')}
-                </div>
-              </div>
-
-              <!-- VOUCHER -->
-              <div class="p-4 bg-orange-50/70 border border-dashed border-[#ee4d2d] rounded-sm">
-                <h4 class="font-bold text-xs text-[#ee4d2d] mb-2">🎟️ SHOPLUX VOUCHER</h4>
-                <div class="space-y-1.5 mb-3">
-                  ${AVAILABLE_VOUCHERS.map(v => `
-                    <div onclick="selectVoucher('${v.code}')" class="p-2 bg-white rounded border cursor-pointer hover:border-[#ee4d2d] flex items-center justify-between text-[11px] ${appliedVoucherCode === v.code ? 'border-[#ee4d2d] bg-orange-50 font-bold' : ''}">
-                      <div>
-                        <span class="font-bold text-[#ee4d2d]">[${v.code}]</span>
-                        <span class="text-gray-700 ml-1">${v.name}</span>
-                        <p class="text-[10px] text-gray-400">${v.desc}</p>
-                      </div>
-                      <button class="px-2 py-0.5 text-[10px] rounded ${appliedVoucherCode === v.code ? 'bg-[#ee4d2d] text-white' : 'bg-gray-100 text-gray-700'}">
-                        ${appliedVoucherCode === v.code ? 'Đã Chọn' : 'Dùng Ngay'}
-                      </button>
-                    </div>
-                  `).join('')}
-                </div>
-                <div class="flex space-x-1 text-xs">
-                  <input id="custom-voucher-code" placeholder="Mã giảm giá khác..." class="border p-2 rounded text-xs flex-1 uppercase focus:outline-[#ee4d2d]">
-                  <button onclick="applyCustomVoucher()" class="bg-[#ee4d2d] text-white px-4 py-2 rounded font-bold text-xs">Áp Dụng</button>
-                </div>
-              </div>
-
-              <!-- TỔNG KẾT TIỀN & NÚT ĐẶT HÀNG -->
-              <div class="bg-gray-50 border p-4 rounded text-xs space-y-2">
-                <div class="flex justify-between text-gray-600">
-                  <span>Tiền sản phẩm:</span>
-                  <span>${itemsSubtotal.toLocaleString()} ₫</span>
-                </div>
-                <div class="flex justify-between text-gray-600">
-                  <span>Phí ship (<span id="shipping-unit-label">${selectedShippingUnit}</span>):</span>
-                  <span id="shipping-cost-label">${selectedShippingCost.toLocaleString()} ₫</span>
-                </div>
-                <div class="flex justify-between text-green-600 font-bold">
-                  <span>Voucher giảm:</span>
-                  <span id="discount-label">-${currentDiscount.toLocaleString()} ₫</span>
-                </div>
-                <div class="border-t pt-3 flex justify-between items-baseline">
-                  <span class="font-bold text-sm text-gray-800">Tổng thanh toán:</span>
-                  <span id="total-payment-label" class="text-2xl font-black text-[#ee4d2d]">${totalPayment.toLocaleString()} ₫</span>
-                </div>
-                <button onclick="submitOrder()" class="w-full mt-4 bg-[#ee4d2d] hover:bg-[#d73211] text-white py-3 rounded font-bold uppercase text-xs tracking-wider shadow transition">
-                  ĐẶT HÀNG NGAY
-                </button>
-              </div>
-
-            </div>
-          </div>
-        `}
-      </div>
-    </div>
-  `;
-}
-
-function toggleEditAddress(state) {
-  isEditingAddress = state;
-  const viewport = document.getElementById('app-viewport');
-  renderCheckoutView(viewport);
-}
-
-// XỬ LÝ ĐẶT HÀNG THÔNG MINH
-async function submitOrder() {
-  let fullname = "";
-  let phone = "";
-  let year = "";
-  let address = "";
-
-  const isInfoComplete = hasFullShippingInfo();
-
-  if (isInfoComplete && !isEditingAddress) {
-    // Nếu người dùng đã có sẵn thông tin đầy đủ, tự động lấy luôn từ tài khoản
-    fullname = currentUser.fullname;
-    phone = currentUser.phone;
-    year = currentUser.birthYear;
-    address = currentUser.address;
-  } else {
-    // Nếu chưa có hoặc đang mở form sửa, lấy từ các ô input và kiểm tra chặt chẽ
-    const nameEl = document.getElementById('order-fullname');
-    const phoneEl = document.getElementById('order-phone');
-    const yearEl = document.getElementById('order-year');
-    const addrEl = document.getElementById('order-address');
-
-    fullname = nameEl ? nameEl.value.trim() : "";
-    phone = phoneEl ? phoneEl.value.trim() : "";
-    year = yearEl ? yearEl.value.trim() : "";
-    address = addrEl ? addrEl.value.trim() : "";
-
-    if (!fullname) return alert("⚠️ Vui lòng nhập Họ và tên người nhận!"), nameEl && nameEl.focus();
-    if (!phone || !/^[0-9]{9,11}$/.test(phone)) return alert("⚠️ Số điện thoại không hợp lệ! Vui lòng nhập số gồm 10 chữ số."), phoneEl && phoneEl.focus();
-    const yearNum = parseInt(year);
-    if (!year || isNaN(yearNum) || yearNum < 1920 || yearNum > 2018) return alert("⚠️ Năm sinh không hợp lệ!"), yearEl && yearEl.focus();
-    if (!address || address.length < 6) return alert("⚠️ Vui lòng nhập địa chỉ nhận hàng chi tiết!"), addrEl && addrEl.focus();
-
-    // Tự động lưu thông tin này vào Profile người dùng để lần sau không bao giờ phải gõ lại
-    if (currentUser) {
-      currentUser.fullname = fullname;
-      currentUser.phone = phone;
-      currentUser.birthYear = year;
-      currentUser.address = address;
-      localStorage.setItem('shoplux_user', JSON.stringify(currentUser));
-      
-      // Đồng bộ ngầm lên backend
-      fetch(`${API_URL}/auth/profile`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          oldUsername: currentUser.username,
-          username: currentUser.username,
-          fullname,
-          phone,
-          birthYear: year,
-          address,
-          avatar: currentUser.avatar
-        })
-      });
-    }
-  }
-
-  const paymentMethod = document.querySelector('input[name="payment-method"]:checked').value;
-  const itemsSubtotal = cart.reduce((sum, i) => sum + i.price * i.qty, 0);
-  const totalPayment = Math.max(0, itemsSubtotal + selectedShippingCost - currentDiscount);
-
-  alert(
-    `🎉 ĐẶT HÀNG THÀNH CÔNG!\n\n` +
-    `👤 Người nhận: ${fullname} (Năm sinh: ${year})\n` +
-    `📞 SĐT: ${phone}\n` +
-    `📍 Địa chỉ giao: ${address}\n` +
-    `🚚 Vận chuyển: ${selectedShippingUnit}\n` +
-    `🎟️ Voucher: ${appliedVoucherCode || 'Không có'}\n` +
-    `💳 Thanh toán qua: ${paymentMethod}\n` +
-    `💰 TỔNG TIỀN THANH TOÁN: ${totalPayment.toLocaleString()} ₫\n\n` +
-    `Cảm ơn bạn đã tin tưởng mua sắm tại ShopLux!`
-  );
-
-  cart = [];
-  appliedVoucherCode = "";
-  currentDiscount = 0;
-  isEditingAddress = false;
-  saveCart();
-  window.location.href = '/';
-}
-
-function updateShipping(val) {
-  const [unit, cost] = val.split(':');
-  selectedShippingUnit = unit;
-  selectedShippingCost = parseInt(cost);
-  recalculateOrder();
-}
-
-function selectVoucher(code) {
-  const v = AVAILABLE_VOUCHERS.find(item => item.code === code);
-  if (!v) return;
-  if (appliedVoucherCode === code) {
-    appliedVoucherCode = "";
-    currentDiscount = 0;
-  } else {
-    appliedVoucherCode = code;
-    currentDiscount = v.discount;
-  }
-  recalculateOrder();
-}
-
-function applyCustomVoucher() {
-  const code = document.getElementById('custom-voucher-code').value.trim().toUpperCase();
-  const found = AVAILABLE_VOUCHERS.find(v => v.code === code);
-  if (found) {
-    selectVoucher(found.code);
-    alert(`Áp dụng thành công "${found.name}"!`);
-  } else {
-    alert("Mã giảm giá không hợp lệ!");
-  }
-}
-
-function recalculateOrder() {
-  const itemsSubtotal = cart.reduce((sum, i) => sum + i.price * i.qty, 0);
-  const totalPayment = Math.max(0, itemsSubtotal + selectedShippingCost - currentDiscount);
-
-  const shippingUnitLabel = document.getElementById('shipping-unit-label');
-  const shippingCostLabel = document.getElementById('shipping-cost-label');
-  const discountLabel = document.getElementById('discount-label');
-  const totalPaymentLabel = document.getElementById('total-payment-label');
-
-  if (shippingUnitLabel) shippingUnitLabel.innerText = selectedShippingUnit;
-  if (shippingCostLabel) shippingCostLabel.innerText = `${selectedShippingCost.toLocaleString()} ₫`;
-  if (discountLabel) discountLabel.innerText = `-${currentDiscount.toLocaleString()} ₫`;
-  if (totalPaymentLabel) totalPaymentLabel.innerText = `${totalPayment.toLocaleString()} ₫`;
-}
-
-// PROFILE VIEW
-function renderProfileView(container) {
-  if (!currentUser) {
-    alert("Vui lòng đăng nhập để truy cập trang cá nhân!");
-    window.location.href = '?view=login';
-    return;
-  }
-
-  const avatarSrc = currentUser.avatar || "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=200&auto=format&fit=crop&q=80";
-
-  container.innerHTML = `
-    <div class="max-w-6xl mx-auto px-4 py-6">
-      <div class="grid grid-cols-1 md:grid-cols-12 gap-6">
-        <div class="md:col-span-3 space-y-4">
-          <div class="flex items-center space-x-3 p-3 bg-white rounded shadow-sm">
-            <img src="${avatarSrc}" class="w-12 h-12 rounded-full object-cover border border-gray-200">
-            <div class="overflow-hidden">
-              <h4 class="font-bold text-xs text-gray-800 truncate">${currentUser.username}</h4>
-              <span class="text-[11px] text-[#ee4d2d] flex items-center space-x-1"><i class="fas fa-pen text-[10px]"></i><span>Sửa hồ sơ</span></span>
-            </div>
-          </div>
-          <div class="bg-white rounded shadow-sm p-3 space-y-2 text-xs">
-            <a href="?view=profile" class="flex items-center space-x-2 text-[#ee4d2d] font-bold p-2 bg-orange-50 rounded"><i class="far fa-user"></i><span>Hồ Sơ Của Tôi</span></a>
-            <a href="?view=cart" class="flex items-center space-x-2 text-gray-700 hover:text-[#ee4d2d] p-2"><i class="fas fa-bag-shopping"></i><span>Đơn Mua</span></a>
-          </div>
-        </div>
-
-        <div class="md:col-span-9 bg-white p-6 rounded shadow-sm">
-          <div class="border-b pb-4 mb-6">
-            <h1 class="text-base font-bold text-gray-800">Hồ Sơ Của Tôi</h1>
-            <p class="text-xs text-gray-500 mt-0.5">Cập nhật đầy đủ thông tin để khi mua hàng không cần phải nhập lại</p>
-          </div>
-
-          <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-            <div class="lg:col-span-8 space-y-4 text-xs">
-              <div class="grid grid-cols-3 items-center">
-                <label class="text-gray-500 font-medium">Tên đăng nhập:</label>
-                <div class="col-span-2">
-                  <input id="profile-username" value="${currentUser.username || ''}" class="w-full border p-2 rounded text-xs focus:outline-[#ee4d2d]">
-                </div>
-              </div>
-
-              <div class="grid grid-cols-3 items-center">
-                <label class="text-gray-500 font-medium">Họ và tên:</label>
-                <div class="col-span-2">
-                  <input id="profile-fullname" value="${currentUser.fullname || ''}" class="w-full border p-2 rounded text-xs focus:outline-[#ee4d2d]">
-                </div>
-              </div>
-
-              <div class="grid grid-cols-3 items-center">
-                <label class="text-gray-500 font-medium">Số điện thoại:</label>
-                <div class="col-span-2">
-                  <input id="profile-phone" value="${currentUser.phone || ''}" placeholder="Nhập SĐT nhận hàng" class="w-full border p-2 rounded text-xs focus:outline-[#ee4d2d]">
-                </div>
-              </div>
-
-              <div class="grid grid-cols-3 items-center">
-                <label class="text-gray-500 font-medium">Năm sinh:</label>
-                <div class="col-span-2">
-                  <input id="profile-year" type="number" min="1930" max="2018" value="${currentUser.birthYear || '2000'}" class="w-full border p-2 rounded text-xs focus:outline-[#ee4d2d]">
-                </div>
-              </div>
-
-              <div class="grid grid-cols-3 items-center">
-                <label class="text-gray-500 font-medium">Địa chỉ giao hàng:</label>
-                <div class="col-span-2">
-                  <textarea id="profile-address" rows="2" placeholder="Số nhà, Tên đường, Phường/Xã..." class="w-full border p-2 rounded text-xs focus:outline-[#ee4d2d]">${currentUser.address || ''}</textarea>
-                </div>
-              </div>
-
-              <div class="grid grid-cols-3 items-center pt-2">
-                <div></div>
-                <div class="col-span-2">
-                  <button onclick="saveProfileChanges()" class="bg-[#ee4d2d] text-white px-8 py-2.5 rounded font-bold uppercase text-xs transition">Lưu Thay Đổi</button>
-                </div>
-              </div>
-            </div>
-
-            <div class="lg:col-span-4 border-l lg:pl-8 flex flex-col items-center justify-center text-center space-y-4">
-              <img id="avatar-preview" src="${avatarSrc}" class="w-28 h-28 rounded-full object-cover border-2 border-gray-200">
-              <input type="file" id="avatar-file-input" accept="image/*" onchange="handleAvatarFileUpload(event)" class="hidden">
-              <button onclick="document.getElementById('avatar-file-input').click()" class="w-full border px-3 py-1.5 rounded text-xs text-gray-700 hover:text-[#ee4d2d]">📁 Chọn Ảnh Từ Máy</button>
-              <input id="avatar-url-input" value="${currentUser.avatar || ''}" onchange="previewAvatarUrl(this.value)" placeholder="Hoặc dán Link ảnh..." class="w-full border p-1.5 rounded text-[11px] focus:outline-[#ee4d2d]">
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  `;
-}
-
-function previewAvatarUrl(url) {
-  if (url && url.trim()) document.getElementById('avatar-preview').src = url.trim();
-}
-
-function handleAvatarFileUpload(event) {
-  const file = event.target.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = function(e) {
-    document.getElementById('avatar-preview').src = e.target.result;
-    document.getElementById('avatar-url-input').value = e.target.result;
-  };
-  reader.readAsDataURL(file);
-}
-
-async function saveProfileChanges() {
-  const username = document.getElementById('profile-username').value.trim();
-  const fullname = document.getElementById('profile-fullname').value.trim();
-  const phone = document.getElementById('profile-phone').value.trim();
-  const birthYear = document.getElementById('profile-year').value.trim();
-  const address = document.getElementById('profile-address').value.trim();
-  const avatar = document.getElementById('avatar-url-input').value.trim() || document.getElementById('avatar-preview').src;
-
-  if (!username) return alert("Vui lòng nhập tên đăng nhập!");
-  if (!fullname) return alert("Vui lòng nhập họ và tên!");
-
-  const res = await fetch(`${API_URL}/auth/profile`, {
-    method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      oldUsername: currentUser.username,
-      username, fullname, avatar, phone, birthYear, address
-    })
-  });
-
-  const data = await res.json();
-  if (data.success) {
-    currentUser = data.user;
-    localStorage.setItem('shoplux_user', JSON.stringify(currentUser));
-    renderAuth();
-    alert("🎉 Cập nhật hồ sơ cá nhân thành công!");
-    router();
-  } else {
-    alert(data.message);
-  }
-}
-
-// HOMEPAGE VIEW
-function renderHomeView(container) {
-  container.innerHTML = `
-    <div class="max-w-6xl mx-auto px-4 py-6 space-y-6">
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-2 h-56">
-        <div class="md:col-span-2 relative rounded overflow-hidden shadow-sm bg-gray-200 h-56">
-          <img src="https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=800&auto=format&fit=crop&q=60" class="w-full h-full object-cover">
-          <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex flex-col justify-end p-4 text-white">
-            <span class="bg-[#ee4d2d] w-max px-1.5 py-0.5 text-[10px] font-bold uppercase rounded-sm">ShopLux Mall</span>
-            <h2 class="text-xl font-bold mt-1">SIÊU HỘI MUA SẮM SHOPLUX</h2>
-            <p class="text-[11px] opacity-90">Freeship đơn từ 0Đ - Voucher người mới lên tới 100k</p>
-          </div>
-        </div>
-        <div class="grid grid-rows-2 gap-2 h-56">
-          <div class="rounded overflow-hidden shadow-sm bg-gray-200 h-[108px]">
-            <img src="https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=400&auto=format&fit=crop&q=60" class="w-full h-full object-cover">
-          </div>
-          <div class="rounded overflow-hidden shadow-sm bg-gray-200 h-[108px]">
-            <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&auto=format&fit=crop&q=60" class="w-full h-full object-cover">
-          </div>
-        </div>
-      </div>
-
-      <div class="grid grid-cols-3 md:grid-cols-6 gap-3 bg-white p-4 rounded shadow-sm text-center">
-        <a href="?view=cart" class="flex flex-col items-center hover:-translate-y-0.5 transition">
-          <div class="w-10 h-10 rounded-full bg-orange-50 text-[#ee4d2d] flex items-center justify-center text-lg mb-1">🎟️</div>
-          <span class="font-medium text-gray-700">Mã Người Mới 100k</span>
-        </a>
-        <a href="?view=cart" class="flex flex-col items-center hover:-translate-y-0.5 transition">
-          <div class="w-10 h-10 rounded-full bg-blue-50 text-blue-500 flex items-center justify-center text-lg mb-1">🚚</div>
-          <span class="font-medium text-gray-700">Freeship 0Đ</span>
-        </a>
-        <a href="?search=Điện Thoại" class="flex flex-col items-center hover:-translate-y-0.5 transition">
-          <div class="w-10 h-10 rounded-full bg-red-50 text-red-500 flex items-center justify-center text-lg mb-1">📱</div>
-          <span class="font-medium text-gray-700">Nạp Tiện Ích</span>
-        </a>
-        <a href="?view=seller-channel" class="flex flex-col items-center hover:-translate-y-0.5 transition">
-          <div class="w-10 h-10 rounded-full bg-purple-50 text-purple-500 flex items-center justify-center text-lg mb-1">🏠</div>
-          <span class="font-medium text-gray-700">ShopLux Mall</span>
-        </a>
-        <a href="?view=be-seller" class="flex flex-col items-center hover:-translate-y-0.5 transition">
-          <div class="w-10 h-10 rounded-full bg-yellow-50 text-yellow-600 flex items-center justify-center text-lg mb-1">👑</div>
-          <span class="font-medium text-gray-700">Khách Thân Thiết</span>
-        </a>
-        <a href="?search=" class="flex flex-col items-center hover:-translate-y-0.5 transition">
-          <div class="w-10 h-10 rounded-full bg-green-50 text-green-600 flex items-center justify-center text-lg mb-1">🔥</div>
-          <span class="font-medium text-gray-700">Deal 1.000Đ</span>
-        </a>
-      </div>
-
-      <div class="bg-white rounded shadow-sm">
-        <div class="p-3 border-b text-gray-500 font-bold uppercase text-[11px]">DANH MỤC</div>
-        <div class="grid grid-cols-3 sm:grid-cols-5 md:grid-cols-9 divide-x divide-y border-b text-center">
-          ${allCategories.map(c => `
-            <a href="?search=${encodeURIComponent(c.name)}" class="p-2 cursor-pointer hover:bg-orange-50 transition flex flex-col items-center justify-center">
-              <span class="text-xl mb-1">${c.icon}</span>
-              <span class="text-[11px] text-gray-700 leading-tight">${c.name}</span>
-            </a>
-          `).join('')}
-        </div>
-      </div>
-
-      <div>
-        <div class="bg-white p-3 border-b-2 border-[#ee4d2d] flex justify-between items-center mb-3">
-          <span class="font-bold text-[#ee4d2d] uppercase tracking-wider text-xs">GỢI Ý HÔM NAY</span>
-          <span class="text-gray-400 text-[11px]">${allProducts.length} sản phẩm hot</span>
-        </div>
-        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2">
-          ${renderProductCards(allProducts)}
-        </div>
-      </div>
-    </div>
-  `;
-}
-
-function getProductImages(p) {
-
+function getProductImages(product) {
   if (
-    Array.isArray(p.images) &&
-    p.images.length
+    Array.isArray(product.images) &&
+    product.images.length
   ) {
-    return p.images;
+    return product.images.filter(Boolean).slice(0, 4);
   }
 
-  if (p.image) {
-    return [p.image];
+  if (product.image) {
+    return [product.image];
   }
 
   return [
-    "https://via.placeholder.com/500?text=ShopLux"
+    "https://placehold.co/600x600?text=ShopLux"
   ];
 }
 
+function getCategoryName(categoryId) {
+  const category = allCategories.find(
+    c => Number(c.id) === Number(categoryId)
+  );
+
+  return category ? category.name : "";
+}
+
+const SUBCATEGORY_NAMES = {
+  "ao-thun": "Áo thun",
+  "do-bong-da": "Đồ bóng đá",
+  "ao-so-mi": "Áo sơ mi",
+  "quan-jeans": "Quần jeans",
+  "ao-khoac": "Áo khoác",
+
+  iphone: "iPhone",
+  samsung: "Samsung",
+  xiaomi: "Xiaomi",
+  oppo: "OPPO",
+  vivo: "Vivo",
+  "phu-kien-dien-thoai": "Phụ kiện điện thoại",
+
+  "tai-nghe": "Tai nghe",
+  "ban-phim": "Bàn phím",
+  chuot: "Chuột",
+  laptop: "Laptop",
+  loa: "Loa",
+  "man-hinh": "Màn hình",
+
+  "dong-ho-thong-minh": "Đồng hồ thông minh",
+  "dong-ho-nam": "Đồng hồ nam",
+  "dong-ho-nu": "Đồng hồ nữ",
+  "dong-ho-the-thao": "Đồng hồ thể thao",
+
+  khac: "Khác"
+};
+
+function getSubcategoryName(id) {
+  return SUBCATEGORY_NAMES[id] || "";
+}
+
+// ==========================================
+// OLD SEARCH CATEGORY COMPATIBILITY
+// ==========================================
+
+function categoryFromOldSearch(search) {
+  const text = normalizeText(search);
+
+  const map = {
+    "thoi trang": 1,
+    "dien thoai": 2,
+    "thiet bi dien tu": 3,
+    "dong ho": 4
+  };
+
+  return map[text] || null;
+}
+
+// ==========================================
+// LOAD DATA
+// ==========================================
+
+async function loadShopData() {
+  try {
+    const [productResponse, categoryResponse] =
+      await Promise.all([
+        fetch(API + "/products"),
+        fetch(API + "/categories")
+      ]);
+
+    const productData = await productResponse.json();
+    const categoryData = await categoryResponse.json();
+
+    allProducts = Array.isArray(productData)
+      ? productData
+      : productData.data || [];
+
+    allCategories = Array.isArray(categoryData)
+      ? categoryData
+      : categoryData.data || [];
+
+    updateCartCount();
+    renderPage();
+
+  } catch (error) {
+    console.error("LOAD SHOP ERROR:", error);
+
+    const container = getMainContainer();
+
+    if (container) {
+      container.innerHTML = `
+        <div class="bg-white rounded-xl p-10 text-center">
+          <h2 class="text-xl font-bold text-red-500">
+            Không thể tải sản phẩm
+          </h2>
+
+          <p class="text-gray-500 mt-2">
+            Vui lòng tải lại trang.
+          </p>
+        </div>
+      `;
+    }
+  }
+}
+
+// ==========================================
+// MAIN CONTAINER
+// ==========================================
+
+function getMainContainer() {
+  return (
+    document.getElementById("app") ||
+    document.getElementById("mainContent") ||
+    document.getElementById("product-container") ||
+    document.querySelector("main")
+  );
+}
+
+// ==========================================
+// ROUTER
+// ==========================================
+
+function renderPage() {
+  const params = new URLSearchParams(window.location.search);
+
+  const id = params.get("id");
+  const category = params.get("category");
+  const subcategory = params.get("subcategory");
+  const search = params.get("search");
+
+  const container = getMainContainer();
+
+  if (!container) {
+    console.error("Không tìm thấy main container");
+    return;
+  }
+
+  if (id) {
+    renderProductDetailView(container, id);
+    return;
+  }
+
+  renderProductListing(
+    container,
+    category,
+    subcategory,
+    search
+  );
+}
+
+// ==========================================
+// FILTER PRODUCTS
+// ==========================================
+
+function filterProducts(category, subcategory, search) {
+  let result = [...allProducts];
+
+  let categoryId = Number(category) || null;
+  let realSearch = search || "";
+
+  // Hỗ trợ URL cũ:
+  // ?search=Thời Trang
+  if (!categoryId && search) {
+    const oldCategory = categoryFromOldSearch(search);
+
+    if (oldCategory) {
+      categoryId = oldCategory;
+      realSearch = "";
+    }
+  }
+
+  if (categoryId) {
+    result = result.filter(
+      p => Number(p.categoryId) === categoryId
+    );
+  }
+
+  if (subcategory) {
+    result = result.filter(
+      p => String(p.subcategoryId || "") === String(subcategory)
+    );
+  }
+
+  if (realSearch.trim()) {
+    const keyword = normalizeText(realSearch);
+
+    result = result.filter(product => {
+      const haystack = normalizeText(
+        [
+          product.name,
+          product.desc,
+          getCategoryName(product.categoryId),
+          getSubcategoryName(product.subcategoryId)
+        ].join(" ")
+      );
+
+      return haystack.includes(keyword);
+    });
+  }
+
+  return result;
+}
+
+// ==========================================
+// PRODUCT LISTING
+// ==========================================
+
+function renderProductListing(
+  container,
+  category,
+  subcategory,
+  search
+) {
+  const products = filterProducts(
+    category,
+    subcategory,
+    search
+  );
+
+  let title = "GỢI Ý HÔM NAY";
+
+  const categoryId =
+    Number(category) ||
+    categoryFromOldSearch(search);
+
+  if (categoryId) {
+    title = getCategoryName(categoryId) || "Sản phẩm";
+  } else if (subcategory) {
+    title = getSubcategoryName(subcategory) || "Sản phẩm";
+  } else if (search) {
+    title = `Kết quả tìm kiếm cho "${escapeHtml(search)}"`;
+  }
+
+  container.innerHTML = `
+    <section class="max-w-7xl mx-auto px-4 py-6">
+
+      <div class="bg-white rounded-xl shadow-sm mb-5 p-5">
+
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+
+          <div>
+            <h1 class="font-black text-xl text-gray-800">
+              ${title}
+            </h1>
+
+            <p class="text-gray-500 mt-1">
+              Tìm thấy ${products.length} sản phẩm phù hợp trên ShopLux
+            </p>
+          </div>
+
+          <a
+            href="/"
+            class="text-[#ee4d2d] font-medium"
+          >
+            ← Về trang chủ
+          </a>
+
+        </div>
+
+        ${renderSubcategoryNavigation(categoryId)}
+
+      </div>
+
+      ${
+        products.length
+          ? `
+            <div
+              class="
+                grid
+                grid-cols-2
+                sm:grid-cols-3
+                md:grid-cols-4
+                lg:grid-cols-5
+                gap-4
+              "
+            >
+              ${renderProductCards(products)}
+            </div>
+          `
+          : `
+            <div
+              class="
+                bg-white
+                min-h-[260px]
+                rounded-xl
+                flex
+                items-center
+                justify-center
+                text-gray-400
+              "
+            >
+              Không tìm thấy sản phẩm nào phù hợp.
+            </div>
+          `
+      }
+
+    </section>
+  `;
+}
+
+// ==========================================
+// SUBCATEGORY MENU
+// ==========================================
+
+function renderSubcategoryNavigation(categoryId) {
+  const data = {
+    1: [
+      ["ao-thun", "Áo thun"],
+      ["do-bong-da", "Đồ bóng đá"],
+      ["ao-so-mi", "Áo sơ mi"],
+      ["quan-jeans", "Quần jeans"],
+      ["ao-khoac", "Áo khoác"],
+      ["khac", "Khác"]
+    ],
+
+    2: [
+      ["iphone", "iPhone"],
+      ["samsung", "Samsung"],
+      ["xiaomi", "Xiaomi"],
+      ["oppo", "OPPO"],
+      ["vivo", "Vivo"],
+      ["phu-kien-dien-thoai", "Phụ kiện điện thoại"],
+      ["khac", "Khác"]
+    ],
+
+    3: [
+      ["tai-nghe", "Tai nghe"],
+      ["ban-phim", "Bàn phím"],
+      ["chuot", "Chuột"],
+      ["laptop", "Laptop"],
+      ["loa", "Loa"],
+      ["man-hinh", "Màn hình"],
+      ["khac", "Khác"]
+    ],
+
+    4: [
+      ["dong-ho-thong-minh", "Đồng hồ thông minh"],
+      ["dong-ho-nam", "Đồng hồ nam"],
+      ["dong-ho-nu", "Đồng hồ nữ"],
+      ["dong-ho-the-thao", "Đồng hồ thể thao"],
+      ["khac", "Khác"]
+    ]
+  };
+
+  if (!categoryId || !data[categoryId]) {
+    return "";
+  }
+
+  return `
+    <div class="flex flex-wrap gap-2 mt-5">
+
+      <a
+        href="/?category=${categoryId}"
+        class="
+          border
+          border-[#ee4d2d]
+          text-[#ee4d2d]
+          px-4
+          py-2
+          rounded-full
+          text-sm
+          hover:bg-[#ee4d2d]
+          hover:text-white
+        "
+      >
+        Tất cả
+      </a>
+
+      ${data[categoryId]
+        .map(
+          ([id, name]) => `
+            <a
+              href="/?category=${categoryId}&subcategory=${encodeURIComponent(id)}"
+              class="
+                border
+                px-4
+                py-2
+                rounded-full
+                text-sm
+                hover:border-[#ee4d2d]
+                hover:text-[#ee4d2d]
+              "
+            >
+              ${name}
+            </a>
+          `
+        )
+        .join("")}
+
+    </div>
+  `;
+}
+
+// ==========================================
+// PRODUCT CARDS
+// ==========================================
 
 function renderProductCards(products) {
+  return products
+    .map(product => {
+      const images = getProductImages(product);
+      const image = images[0];
 
-  return products.map(p => {
+      const price = Number(product.price || 0);
 
-    const images =
-      getProductImages(p);
-
-    const image =
-      images[0];
-
-    const price =
-      Number(p.price || 0);
-
-    const originalPrice =
-      Number(
-        p.originalPrice ||
+      const originalPrice = Number(
+        product.originalPrice ||
         Math.round(price * 1.3)
       );
 
-    return `
-      <div
-        class="
-          bg-white
-          rounded
-          shadow-sm
-          hover:shadow-md
-          transition
-          border
-          border-gray-100
-          flex
-          flex-col
-          justify-between
-          overflow-hidden
-          relative
-          group
-        "
-      >
-
-        <div
+      return `
+        <article
           class="
-            absolute
-            top-0
-            right-0
-            bg-[#ffd839]
-            text-[#ee4d2d]
-            text-[9px]
-            font-bold
-            px-1
-            py-0.5
-            z-10
-          "
-        >
-          ${p.discount || "-20%"}
-        </div>
-
-        <a
-          href="?id=${p.id}"
-          class="
-            w-full
-            aspect-square
-            bg-gray-100
+            bg-white
+            border
+            rounded-xl
             overflow-hidden
-            block
+            hover:shadow-lg
+            transition
+            group
+            relative
           "
         >
 
-          <img
-            src="${image}"
+          <div
             class="
-              w-full
-              h-full
-              object-cover
-              group-hover:scale-105
-              transition
-              duration-200
+              absolute
+              right-0
+              top-0
+              bg-yellow-300
+              text-[#ee4d2d]
+              px-2
+              py-1
+              text-xs
+              font-bold
+              z-10
             "
           >
-
-        </a>
-
-        <div
-          class="
-            p-2
-            flex-1
-            flex
-            flex-col
-            justify-between
-          "
-        >
+            ${escapeHtml(product.discount || "-20%")}
+          </div>
 
           <a
-            href="?id=${p.id}"
-            class="
-              text-[11px]
-              text-gray-800
-              line-clamp-2
-              mb-2
-            "
+            href="/?id=${product.id}"
+            class="block aspect-square bg-gray-100 overflow-hidden"
           >
-            ${p.name}
+            <img
+              src="${image}"
+              alt="${escapeHtml(product.name)}"
+              class="
+                w-full
+                h-full
+                object-cover
+                group-hover:scale-105
+                transition
+                duration-300
+              "
+            >
           </a>
 
-          <div>
+          <div class="p-3">
 
-            <div class="flex items-baseline gap-1">
+            <div class="text-xs text-gray-400 mb-1">
+              ${escapeHtml(getCategoryName(product.categoryId))}
+              ${
+                product.subcategoryId
+                  ? " • " +
+                    escapeHtml(
+                      getSubcategoryName(product.subcategoryId)
+                    )
+                  : ""
+              }
+            </div>
 
-              <span
+            <a
+              href="/?id=${product.id}"
+              class="
+                block
+                font-medium
+                text-gray-800
+                min-h-[42px]
+                line-clamp-2
+                hover:text-[#ee4d2d]
+              "
+            >
+              ${escapeHtml(product.name)}
+            </a>
+
+            <div class="mt-3">
+
+              <div class="flex flex-wrap items-center gap-2">
+
+                <span class="text-[#ee4d2d] font-black text-lg">
+                  ${formatPrice(price)}
+                </span>
+
+                <span class="text-gray-400 line-through text-xs">
+                  ${formatPrice(originalPrice)}
+                </span>
+
+              </div>
+
+              <div class="flex justify-between mt-2 text-xs text-gray-400">
+                <span>
+                  ⭐ ${escapeHtml(product.rating || 5)}
+                </span>
+
+                <span>
+                  Đã bán ${escapeHtml(product.sold || "0")}
+                </span>
+              </div>
+
+            </div>
+
+            <div class="flex gap-2 mt-3">
+
+              <button
+                type="button"
+                onclick="addToCartAndNotify(${product.id})"
                 class="
+                  border
+                  border-[#ee4d2d]
                   text-[#ee4d2d]
+                  w-10
+                  rounded-lg
+                  hover:bg-orange-50
+                "
+              >
+                🛒
+              </button>
+
+              <a
+                href="/?id=${product.id}"
+                class="
+                  flex-1
+                  text-center
+                  bg-[#ee4d2d]
+                  text-white
+                  rounded-lg
+                  py-2
                   font-bold
                   text-xs
                 "
               >
-                ${price.toLocaleString("vi-VN")} ₫
-              </span>
-
-              <span
-                class="
-                  text-[9px]
-                  text-gray-400
-                  line-through
-                "
-              >
-                ${originalPrice.toLocaleString("vi-VN")} ₫
-              </span>
-
-            </div>
-
-            <div
-              class="
-                flex
-                justify-between
-                text-[9px]
-                text-gray-400
-                mt-1
-              "
-            >
-
-              <span>
-                ⭐ ${p.rating || 5}
-              </span>
-
-              <span>
-                Đã bán ${p.sold || "0"}
-              </span>
+                XEM CHI TIẾT
+              </a>
 
             </div>
 
           </div>
 
-        </div>
-
-        <div class="p-2 pt-0 flex gap-1">
-
-          <button
-            onclick="addToCartAndNotify(${p.id})"
-            class="
-              w-8
-              h-7
-              bg-orange-100
-              border
-              border-[#ee4d2d]
-              text-[#ee4d2d]
-              rounded
-            "
-          >
-            <i class="fas fa-cart-plus"></i>
-          </button>
-
-          <a
-            href="?id=${p.id}"
-            class="
-              flex-1
-              text-center
-              bg-[#ee4d2d]
-              text-white
-              py-1.5
-              rounded
-              text-[10px]
-              font-bold
-            "
-          >
-            XEM CHI TIẾT
-          </a>
-
-        </div>
-
-      </div>
-    `;
-
-  }).join("");
+        </article>
+      `;
+    })
+    .join("");
 }
 
-// LOGIN & REGISTER PAGES
-function renderLoginPage(container) {
-  container.innerHTML = `
-    <div class="w-full">
-      <div class="bg-white border-b py-4 shadow-sm">
-        <div class="max-w-6xl mx-auto px-4 flex justify-between items-center">
-          <div class="flex items-center space-x-3">
-            <a href="/" class="flex items-center space-x-2 text-[#ee4d2d]">
-              <div class="w-9 h-10 border-2 border-[#ee4d2d] rounded-md flex items-center justify-center font-black text-xl">L</div>
-              <span class="text-2xl font-bold">ShopLux</span>
-            </a>
-            <span class="text-xl text-gray-700 font-medium">Đăng Nhập</span>
-          </div>
-          <a href="?view=support" class="text-xs text-[#ee4d2d]">Bạn cần giúp đỡ?</a>
-        </div>
-      </div>
-
-      <div class="shop-gradient py-12">
-        <div class="max-w-5xl mx-auto px-4 flex flex-col md:flex-row items-center justify-between">
-          <div class="text-white hidden md:block max-w-md">
-            <h1 class="text-4xl font-extrabold tracking-tight">Mua Sắm Đẳng Cấp</h1>
-            <p class="mt-3 text-sm opacity-90 leading-relaxed">Nền tảng thương mại điện tử hàng đầu với hàng triệu voucher và ưu đãi freeship mỗi ngày.</p>
-          </div>
-          <div class="bg-white p-8 rounded shadow-2xl w-full max-w-sm">
-            <h3 class="text-lg font-bold text-gray-800 mb-6">Đăng Nhập</h3>
-            <div class="space-y-4">
-              <input id="login-user" type="text" placeholder="Tên đăng nhập" class="w-full border p-3 rounded text-xs focus:outline-[#ee4d2d]">
-              <input id="login-pass" type="password" placeholder="Mật khẩu" class="w-full border p-3 rounded text-xs focus:outline-[#ee4d2d]">
-              <button onclick="handleLoginSubmit()" class="w-full bg-[#ee4d2d] hover:bg-[#d73211] text-white py-3 rounded font-bold uppercase text-xs transition">
-                ĐĂNG NHẬP
-              </button>
-            </div>
-            <div class="mt-8 text-center text-xs text-gray-500">
-              Bạn mới biết đến ShopLux? <a href="?view=register" class="text-[#ee4d2d] font-bold hover:underline">Đăng Ký</a>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  `;
-}
-
-function renderRegisterPage(container) {
-  container.innerHTML = `
-    <div class="w-full">
-      <div class="bg-white border-b py-4 shadow-sm">
-        <div class="max-w-6xl mx-auto px-4 flex justify-between items-center">
-          <div class="flex items-center space-x-3">
-            <a href="/" class="flex items-center space-x-2 text-[#ee4d2d]">
-              <div class="w-9 h-10 border-2 border-[#ee4d2d] rounded-md flex items-center justify-center font-black text-xl">L</div>
-              <span class="text-2xl font-bold">ShopLux</span>
-            </a>
-            <span class="text-xl text-gray-700 font-medium">Đăng Ký</span>
-          </div>
-          <a href="?view=support" class="text-xs text-[#ee4d2d]">Bạn cần giúp đỡ?</a>
-        </div>
-      </div>
-
-      <div class="shop-gradient py-12">
-        <div class="max-w-5xl mx-auto px-4 flex flex-col md:flex-row items-center justify-between">
-          <div class="text-white hidden md:block max-w-md">
-            <h1 class="text-4xl font-extrabold tracking-tight">Trải Nghiệm Mua Sắm</h1>
-            <p class="mt-3 text-sm opacity-90 leading-relaxed">Tạo tài khoản ShopLux ngay hôm nay để nhận mã người mới NEWBIE100 giảm ngay 100.000 ₫.</p>
-          </div>
-          <div class="bg-white p-8 rounded shadow-2xl w-full max-w-sm">
-            <h3 class="text-lg font-bold text-gray-800 mb-6">Đăng Ký Tài Khoản</h3>
-            <div class="space-y-4">
-              <input id="reg-name" type="text" placeholder="Họ và tên của bạn" class="w-full border p-3 rounded text-xs focus:outline-[#ee4d2d]">
-              <input id="reg-user" type="text" placeholder="Tên đăng nhập" class="w-full border p-3 rounded text-xs focus:outline-[#ee4d2d]">
-              <input id="reg-pass" type="password" placeholder="Mật khẩu" class="w-full border p-3 rounded text-xs focus:outline-[#ee4d2d]">
-              <button onclick="handleRegisterSubmit()" class="w-full bg-[#ee4d2d] hover:bg-[#d73211] text-white py-3 rounded font-bold uppercase text-xs transition">
-                TIẾP THEO
-              </button>
-            </div>
-            <div class="mt-8 text-center text-xs text-gray-500">
-              Bạn đã có tài khoản? <a href="?view=login" class="text-[#ee4d2d] font-bold hover:underline">Đăng Nhập</a>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  `;
-}
-
-async function handleLoginSubmit() {
-  const username = document.getElementById('login-user').value.trim();
-  const password = document.getElementById('login-pass').value.trim();
-  if (!username || !password) return alert("Vui lòng điền đủ thông tin!");
-
-  const res = await fetch(`${API_URL}/auth/login`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ username, password })
-  });
-  const data = await res.json();
-  if (data.success) {
-    currentUser = data.user;
-    localStorage.setItem('shoplux_user', JSON.stringify(currentUser));
-    alert(`Đăng nhập thành công! Chào mừng ${currentUser.fullname}`);
-    window.location.href = '/';
-  } else {
-    alert(data.message);
-  }
-}
-
-async function handleRegisterSubmit() {
-  const fullname = document.getElementById('reg-name').value.trim();
-  const username = document.getElementById('reg-user').value.trim();
-  const password = document.getElementById('reg-pass').value.trim();
-  if (!fullname || !username || !password) return alert("Vui lòng nhập đầy đủ họ tên, tên đăng nhập và mật khẩu!");
-
-  const res = await fetch(`${API_URL}/auth/register`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ fullname, username, password })
-  });
-  const data = await res.json();
-  alert(data.message);
-  if (data.success) window.location.href = '?view=login';
-}
-
-function renderSearchView(container, keyword) {
-  const results = allProducts.filter(p => 
-    p.name.toLowerCase().includes(keyword.toLowerCase()) || 
-    p.desc.toLowerCase().includes(keyword.toLowerCase())
-  );
-
-  container.innerHTML = `
-    <div class="max-w-6xl mx-auto px-4 py-6">
-      <div class="bg-white p-4 rounded shadow-sm mb-4 flex items-center justify-between">
-        <div>
-          <h2 class="text-base font-bold text-gray-800">
-            Kết quả tìm kiếm cho '<span class="text-[#ee4d2d]">${keyword}</span>'
-          </h2>
-          <p class="text-xs text-gray-500 mt-0.5">Tìm thấy ${results.length} sản phẩm phù hợp trên ShopLux</p>
-        </div>
-        <a href="/" class="text-xs text-[#ee4d2d] hover:underline">← Về trang chủ</a>
-      </div>
-      <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2">
-        ${results.length > 0 ? renderProductCards(results) : '<div class="col-span-full py-16 text-center text-gray-400 bg-white rounded">Không tìm thấy sản phẩm nào phù hợp.</div>'}
-      </div>
-    </div>
-  `;
-}
+// ==========================================
+// PRODUCT DETAIL
+// ==========================================
 
 function renderProductDetailView(container, id) {
+  const product = allProducts.find(
+    p => Number(p.id) === Number(id)
+  );
 
-  const p =
-    allProducts.find(
-      item =>
-        Number(item.id) ===
-        Number(id)
-    );
-
-  if (!p) {
-
+  if (!product) {
     container.innerHTML = `
-      <div class="p-10 text-center">
-        Không tìm thấy sản phẩm.
+      <div class="max-w-7xl mx-auto p-10 text-center">
+        <div class="bg-white rounded-xl p-10">
+          Không tìm thấy sản phẩm.
+          <br><br>
+          <a href="/" class="text-[#ee4d2d]">
+            ← Về trang chủ
+          </a>
+        </div>
       </div>
     `;
 
     return;
   }
 
-  const images =
-    getProductImages(p);
+  const images = getProductImages(product);
 
-  const price =
-    Number(p.price || 0);
+  const price = Number(product.price || 0);
 
-  const originalPrice =
-    Number(
-      p.originalPrice ||
-      Math.round(price * 1.3)
-    );
+  const originalPrice = Number(
+    product.originalPrice ||
+    Math.round(price * 1.3)
+  );
 
   container.innerHTML = `
+    <section class="max-w-7xl mx-auto px-4 py-6">
 
-    <div
-      class="
-        max-w-6xl
-        mx-auto
-        px-4
-        py-6
-      "
-    >
+      <div class="mb-4">
+        <a href="/" class="text-[#ee4d2d]">
+          ← Tiếp tục mua sắm
+        </a>
+      </div>
 
-      <div
-        class="
-          bg-white
-          rounded
-          shadow-sm
-          p-5
-        "
-      >
+      <div class="bg-white rounded-xl shadow-sm p-5">
 
-        <div
-          class="
-            grid
-            md:grid-cols-2
-            gap-8
-          "
-        >
-
-          <!-- GALLERY -->
+        <div class="grid md:grid-cols-2 gap-8">
 
           <div>
 
@@ -1133,186 +660,136 @@ function renderProductDetailView(container, id) {
               class="
                 aspect-square
                 bg-gray-100
-                border
-                rounded
+                rounded-xl
                 overflow-hidden
+                border
               "
             >
-
               <img
                 id="mainProductImage"
                 src="${images[0]}"
-                class="
-                  w-full
-                  h-full
-                  object-cover
-                "
+                alt="${escapeHtml(product.name)}"
+                class="w-full h-full object-contain"
               >
-
             </div>
 
-            <div
-              class="
-                grid
-                grid-cols-4
-                gap-2
-                mt-3
-              "
-            >
+            ${
+              images.length > 1
+                ? `
+                  <div class="grid grid-cols-4 gap-3 mt-3">
 
-              ${images.map((img,index) => `
+                    ${images
+                      .map(
+                        (image, index) => `
+                          <button
+                            type="button"
+                            onclick="changeProductImage(${index})"
+                            class="
+                              aspect-square
+                              border
+                              rounded-lg
+                              overflow-hidden
+                              hover:border-[#ee4d2d]
+                            "
+                          >
+                            <img
+                              src="${image}"
+                              class="w-full h-full object-cover"
+                            >
+                          </button>
+                        `
+                      )
+                      .join("")}
 
-                <button
-                  onclick="changeProductImage('${img}')"
-                  class="
-                    aspect-square
-                    border
-                    rounded
-                    overflow-hidden
-                    hover:border-[#ee4d2d]
-                  "
-                >
-
-                  <img
-                    src="${img}"
-                    class="
-                      w-full
-                      h-full
-                      object-cover
-                    "
-                  >
-
-                </button>
-
-              `).join("")}
-
-            </div>
+                  </div>
+                `
+                : ""
+            }
 
           </div>
 
-
-          <!-- INFO -->
-
           <div>
 
-            <div
-              class="
-                inline-block
-                bg-[#ee4d2d]
-                text-white
-                px-2
-                py-1
-                rounded
-                text-[10px]
-                font-bold
-                mb-3
-              "
-            >
-              ShopLux Mall
+            <div class="text-sm text-gray-500 mb-2">
+              ${escapeHtml(getCategoryName(product.categoryId))}
+              ${
+                product.subcategoryId
+                  ? " / " +
+                    escapeHtml(
+                      getSubcategoryName(product.subcategoryId)
+                    )
+                  : ""
+              }
             </div>
 
-            <h1
-              class="
-                text-2xl
-                font-black
-                text-gray-800
-              "
-            >
-              ${p.name}
+            <h1 class="text-2xl md:text-3xl font-black text-gray-800">
+              ${escapeHtml(product.name)}
             </h1>
 
-            <div
-              class="
-                mt-4
-                bg-gray-50
-                p-4
-                rounded
-              "
-            >
-
-              <span
-                class="
-                  text-3xl
-                  font-black
-                  text-[#ee4d2d]
-                "
-              >
-                ${price.toLocaleString("vi-VN")} ₫
+            <div class="flex items-center gap-4 mt-3 text-sm">
+              <span class="text-yellow-500">
+                ⭐ ${escapeHtml(product.rating || 5)}
               </span>
 
-              <span
-                class="
-                  ml-3
-                  text-gray-400
-                  line-through
-                "
-              >
-                ${originalPrice.toLocaleString("vi-VN")} ₫
+              <span class="text-gray-400">
+                Đã bán ${escapeHtml(product.sold || "0")}
+              </span>
+            </div>
+
+            <div class="bg-gray-50 rounded-xl p-5 mt-6">
+
+              <span class="text-3xl font-black text-[#ee4d2d]">
+                ${formatPrice(price)}
+              </span>
+
+              <span class="ml-3 text-gray-400 line-through">
+                ${formatPrice(originalPrice)}
               </span>
 
             </div>
 
-            <div
-              class="
-                mt-5
-                border-t
-                pt-5
-                text-gray-600
-                leading-6
-              "
-            >
+            <div class="mt-6">
 
-              <p>
-                <strong>Mô tả:</strong>
-                ${p.desc || "Sản phẩm chính hãng ShopLux."}
-              </p>
+              <h2 class="font-bold text-lg mb-2">
+                Mô tả sản phẩm
+              </h2>
 
-              <p class="mt-2">
-                <strong>Đánh giá:</strong>
-                ⭐ ${p.rating || 5}
-              </p>
-
-              <p class="mt-2">
-                <strong>Đã bán:</strong>
-                ${p.sold || "0"}
+              <p class="text-gray-600 leading-7 whitespace-pre-line">
+                ${escapeHtml(
+                  product.desc ||
+                  "Sản phẩm chính hãng ShopLux."
+                )}
               </p>
 
             </div>
 
-            <div
-              class="
-                flex
-                gap-3
-                mt-8
-              "
-            >
+            <div class="flex gap-3 mt-8">
 
               <button
-                onclick="addToCartAndNotify(${p.id})"
+                onclick="addToCartAndNotify(${product.id})"
                 class="
                   flex-1
-                  border
+                  border-2
                   border-[#ee4d2d]
-                  bg-orange-50
                   text-[#ee4d2d]
-                  py-3
-                  rounded
-                  font-bold
+                  bg-orange-50
+                  py-4
+                  rounded-lg
+                  font-black
                 "
               >
-                <i class="fas fa-cart-plus"></i>
-                THÊM VÀO GIỎ
+                🛒 THÊM VÀO GIỎ
               </button>
 
               <button
-                onclick="buyNowDirect(${p.id})"
+                onclick="buyNowDirect(${product.id})"
                 class="
                   flex-1
                   bg-[#ee4d2d]
                   text-white
-                  py-3
-                  rounded
-                  font-bold
+                  py-4
+                  rounded-lg
+                  font-black
                 "
               >
                 MUA NGAY
@@ -1326,131 +803,167 @@ function renderProductDetailView(container, id) {
 
       </div>
 
-    </div>
+    </section>
   `;
+
+  window.currentDetailImages = images;
 }
 
+function changeProductImage(index) {
+  const images = window.currentDetailImages || [];
 
-function changeProductImage(src) {
+  const mainImage =
+    document.getElementById("mainProductImage");
 
-  const image =
-    document.getElementById(
-      "mainProductImage"
-    );
-
-  if (image) {
-    image.src = src;
+  if (mainImage && images[index]) {
+    mainImage.src = images[index];
   }
 }
 
-function renderSellerChannelView(container) {
-  container.innerHTML = `
-    <div class="max-w-6xl mx-auto px-4 py-6">
-      <div class="bg-white p-8 rounded shadow-sm">
-        <h1 class="text-xl font-bold text-gray-800 border-b pb-4 mb-6">Kênh Quản Trị Người Bán (ShopLux Seller Centre)</h1>
-        <div class="grid grid-cols-1 sm:grid-cols-4 gap-4 text-center">
-          <div class="p-4 bg-orange-50 rounded border border-orange-200"><span class="text-2xl font-black text-[#ee4d2d]">12</span><p class="text-xs text-gray-600 mt-1">Chờ Xác Nhận</p></div>
-          <div class="p-4 bg-blue-50 rounded border border-blue-200"><span class="text-2xl font-black text-blue-600">8</span><p class="text-xs text-gray-600 mt-1">Chờ Lấy Hàng</p></div>
-          <div class="p-4 bg-green-50 rounded border border-green-200"><span class="text-2xl font-black text-green-600">146</span><p class="text-xs text-gray-600 mt-1">Đã Giao Thành Công</p></div>
-          <div class="p-4 bg-purple-50 rounded border border-purple-200"><span class="text-2xl font-black text-purple-600">28.450.000 ₫</span><p class="text-xs text-gray-600 mt-1">Doanh Thu Tháng</p></div>
-        </div>
-      </div>
-    </div>
-  `;
+// ==========================================
+// CART
+// ==========================================
+
+function saveCart() {
+  localStorage.setItem(
+    "shoplux_cart",
+    JSON.stringify(cart)
+  );
+
+  updateCartCount();
 }
 
-function renderBeSellerView(container) {
-  container.innerHTML = `
-    <div class="max-w-6xl mx-auto px-4 py-6">
-      <div class="bg-white p-8 rounded shadow-sm max-w-xl mx-auto">
-        <h1 class="text-xl font-bold text-gray-800 text-center mb-2">Đăng Ký Bán Hàng Cùng ShopLux</h1>
-        <p class="text-xs text-gray-500 text-center mb-6">Mở gian hàng hoàn toàn miễn phí, tiếp cận hàng triệu khách hàng.</p>
-        <div class="space-y-3">
-          <input class="w-full border p-2 rounded text-xs focus:outline-[#ee4d2d]" placeholder="Tên Gian Hàng">
-          <input class="w-full border p-2 rounded text-xs focus:outline-[#ee4d2d]" placeholder="Số Điện Thoại Liên Hệ">
-          <button onclick="alert('Đã gửi thông tin đăng ký!'); window.location.href='?view=seller-channel';" class="w-full bg-[#ee4d2d] text-white py-2.5 rounded font-bold uppercase text-xs hover:bg-[#d73211] transition">Gửi Thông Tin</button>
-        </div>
-      </div>
-    </div>
-  `;
+function updateCartCount() {
+  const count = cart.reduce(
+    (sum, item) => sum + Number(item.qty || 1),
+    0
+  );
+
+  document
+    .querySelectorAll(
+      "#cartCount, .cart-count, [data-cart-count]"
+    )
+    .forEach(element => {
+      element.textContent = count;
+    });
 }
 
-function renderConnectView(container) {
-  container.innerHTML = `
-    <div class="max-w-6xl mx-auto px-4 py-6">
-      <div class="bg-white p-8 rounded shadow-sm text-center max-w-lg mx-auto">
-        <h1 class="text-lg font-bold text-gray-800 mb-2">Kết Nối Với ShopLux</h1>
-        <div class="flex justify-center space-x-4 text-xs font-semibold mt-4">
-          <a href="https://facebook.com" target="_blank" class="px-4 py-2 bg-blue-600 text-white rounded">Facebook</a>
-          <a href="https://instagram.com" target="_blank" class="px-4 py-2 bg-pink-600 text-white rounded">Instagram</a>
-          <a href="https://tiktok.com" target="_blank" class="px-4 py-2 bg-black text-white rounded">TikTok</a>
-        </div>
-      </div>
-    </div>
-  `;
-}
-
-function renderNotificationsView(container) {
-  container.innerHTML = `
-    <div class="max-w-6xl mx-auto px-4 py-6">
-      <div class="bg-white p-6 rounded shadow-sm max-w-2xl mx-auto">
-        <h1 class="text-base font-bold text-gray-800 border-b pb-3 mb-4">🔔 Hộp Thư ShopLux</h1>
-        <div class="divide-y text-xs">
-          <div class="py-3">
-            <h4 class="font-bold text-gray-800">Tặng bạn Voucher NEWBIE100</h4>
-            <p class="text-gray-500 mt-1">Giảm trực tiếp 100.000 ₫ khi thanh toán đơn hàng.</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  `;
-}
-
-function renderSupportView(container) {
-  container.innerHTML = `
-    <div class="max-w-6xl mx-auto px-4 py-6">
-      <div class="bg-white p-8 rounded shadow-sm max-w-2xl mx-auto">
-        <h1 class="text-lg font-bold text-gray-800 mb-4 text-center">Trung Tâm Hỗ Trợ ShopLux</h1>
-        <p class="text-center text-xs text-gray-500 mb-6">Hotline miễn cước: <strong class="text-[#ee4d2d]">1900 1221</strong></p>
-      </div>
-    </div>
-  `;
-}
-
-// CART ACTIONS
 function addToCartAndNotify(id) {
-  const p = allProducts.find(item => item.id === id);
-  const exist = cart.find(item => item.id === id);
-  if (exist) exist.qty += 1;
-  else cart.push({ ...p, qty: 1 });
+  const product = allProducts.find(
+    p => Number(p.id) === Number(id)
+  );
+
+  if (!product) return;
+
+  const existing = cart.find(
+    item => Number(item.id) === Number(id)
+  );
+
+  if (existing) {
+    existing.qty =
+      Number(existing.qty || 1) + 1;
+  } else {
+    cart.push({
+      id: product.id,
+      name: product.name,
+      price: Number(product.price || 0),
+      image: getProductImages(product)[0],
+      qty: 1
+    });
+  }
+
   saveCart();
-  alert(`Đã thêm "${p.name}" vào giỏ hàng ShopLux!`);
+
+  alert("Đã thêm sản phẩm vào giỏ hàng!");
 }
 
 function buyNowDirect(id) {
-  const p = allProducts.find(item => item.id === id);
-  const exist = cart.find(item => item.id === id);
-  if (exist) exist.qty += 1;
-  else cart.push({ ...p, qty: 1 });
-  saveCart();
-  window.location.href = '?view=cart';
+  addToCartAndNotify(id);
+
+  if (document.getElementById("cartModal")) {
+    openCart();
+  }
 }
 
-function removeCartItem(id) {
-  cart = cart.filter(i => i.id !== id);
-  saveCart();
-  router();
+// ==========================================
+// SEARCH
+// ==========================================
+
+function performSearch() {
+  const input =
+    document.getElementById("searchInput") ||
+    document.querySelector('input[type="search"]');
+
+  if (!input) return;
+
+  const keyword = input.value.trim();
+
+  if (!keyword) {
+    window.location.href = "/";
+    return;
+  }
+
+  window.location.href =
+    "/?search=" + encodeURIComponent(keyword);
 }
 
-function saveCart() {
-  localStorage.setItem('shoplux_cart', JSON.stringify(cart));
-  updateCartBadge();
+function handleSearchKey(event) {
+  if (event.key === "Enter") {
+    performSearch();
+  }
 }
 
-function updateCartBadge() {
-  const count = cart.reduce((sum, i) => sum + i.qty, 0);
-  const badge = document.getElementById('cart-count');
-  if (badge) badge.innerText = count;
+// ==========================================
+// CATEGORY NAVIGATION
+// ==========================================
+
+function goCategory(categoryId) {
+  window.location.href =
+    "/?category=" + Number(categoryId);
 }
 
-window.addEventListener('DOMContentLoaded', router);
+function goSubcategory(categoryId, subcategoryId) {
+  window.location.href =
+    "/?category=" +
+    Number(categoryId) +
+    "&subcategory=" +
+    encodeURIComponent(subcategoryId);
+}
+
+// ==========================================
+// USER
+// ==========================================
+
+function logout() {
+  localStorage.removeItem("shoplux_user");
+  localStorage.removeItem("user");
+  window.location.href = "/";
+}
+
+// ==========================================
+// INITIALIZE
+// ==========================================
+
+document.addEventListener("DOMContentLoaded", () => {
+  const searchInput =
+    document.getElementById("searchInput") ||
+    document.querySelector('input[type="search"]');
+
+  if (searchInput) {
+    searchInput.addEventListener(
+      "keydown",
+      handleSearchKey
+    );
+  }
+
+  loadShopData();
+});
+
+// Cho phép HTML gọi function
+window.performSearch = performSearch;
+window.goCategory = goCategory;
+window.goSubcategory = goSubcategory;
+window.addToCartAndNotify = addToCartAndNotify;
+window.buyNowDirect = buyNowDirect;
+window.changeProductImage = changeProductImage;
+window.logout = logout;
