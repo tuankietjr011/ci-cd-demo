@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Đăng ký | ShopLux Maison</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+  >
+
+  <style>
+    *{box-sizing:border-box}
+
+    body{
+      margin:0;
+      min-height:100vh;
+      background:
+        radial-gradient(circle at 80% 20%,rgba(201,162,39,.13),transparent 25%),
+        linear-gradient(135deg,#120a06,#3b2416);
+      font-family:Arial,sans-serif;
+    }
+
+    .serif{
+      font-family:Georgia,"Times New Roman",serif;
+    }
+
+    .box{
+      background:rgba(255,253,248,.98);
+      box-shadow:0 30px 80px rgba(0,0,0,.4);
+    }
+
+    .field{
+      transition:.2s;
+    }
+
+    .field:focus-within{
+      border-color:#c9a227;
+      box-shadow:0 0 0 3px rgba(201,162,39,.1);
+    }
+  </style>
+</head>
+
+<body class="flex justify-center items-center p-4 md:p-8">
+
+<div class="box w-full max-w-2xl p-7 sm:p-12">
+
+  <div class="text-center">
+
+    <a href="/">
+      <div class="serif text-4xl tracking-[7px] text-[#3b2416]">
+        SHOPLUX
+      </div>
+
+      <div class="text-[9px] tracking-[5px] text-[#70452d] mt-2">
+        MAISON • LUXURY FASHION
+      </div>
+    </a>
+
+    <div class="w-14 h-px bg-[#c9a227] mx-auto mt-7"></div>
+
+    <h1 class="serif text-4xl mt-7">
+      Tạo tài khoản
+    </h1>
+
+    <p class="text-gray-500 text-sm mt-3">
+      Trở thành thành viên của ShopLux Maison.
+    </p>
+
+  </div>
+
+
+  <form id="registerForm" class="mt-9">
+
+    <label class="text-xs font-bold tracking-[1px]">
+      HỌ VÀ TÊN
+    </label>
+
+    <div class="field flex border border-gray-200 mt-2 mb-5">
+      <span class="px-4 flex items-center text-[#9b846f]">
+        <i class="fa-regular fa-user"></i>
+      </span>
+
+      <input
+        id="name"
+        required
+        autocomplete="name"
+        placeholder="Nguyễn Văn A"
+        class="w-full py-4 pr-4 outline-none bg-transparent"
+      >
+    </div>
+
+
+    <label class="text-xs font-bold tracking-[1px]">
+      EMAIL
+    </label>
+
+    <div class="field flex border border-gray-200 mt-2 mb-5">
+      <span class="px-4 flex items-center text-[#9b846f]">
+        <i class="fa-regular fa-envelope"></i>
+      </span>
+
+      <input
+        id="email"
+        type="email"
+        required
+        autocomplete="email"
+        placeholder="name@example.com"
+        class="w-full py-4 pr-4 outline-none bg-transparent"
+      >
+    </div>
+
+
+    <label class="text-xs font-bold tracking-[1px]">
+      SỐ ĐIỆN THOẠI
+    </label>
+
+    <div class="field flex border border-gray-200 mt-2 mb-5">
+      <span class="px-4 flex items-center text-[#9b846f]">
+        <i class="fa-solid fa-phone"></i>
+      </span>
+
+      <input
+        id="phone"
+        type="tel"
+        autocomplete="tel"
+        placeholder="Số điện thoại"
+        class="w-full py-4 pr-4 outline-none bg-transparent"
+      >
+    </div>
+
+
+    <div class="grid sm:grid-cols-2 gap-4">
+
+      <div>
+        <label class="text-xs font-bold tracking-[1px]">
+          MẬT KHẨU
+        </label>
+
+        <div class="field flex border border-gray-200 mt-2">
+          <input
+            id="password"
+            type="password"
+            required
+            minlength="6"
+            autocomplete="new-password"
+            placeholder="Tối thiểu 6 ký tự"
+            class="w-full p-4 outline-none bg-transparent"
+          >
+        </div>
+      </div>
+
+
+      <div>
+        <label class="text-xs font-bold tracking-[1px]">
+          NHẬP LẠI MẬT KHẨU
+        </label>
+
+        <div class="field flex border border-gray-200 mt-2">
+          <input
+            id="confirmPassword"
+            type="password"
+            required
+            minlength="6"
+            autocomplete="new-password"
+            placeholder="Nhập lại mật khẩu"
+            class="w-full p-4 outline-none bg-transparent"
+          >
+        </div>
+      </div>
+
+    </div>
+
+
+    <label class="flex gap-3 mt-6 text-sm text-gray-600">
+      <input
+        id="terms"
+        type="checkbox"
+        required
+        class="accent-[#3b2416]"
+      >
+
+      <span>
+        Tôi đồng ý với Điều khoản sử dụng và Chính sách bảo mật của ShopLux.
+      </span>
+    </label>
+
+
+    <button
+      type="submit"
+      class="w-full py-4 mt-7 font-bold tracking-[2px] transition hover:bg-[#51301e]"
+      style="background:#3b2416;color:#e8d5a3"
+    >
+      TẠO TÀI KHOẢN
+    </button>
+
+  </form>
+
+
+  <p id="message" class="text-center text-sm mt-4"></p>
+
+
+  <div class="flex items-center gap-4 my-7">
+    <div class="h-px bg-[#e8d5a3] flex-1"></div>
+
+    <span class="text-[10px] text-gray-400 tracking-[2px]">
+      HOẶC ĐĂNG KÝ VỚI
+    </span>
+
+    <div class="h-px bg-[#e8d5a3] flex-1"></div>
+  </div>
+
+
+  <div class="grid sm:grid-cols-2 gap-3">
+
+    <button
+      onclick="location.href='/api/auth/google'"
+      class="border border-gray-200 py-3 bg-white font-semibold"
+    >
+      <span class="text-[#4285F4] font-black mr-2">G</span>
+      Google
+    </button>
+
+    <button
+      onclick="location.href='/api/auth/facebook'"
+      class="border border-gray-200 py-3 bg-white font-semibold"
+    >
+      <i class="fa-brands fa-facebook text-[#1877F2] mr-2"></i>
+      Facebook
+    </button>
+
+  </div>
+
+
+  <p class="text-center text-sm text-gray-500 mt-8">
+    Đã có tài khoản?
+
+    <a
+      href="/login.html"
+      class="font-bold text-[#70452d]"
+    >
+      Đăng nhập
+    </a>
+  </p>
+
+</div>
+
+
+<script>
+document
+  .getElementById("registerForm")
+  .addEventListener("submit", async e => {
+
+    e.preventDefault();
+
+    const name =
+      document.getElementById("name").value.trim();
+
+    const email =
+      document.getElementById("email").value.trim();
+
+    const phone =
+      document.getElementById("phone").value.trim();
+
+    const password =
+      document.getElementById("password").value;
+
+    const confirmPassword =
+      document.getElementById("confirmPassword").value;
+
+    const message =
+      document.getElementById("message");
+
+
+    if (password !== confirmPassword) {
+      message.textContent = "Mật khẩu nhập lại không khớp.";
+      message.style.color = "#b91c1c";
+      return;
+    }
+
+
+    message.textContent = "Đang tạo tài khoản...";
+    message.style.color = "#70452d";
+
+
+    try {
+
+      const response = await fetch("/api/auth/register", {
+        method: "POST",
+
+        headers: {
+          "Content-Type": "application/json"
+        },
+
+        body: JSON.stringify({
+          name,
+          email,
+          phone,
+          password
+        })
+      });
+
+
+      const data = await response.json();
+
+
+      if (!response.ok || !data.success) {
+        message.textContent =
+          data.message || "Đăng ký thất bại.";
+
+        message.style.color = "#b91c1c";
+        return;
+      }
+
+
+      message.textContent =
+        "Tạo tài khoản thành công! Đang chuyển sang đăng nhập...";
+
+      message.style.color = "#166534";
+
+
+      setTimeout(() => {
+        location.href = "/login.html";
+      }, 900);
+
+
+    } catch {
+      message.textContent =
+        "Không thể kết nối máy chủ.";
+
+      message.style.color = "#b91c1c";
+    }
+
+  });
+</script>
+
+</body>
+</html>

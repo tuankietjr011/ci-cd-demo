@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Đăng nhập | ShopLux Maison</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+  <style>
+    *{box-sizing:border-box}
+
+    body{
+      margin:0;
+      min-height:100vh;
+      background:
+        radial-gradient(circle at 15% 20%,rgba(201,162,39,.14),transparent 25%),
+        radial-gradient(circle at 85% 80%,rgba(112,69,45,.35),transparent 30%),
+        linear-gradient(135deg,#120a06,#24130c 45%,#3b2416);
+      font-family:Arial,sans-serif;
+    }
+
+    .serif{
+      font-family:Georgia,"Times New Roman",serif;
+    }
+
+    .glass{
+      background:rgba(255,253,248,.97);
+      box-shadow:0 30px 80px rgba(0,0,0,.38);
+    }
+
+    .input-box{
+      transition:.25s;
+    }
+
+    .input-box:focus-within{
+      border-color:#c9a227;
+      box-shadow:0 0 0 3px rgba(201,162,39,.10);
+    }
+
+    .social-btn{
+      transition:.2s;
+    }
+
+    .social-btn:hover{
+      transform:translateY(-2px);
+      box-shadow:0 7px 20px rgba(0,0,0,.08);
+    }
+
+    .gold-line{
+      height:1px;
+      background:linear-gradient(90deg,transparent,#c9a227,transparent);
+    }
+  </style>
+</head>
+
+<body class="flex items-center justify-center p-4 md:p-8">
+
+  <div class="w-full max-w-6xl glass overflow-hidden">
+
+    <div class="grid lg:grid-cols-2 min-h-[720px]">
+
+      <!-- LEFT -->
+      <section
+        class="hidden lg:flex relative overflow-hidden p-14 flex-col justify-between text-white"
+        style="background:linear-gradient(145deg,#1f120c,#3b2416 60%,#70452d)"
+      >
+
+        <div class="absolute -top-32 -right-32 w-80 h-80 rounded-full border border-[#c9a227]/20"></div>
+        <div class="absolute -top-20 -right-20 w-80 h-80 rounded-full border border-[#c9a227]/10"></div>
+
+        <a href="/" class="relative z-10">
+          <div class="serif text-4xl tracking-[7px] text-[#e8d5a3]">
+            SHOPLUX
+          </div>
+          <div class="text-[9px] tracking-[5px] mt-2">
+            MAISON • LUXURY FASHION
+          </div>
+        </a>
+
+        <div class="relative z-10">
+          <p class="text-[#c9a227] text-xs tracking-[5px]">
+            PRIVATE CLIENT
+          </p>
+
+          <h1 class="serif text-5xl leading-tight mt-5">
+            Welcome Back<br>
+            to the Maison.
+          </h1>
+
+          <div class="w-16 h-px bg-[#c9a227] my-7"></div>
+
+          <p class="text-[#d9cec6] max-w-md leading-8">
+            Đăng nhập để tiếp tục trải nghiệm mua sắm,
+            quản lý đơn hàng và khám phá những bộ sưu tập
+            dành riêng cho bạn.
+          </p>
+        </div>
+
+        <p class="relative z-10 text-xs text-[#aa9689] tracking-[2px]">
+          ELEGANCE • HERITAGE • TIMELESS
+        </p>
+
+      </section>
+
+
+      <!-- RIGHT -->
+      <section class="p-7 sm:p-12 lg:p-16 flex items-center">
+
+        <div class="w-full max-w-md mx-auto">
+
+          <!-- Mobile logo -->
+          <a href="/" class="lg:hidden block text-center mb-9">
+            <div class="serif text-3xl tracking-[6px] text-[#3b2416]">
+              SHOPLUX
+            </div>
+            <div class="text-[8px] tracking-[4px] mt-1 text-[#70452d]">
+              MAISON • LUXURY FASHION
+            </div>
+          </a>
+
+
+          <div class="mb-8">
+            <p class="text-[10px] tracking-[4px] text-[#a07a45] font-bold">
+              MEMBER ACCESS
+            </p>
+
+            <h2 class="serif text-4xl mt-3 text-[#1f120c]">
+              Đăng nhập
+            </h2>
+
+            <p class="text-gray-500 text-sm mt-3">
+              Chào mừng bạn quay trở lại ShopLux.
+            </p>
+          </div>
+
+
+          <!-- SOCIAL -->
+          <div class="grid sm:grid-cols-2 gap-3">
+
+            <button
+              onclick="loginGoogle()"
+              class="social-btn border border-gray-200 h-12 flex items-center justify-center gap-3 bg-white font-semibold text-sm"
+            >
+              <span class="text-xl font-bold text-[#4285F4]">G</span>
+              Google
+            </button>
+
+            <button
+              onclick="loginFacebook()"
+              class="social-btn border border-gray-200 h-12 flex items-center justify-center gap-3 bg-white font-semibold text-sm"
+            >
+              <i class="fa-brands fa-facebook text-[#1877F2] text-xl"></i>
+              Facebook
+            </button>
+
+          </div>
+
+
+          <div class="flex items-center gap-4 my-7">
+            <div class="flex-1 gold-line"></div>
+            <span class="text-[10px] text-gray-400 tracking-[2px]">
+              HOẶC
+            </span>
+            <div class="flex-1 gold-line"></div>
+          </div>
+
+
+          <form id="loginForm">
+
+            <label class="text-xs font-bold tracking-[1px]">
+              EMAIL
+            </label>
+
+            <div class="input-box border border-gray-200 flex items-center mt-2 mb-5">
+              <span class="px-4 text-[#9b846f]">
+                <i class="fa-regular fa-envelope"></i>
+              </span>
+
+              <input
+                id="email"
+                type="email"
+                required
+                autocomplete="email"
+                placeholder="name@example.com"
+                class="w-full py-4 pr-4 outline-none bg-transparent text-sm"
+              >
+            </div>
+
+
+            <div class="flex justify-between items-center">
+              <label class="text-xs font-bold tracking-[1px]">
+                MẬT KHẨU
+              </label>
+
+              <a href="#" class="text-xs text-[#8a622b] hover:underline">
+                Quên mật khẩu?
+              </a>
+            </div>
+
+            <div class="input-box border border-gray-200 flex items-center mt-2">
+              <span class="px-4 text-[#9b846f]">
+                <i class="fa-solid fa-lock"></i>
+              </span>
+
+              <input
+                id="password"
+                type="password"
+                required
+                autocomplete="current-password"
+                placeholder="Nhập mật khẩu"
+                class="w-full py-4 outline-none bg-transparent text-sm"
+              >
+
+              <button
+                type="button"
+                onclick="togglePassword()"
+                class="px-4 text-gray-400"
+              >
+                <i id="eyeIcon" class="fa-regular fa-eye"></i>
+              </button>
+            </div>
+
+
+            <label class="flex items-center gap-3 mt-5 text-sm text-gray-600 cursor-pointer">
+              <input
+                id="remember"
+                type="checkbox"
+                class="accent-[#3b2416]"
+              >
+              Ghi nhớ đăng nhập
+            </label>
+
+
+            <button
+              type="submit"
+              class="w-full mt-7 py-4 font-bold tracking-[2px] transition hover:bg-[#51301e]"
+              style="background:#3b2416;color:#e8d5a3"
+            >
+              ĐĂNG NHẬP
+            </button>
+
+          </form>
+
+
+          <p id="message" class="text-sm text-center mt-4"></p>
+
+
+          <p class="text-center text-sm text-gray-500 mt-8">
+            Chưa có tài khoản?
+            <a
+              href="/register.html"
+              class="font-bold text-[#70452d] hover:text-[#c9a227]"
+            >
+              Đăng ký ngay
+            </a>
+          </p>
+
+
+          <div class="text-center mt-8">
+            <a href="/" class="text-xs tracking-[2px] text-gray-400 hover:text-[#70452d]">
+              ← TRỞ VỀ SHOPLUX
+            </a>
+          </div>
+
+        </div>
+
+      </section>
+
+    </div>
+
+  </div>
+
+
+<script>
+function togglePassword() {
+  const input = document.getElementById("password");
+  const icon = document.getElementById("eyeIcon");
+
+  if (input.type === "password") {
+    input.type = "text";
+    icon.className = "fa-regular fa-eye-slash";
+  } else {
+    input.type = "password";
+    icon.className = "fa-regular fa-eye";
+  }
+}
+
+document.getElementById("loginForm").addEventListener("submit", async e => {
+  e.preventDefault();
+
+  const message = document.getElementById("message");
+
+  message.textContent = "Đang đăng nhập...";
+  message.style.color = "#70452d";
+
+  try {
+    const response = await fetch("/api/auth/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        email: document.getElementById("email").value.trim(),
+        password: document.getElementById("password").value
+      })
+    });
+
+    const data = await response.json();
+
+    if (!response.ok || !data.success) {
+      message.textContent = data.message || "Đăng nhập thất bại.";
+      message.style.color = "#b91c1c";
+      return;
+    }
+
+    if (data.token) {
+      localStorage.setItem("shoplux_token", data.token);
+    }
+
+    localStorage.setItem(
+      "shoplux_user",
+      JSON.stringify(data.user)
+    );
+
+    message.textContent = "Đăng nhập thành công.";
+    message.style.color = "#166534";
+
+    setTimeout(() => {
+      location.href = "/";
+    }, 500);
+
+  } catch {
+    message.textContent = "Không thể kết nối máy chủ.";
+    message.style.color = "#b91c1c";
+  }
+});
+
+function loginGoogle() {
+  location.href = "/api/auth/google";
+}
+
+function loginFacebook() {
+  location.href = "/api/auth/facebook";
+}
+</script>
+
+</body>
+</html>

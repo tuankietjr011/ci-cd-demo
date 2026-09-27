@@ -244,38 +244,238 @@
 
     </div>
 
+<!-- ACCOUNT + CART -->
+<div class="flex items-center gap-6">
+
+  <!-- ACCOUNT -->
+  <div class="relative group">
 
     <button
-      onclick="openCart()"
-      class="relative text-2xl"
+      class="flex items-center gap-2 text-sm font-bold tracking-[1px]"
       style="color:#e8d5a3"
     >
-      <i class="fa-solid fa-bag-shopping"></i>
+      <i class="fa-regular fa-user text-xl"></i>
 
-      <span
-        id="cartCount"
+      <span class="hidden md:block">
+        TÀI KHOẢN
+      </span>
+
+      <i class="fa-solid fa-chevron-down text-[8px]"></i>
+    </button>
+
+
+    <!-- ACCOUNT DROPDOWN -->
+    <div
+      class="
+        absolute
+        right-0
+        top-full
+        pt-5
+        hidden
+        group-hover:block
+        z-[300]
+      "
+    >
+
+      <div
         class="
-          absolute
-          -top-3
-          -right-3
-          text-[10px]
-          rounded-full
-          w-5
-          h-5
-          flex
-          items-center
-          justify-center
+          w-[280px]
+          bg-[#fffdf8]
+          shadow-2xl
+          border-t-[3px]
+          p-6
         "
         style="
-          background:#c9a227;
+          border-color:#c9a227;
           color:#1f120c;
         "
       >
-        0
-      </span>
-    </button>
+
+        <!-- TITLE -->
+        <div class="text-center mb-5">
+
+          <div
+            class="
+              w-12
+              h-12
+              rounded-full
+              mx-auto
+              flex
+              items-center
+              justify-center
+              text-xl
+              mb-3
+            "
+            style="
+              background:#3b2416;
+              color:#e8d5a3;
+            "
+          >
+            <i class="fa-regular fa-user"></i>
+          </div>
+
+          <div
+            class="
+              luxury-font
+              text-xl
+            "
+          >
+            ShopLux Member
+          </div>
+
+          <p
+            class="
+              text-xs
+              text-gray-400
+              mt-1
+            "
+          >
+            Trải nghiệm mua sắm dành riêng cho bạn
+          </p>
+
+        </div>
+
+
+        <!-- LOGIN -->
+        <a
+          href="/login.html"
+          class="
+            block
+            w-full
+            text-center
+            py-3
+            font-bold
+            tracking-[1px]
+            transition
+            hover:opacity-90
+          "
+          style="
+            background:#3b2416;
+            color:#e8d5a3;
+          "
+        >
+          ĐĂNG NHẬP
+        </a>
+
+
+        <!-- REGISTER -->
+        <a
+          href="/register.html"
+          class="
+            block
+            w-full
+            text-center
+            py-3
+            mt-3
+            border
+            font-bold
+            tracking-[1px]
+            transition
+            hover:bg-[#f7f1e7]
+          "
+          style="
+            border-color:#c9a227;
+            color:#3b2416;
+          "
+        >
+          ĐĂNG KÝ TÀI KHOẢN
+        </a>
+
+
+        <div
+          class="h-px my-5"
+          style="background:#e8d5a3"
+        ></div>
+
+
+        <!-- BENEFITS -->
+        <div
+          class="
+            space-y-3
+            text-xs
+            text-gray-500
+          "
+        >
+
+          <div class="flex items-center gap-3">
+            <i
+              class="fa-solid fa-bag-shopping w-4"
+              style="color:#c9a227"
+            ></i>
+
+            <span>
+              Theo dõi đơn hàng
+            </span>
+          </div>
+
+
+          <div class="flex items-center gap-3">
+            <i
+              class="fa-regular fa-heart w-4"
+              style="color:#c9a227"
+            ></i>
+
+            <span>
+              Sản phẩm yêu thích
+            </span>
+          </div>
+
+
+          <div class="flex items-center gap-3">
+            <i
+              class="fa-solid fa-crown w-4"
+              style="color:#c9a227"
+            ></i>
+
+            <span>
+              Ưu đãi thành viên
+            </span>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
 
   </div>
+
+
+  <!-- CART -->
+  <button
+    onclick="openCart()"
+    class="relative text-2xl"
+    style="color:#e8d5a3"
+    title="Giỏ hàng"
+  >
+
+    <i class="fa-solid fa-bag-shopping"></i>
+
+    <span
+      id="cartCount"
+      class="
+        absolute
+        -top-3
+        -right-3
+        text-[10px]
+        rounded-full
+        w-5
+        h-5
+        flex
+        items-center
+        justify-center
+      "
+      style="
+        background:#c9a227;
+        color:#1f120c;
+      "
+    >
+      0
+    </span>
+
+  </button>
+
+</div>
 
 </header>
 
