@@ -2,603 +2,742 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8">
-  <title>ShopLux Admin Portal</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>ShopLux Admin</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body class="bg-gray-100 font-sans text-xs min-h-screen">
-  <header class="bg-[#d0011b] text-white py-3 px-6 shadow flex justify-between items-center">
-    <div class="flex items-center space-x-3">
-      <div class="w-8 h-8 bg-white text-[#d0011b] font-black rounded flex items-center justify-center text-lg">L</div>
-      <span class="text-base font-bold uppercase tracking-wide">ShopLux Admin Portal</span>
-    </div>
-    <div class="space-x-3">
-      <a href="/" class="bg-white/20 hover:bg-white/30 px-3 py-1.5 rounded font-bold transition">Xem Trang Khách</a>
-      <button onclick="logoutAdmin()" class="bg-white text-[#d0011b] hover:bg-gray-100 px-3 py-1.5 rounded font-bold transition">Đăng Xuất</button>
-    </div>
-  </header>
 
-  <div id="admin-login-box" class="max-w-sm mx-auto my-20 p-6 bg-white rounded shadow-lg border-t-4 border-[#d0011b] space-y-4">
-    <div class="text-center">
-      <i class="fas fa-shield-halved text-[#d0011b] text-3xl mb-2"></i>
-      <h2 class="text-sm font-black text-gray-800 uppercase">Đăng Nhập Quản Trị Viên</h2>
-    </div>
-    <div class="bg-yellow-50 p-2.5 rounded text-yellow-800 text-[11px] border border-yellow-200">
-      Tài khoản: <strong>admin</strong> | Mật khẩu: <strong>admin123</strong>
-    </div>
-    <input id="adm-user" value="admin" class="w-full border p-2.5 rounded focus:outline-[#d0011b]">
-    <input id="adm-pass" type="password" value="admin123" class="w-full border p-2.5 rounded focus:outline-[#d0011b]">
-    <button onclick="loginAdmin()" class="w-full bg-[#d0011b] hover:bg-red-700 text-white py-2.5 rounded font-bold uppercase transition">Vào Hệ Thống</button>
+<body class="bg-gray-100 text-sm">
+
+<header class="bg-[#ee4d2d] text-white px-6 py-4 flex justify-between">
+  <h1 class="font-black text-lg">SHOPLUX ADMIN</h1>
+
+  <div class="space-x-3">
+    <a href="/" class="bg-white/20 px-3 py-2 rounded">
+      Trang khách
+    </a>
+
+    <button onclick="logout()" class="bg-white text-[#ee4d2d] px-3 py-2 rounded font-bold">
+      Đăng xuất
+    </button>
   </div>
+</header>
 
-  <main id="admin-dashboard" class="max-w-6xl mx-auto p-6 space-y-6 hidden">
-    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-      <div class="bg-white p-4 rounded shadow border flex items-center space-x-4">
-        <div class="w-10 h-10 rounded-full bg-red-100 text-[#d0011b] flex items-center justify-center text-lg font-bold"><i class="fas fa-receipt"></i></div>
-        <div><p class="text-gray-400">Tổng Đơn Hàng</p><h3 id="stat-orders" class="text-lg font-black text-gray-800">0 đơn</h3></div>
-      </div>
-      <div class="bg-white p-4 rounded shadow border flex items-center space-x-4">
-        <div class="w-10 h-10 rounded-full bg-green-100 text-green-600 flex items-center justify-center text-lg font-bold"><i class="fas fa-coins"></i></div>
-        <div><p class="text-gray-400">Tổng Doanh Thu</p><h3 id="stat-revenue" class="text-lg font-black text-green-600">0 ₫</h3></div>
-      </div>
-      <div class="bg-white p-4 rounded shadow border flex items-center space-x-4">
-        <div class="w-10 h-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center text-lg font-bold"><i class="fas fa-boxes-stacked"></i></div>
-        <div><p class="text-gray-400">Sản Phẩm Đang Bán</p><h3 id="stat-products" class="text-lg font-black text-blue-600">0 món</h3></div>
-      </div>
-    </div>
+<!-- LOGIN -->
+<div id="login" class="max-w-sm mx-auto mt-20 bg-white p-6 shadow rounded">
 
-    <div class="bg-white p-5 rounded shadow border space-y-3">
-      <h2 class="font-black text-sm text-gray-800 flex items-center space-x-2 border-b pb-2">
-        <i class="fas fa-truck-ramp-box text-[#d0011b]"></i>
-        <span>QUẢN LÝ TIẾN TRÌNH VẬN CHUYỂN ĐƠN HÀNG (4 BƯỚC)</span>
-      </h2>
-      <div class="overflow-x-auto">
-        <table class="w-full text-left border-collapse">
-          <thead>
-            <tr class="bg-gray-50 border-b text-gray-600">
-              <th class="p-2.5">MÃ ĐƠN</th>
-              <th class="p-2.5">KHÁCH HÀNG</th>
-              <th class="p-2.5">TỔNG TIỀN</th>
-              <th class="p-2.5">TIẾN TRÌNH HIỆN TẠI</th>
-              <th class="p-2.5 text-center">THAO TÁC CẬP NHẬT</th>
-            </tr>
-          </thead>
-          <tbody id="orders-table-body" class="divide-y text-[11px]"></tbody>
-        </table>
-      </div>
-    </div>
+  <h2 class="font-black text-lg mb-5 text-center">
+    ĐĂNG NHẬP ADMIN
+  </h2>
 
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-      <div class="lg:col-span-4 bg-white p-4 rounded shadow border space-y-3">
-        <h3 class="font-black text-xs text-[#d0011b] border-b pb-2">THÊM SẢN PHẨM MỚI</h3>
-        <input id="p-name" placeholder="Tên sản phẩm *" class="w-full border p-2 rounded focus:outline-[#d0011b]">
-        <input id="p-price" type="number" placeholder="Giá bán (₫) *" class="w-full border p-2 rounded focus:outline-[#d0011b]">
-        
-
-<!-- SHOPLUX ADMIN CATEGORY V2 -->
-
-<div
-  id="shopluxCategoryArea"
-  style="margin-bottom: 14px;"
->
-  <select
-    id="shopluxCategory"
-    style="
-      width:100%;
-      padding:11px;
-      border:1px solid #ddd;
-      border-radius:5px;
-      margin-bottom:10px;
-      background:white;
-    "
+  <input
+    id="username"
+    value="admin"
+    class="border p-3 w-full mb-3 rounded"
+    placeholder="Tài khoản"
   >
-    <option value="1">
-      Thời Trang
-    </option>
 
-    <option value="2">
-      Điện Thoại
-    </option>
-
-    <option value="3">
-      Thiết Bị Điện Tử
-    </option>
-
-    <option value="4">
-      Đồng Hồ
-    </option>
-  </select>
-
-  <select
-    id="shopluxSubcategory"
-    style="
-      width:100%;
-      padding:11px;
-      border:1px solid #ddd;
-      border-radius:5px;
-      background:white;
-    "
-  ></select>
-
-  <div
-    id="shopluxCategoryHint"
-    style="
-      font-size:11px;
-      color:#888;
-      margin-top:6px;
-    "
+  <input
+    id="password"
+    value="admin123"
+    type="password"
+    class="border p-3 w-full mb-4 rounded"
+    placeholder="Mật khẩu"
   >
-    Danh mục sẽ tự nhận diện theo tên sản phẩm.
-  </div>
+
+  <button
+    onclick="login()"
+    class="w-full bg-[#ee4d2d] text-white p-3 rounded font-bold"
+  >
+    ĐĂNG NHẬP
+  </button>
+
 </div>
 
-<input id="p-img" placeholder="Link ảnh URL" class="w-full border p-2 rounded focus:outline-[#d0011b]">
-        <textarea id="p-desc" placeholder="Mô tả tóm tắt..." class="w-full border p-2 rounded focus:outline-[#d0011b]" rows="2"></textarea>
-        <button onclick="createProduct()" class="w-full bg-[#d0011b] hover:bg-red-700 text-white py-2 rounded font-bold uppercase transition">Đăng Bán Ngay</button>
-      </div>
-      <div class="lg:col-span-8 bg-white p-4 rounded shadow border space-y-3">
-        <h3 class="font-black text-xs text-gray-800 border-b pb-2">DANH SÁCH MẶT HÀNG TRÊN SÀN</h3>
-        <div id="products-list" class="divide-y max-h-72 overflow-y-auto"></div>
-      </div>
+<!-- DASHBOARD -->
+<main id="dashboard" class="hidden max-w-7xl mx-auto p-5">
+
+  <div class="grid md:grid-cols-3 gap-4 mb-6">
+
+    <div class="bg-white shadow rounded p-5">
+      <div class="text-gray-500">Sản phẩm</div>
+      <div id="countProducts" class="text-2xl font-black">0</div>
     </div>
-  </main>
 
-  <script>
-    const API = '/api';
-    let isLogged = localStorage.getItem('shoplux_admin') === 'true';
+    <div class="bg-white shadow rounded p-5">
+      <div class="text-gray-500">Đơn hàng</div>
+      <div id="countOrders" class="text-2xl font-black">0</div>
+    </div>
 
-    function checkAuth() {
-      document.getElementById('admin-login-box').classList.toggle('hidden', isLogged);
-      document.getElementById('admin-dashboard').classList.toggle('hidden', !isLogged);
-      if (isLogged) loadData();
-    }
+    <div class="bg-white shadow rounded p-5">
+      <div class="text-gray-500">Doanh thu</div>
+      <div id="revenue" class="text-2xl font-black text-[#ee4d2d]">0 ₫</div>
+    </div>
 
-    async function loginAdmin() {
-      const u = document.getElementById('adm-user').value.trim();
-      const p = document.getElementById('adm-pass').value.trim();
-      const res = await fetch(API + '/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username: u, password: p })
-      });
-      const d = await res.json();
-      if (d.success && (d.user.role === 'admin' || d.user.username === 'admin')) {
-        isLogged = true;
-        localStorage.setItem('shoplux_admin', 'true');
-        checkAuth();
-      } else {
-        alert('Tài khoản hoặc mật khẩu không chính xác!');
-      }
-    }
+  </div>
 
-    function logoutAdmin() {
-      localStorage.removeItem('shoplux_admin');
-      isLogged = false;
-      checkAuth();
-    }
+  <div class="grid lg:grid-cols-5 gap-6">
 
-    async function loadData() {
-      const [oRes, pRes] = await Promise.all([fetch(API + '/admin/orders'), fetch(API + '/products')]);
-      const orders = (await oRes.json()).data || [];
-      const prods = (await pRes.json()).data || [];
+    <!-- FORM -->
+    <div class="lg:col-span-2 bg-white shadow rounded p-5">
 
-      document.getElementById('stat-orders').innerText = orders.length + ' đơn';
-      document.getElementById('stat-products').innerText = prods.length + ' món';
-      document.getElementById('stat-revenue').innerText = orders.reduce((s, o) => s + (o.total || 0), 0).toLocaleString() + ' ₫';
+      <h2 id="formTitle" class="font-black text-lg mb-5">
+        THÊM SẢN PHẨM
+      </h2>
 
-      const steps = ['', '1. Đã Đặt Đơn', '2. Đang Chuẩn Bị', '3. Đang Vận Chuyển', '4. Đã Nhận Thành Công'];
-      document.getElementById('orders-table-body').innerHTML = orders.map(o => {
-        const s = o.statusStep || 1;
-        return '<tr class="hover:bg-gray-50">' +
-          '<td class="p-2.5 font-bold text-[#d0011b]">#' + o.orderId + '<br><span class="text-[9px] text-gray-400 font-normal">' + o.createdAt + '</span></td>' +
-          '<td class="p-2.5"><strong>' + o.fullname + '</strong> (' + o.phone + ')<br><span class="text-gray-400">' + o.address + '</span></td>' +
-          '<td class="p-2.5 font-bold text-gray-800">' + o.total.toLocaleString() + ' ₫</td>' +
-          '<td class="p-2.5"><span class="px-2 py-0.5 rounded font-bold text-[10px] ' + (s === 4 ? 'bg-green-100 text-green-700' : 'bg-red-50 text-[#d0011b] border border-red-200') + '">' + steps[s] + '</span></td>' +
-          '<td class="p-2.5 text-center space-x-1">' +
-            '<button onclick="changeStatus(\'' + o.orderId + '\', 1)" class="px-2 py-0.5 border rounded ' + (s === 1 ? 'bg-[#d0011b] text-white font-bold' : '') + '">B1</button>' +
-            '<button onclick="changeStatus(\'' + o.orderId + '\', 2)" class="px-2 py-0.5 border rounded ' + (s === 2 ? 'bg-[#d0011b] text-white font-bold' : '') + '">B2</button>' +
-            '<button onclick="changeStatus(\'' + o.orderId + '\', 3)" class="px-2 py-0.5 border rounded ' + (s === 3 ? 'bg-[#d0011b] text-white font-bold' : '') + '">B3</button>' +
-            '<button onclick="changeStatus(\'' + o.orderId + '\', 4)" class="px-2 py-0.5 border rounded ' + (s === 4 ? 'bg-green-600 text-white font-bold' : '') + '">B4 (Xong)</button>' +
-          '</td>' +
-        '</tr>';
-      }).join('');
+      <input type="hidden" id="editId">
 
-      document.getElementById('products-list').innerHTML = prods.map(p => {
-        return '<div class="py-2 flex justify-between items-center">' +
-          '<div class="flex items-center space-x-3 w-4/5">' +
-            '<img src="' + p.image + '" class="w-8 h-8 rounded object-cover border flex-shrink-0">' +
-            '<div class="truncate"><p class="font-bold truncate text-gray-800">' + p.name + '</p><span class="text-[#d0011b] font-bold">' + p.price.toLocaleString() + ' ₫</span></div>' +
-          '</div>' +
-          '<button onclick="deleteProduct(' + p.id + ')" class="text-red-500 hover:text-red-700 font-bold px-2 py-1"><i class="fas fa-trash-can mr-1"></i>Xóa</button>' +
-        '</div>';
-      }).join('');
-    }
+      <label class="font-bold">Tên sản phẩm</label>
+      <input
+        id="name"
+        class="border p-3 w-full rounded mb-4 mt-1"
+        placeholder="Ví dụ: iPhone 17 Pro Max"
+      >
 
-    async function changeStatus(orderId, step) {
-      await fetch(API + '/admin/orders/' + orderId + '/status', {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ step })
-      });
-      loadData();
-    }
+      <label class="font-bold">Giá bán</label>
+      <input
+        id="price"
+        type="number"
+        class="border p-3 w-full rounded mb-4 mt-1"
+        placeholder="29990000"
+      >
 
-    async function createProduct() {
-      const name = document.getElementById('p-name').value.trim();
-      const price = document.getElementById('p-price').value.trim();
-      const image = document.getElementById('p-img').value.trim();
-      const desc = document.getElementById('p-desc').value.trim();
-      if (!name || !price) return alert('Vui lòng nhập tên và giá sản phẩm!');
+      <label class="font-bold">Danh mục chính</label>
 
-      await fetch(API + '/admin/products', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, price, image, desc })
-      });
-      alert('Đăng bán sản phẩm thành công!');
-      document.getElementById('p-name').value = '';
-      document.getElementById('p-price').value = '';
-      loadData();
-    }
+      <select
+        id="category"
+        onchange="renderSubcategories()"
+        class="border p-3 w-full rounded mb-4 mt-1 bg-white"
+      >
+        <option value="1">Thời Trang</option>
+        <option value="2">Điện Thoại</option>
+        <option value="3">Thiết Bị Điện Tử</option>
+        <option value="4">Đồng Hồ</option>
+      </select>
 
-    async function deleteProduct(id) {
-      if (!confirm('Bạn có chắc muốn xóa sản phẩm này?')) return;
-      await fetch(API + '/admin/products/' + id, { method: 'DELETE' });
-      loadData();
-    }
+      <label class="font-bold">Danh mục con</label>
 
-    checkAuth();
-  </script>
+      <select
+        id="subcategory"
+        class="border p-3 w-full rounded mb-4 mt-1 bg-white"
+      ></select>
 
+      <label class="font-bold">
+        Ảnh sản phẩm (tối đa 4 ảnh)
+      </label>
+
+      <input
+        id="images"
+        type="file"
+        accept="image/*"
+        multiple
+        onchange="previewImages()"
+        class="border p-3 w-full rounded mt-1"
+      >
+
+      <div
+        id="preview"
+        class="grid grid-cols-4 gap-2 my-4"
+      ></div>
+
+      <label class="font-bold">Mô tả</label>
+
+      <textarea
+        id="desc"
+        rows="4"
+        class="border p-3 w-full rounded mt-1 mb-4"
+        placeholder="Mô tả sản phẩm..."
+      ></textarea>
+
+      <div class="flex gap-2">
+
+        <button
+          id="saveButton"
+          onclick="saveProduct()"
+          class="flex-1 bg-[#ee4d2d] text-white p-3 rounded font-black"
+        >
+          ĐĂNG BÁN
+        </button>
+
+        <button
+          id="cancelButton"
+          onclick="cancelEdit()"
+          class="hidden bg-gray-500 text-white px-5 rounded font-bold"
+        >
+          HỦY
+        </button>
+
+      </div>
+
+    </div>
+
+    <!-- PRODUCTS -->
+    <div class="lg:col-span-3 bg-white shadow rounded p-5">
+
+      <h2 class="font-black text-lg mb-5">
+        DANH SÁCH SẢN PHẨM
+      </h2>
+
+      <div id="productList" class="space-y-3"></div>
+
+    </div>
+
+  </div>
+
+</main>
 
 <script>
-// ============================================================
-// SHOPLUX ADMIN CATEGORY V2
-// ============================================================
 
-const SHOPLUX_ADMIN_SUBCATEGORIES = {
+const API = "/api";
+
+let products = [];
+let currentImages = [];
+
+const SUBCATEGORIES = {
   1: [
-    ["ao-thun", "Áo thun"],
-    ["do-bong-da", "Đồ bóng đá"],
-    ["ao-so-mi", "Áo sơ mi"],
-    ["quan-jeans", "Quần jeans"],
-    ["ao-khoac", "Áo khoác"],
-    ["khac", "Khác"]
+    ["ao-thun","Áo thun"],
+    ["do-bong-da","Đồ bóng đá"],
+    ["ao-so-mi","Áo sơ mi"],
+    ["quan-jeans","Quần jeans"],
+    ["ao-khoac","Áo khoác"],
+    ["khac","Khác"]
   ],
 
   2: [
-    ["iphone", "iPhone"],
-    ["samsung", "Samsung"],
-    ["xiaomi", "Xiaomi"],
-    ["oppo", "OPPO"],
-    ["vivo", "Vivo"],
-    ["phu-kien-dien-thoai", "Phụ kiện điện thoại"],
-    ["khac", "Khác"]
+    ["iphone","iPhone"],
+    ["samsung","Samsung"],
+    ["xiaomi","Xiaomi"],
+    ["oppo","OPPO"],
+    ["vivo","Vivo"],
+    ["phu-kien-dien-thoai","Phụ kiện điện thoại"],
+    ["khac","Khác"]
   ],
 
   3: [
-    ["tai-nghe", "Tai nghe"],
-    ["ban-phim", "Bàn phím"],
-    ["chuot", "Chuột"],
-    ["laptop", "Laptop"],
-    ["loa", "Loa"],
-    ["man-hinh", "Màn hình"],
-    ["khac", "Khác"]
+    ["tai-nghe","Tai nghe"],
+    ["ban-phim","Bàn phím"],
+    ["chuot","Chuột"],
+    ["laptop","Laptop"],
+    ["loa","Loa"],
+    ["man-hinh","Màn hình"],
+    ["khac","Khác"]
   ],
 
   4: [
-    ["dong-ho-thong-minh", "Đồng hồ thông minh"],
-    ["dong-ho-nam", "Đồng hồ nam"],
-    ["dong-ho-nu", "Đồng hồ nữ"],
-    ["dong-ho-the-thao", "Đồng hồ thể thao"],
-    ["khac", "Khác"]
+    ["dong-ho-thong-minh","Đồng hồ thông minh"],
+    ["dong-ho-nam","Đồng hồ nam"],
+    ["dong-ho-nu","Đồng hồ nữ"],
+    ["dong-ho-the-thao","Đồng hồ thể thao"],
+    ["khac","Khác"]
   ]
 };
 
-function shopluxNormalize(value = "") {
-  return String(value)
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .replace(/đ/g, "d")
-    .trim();
-}
+function renderSubcategories(selected = "") {
 
-function shopluxAdminDetect(name) {
-  const t = shopluxNormalize(name);
+  const categoryId =
+    Number(document.getElementById("category").value);
 
-  if (
-    t.includes("bong da") ||
-    t.includes("da banh") ||
-    t.includes("jersey") ||
-    t.includes("football") ||
-    t.includes("soccer")
-  ) {
-    return [1, "do-bong-da"];
-  }
-
-  if (
-    t.includes("ao thun") ||
-    t.includes("t-shirt") ||
-    t.includes("polo")
-  ) {
-    return [1, "ao-thun"];
-  }
-
-  if (t.includes("so mi")) {
-    return [1, "ao-so-mi"];
-  }
-
-  if (
-    t.includes("jean") ||
-    t.includes("denim")
-  ) {
-    return [1, "quan-jeans"];
-  }
-
-  if (
-    t.includes("ao khoac") ||
-    t.includes("hoodie") ||
-    t.includes("jacket")
-  ) {
-    return [1, "ao-khoac"];
-  }
-
-  if (t.includes("iphone")) {
-    return [2, "iphone"];
-  }
-
-  if (
-    t.includes("samsung") ||
-    t.includes("galaxy")
-  ) {
-    return [2, "samsung"];
-  }
-
-  if (
-    t.includes("xiaomi") ||
-    t.includes("redmi") ||
-    t.includes("poco")
-  ) {
-    return [2, "xiaomi"];
-  }
-
-  if (t.includes("oppo")) {
-    return [2, "oppo"];
-  }
-
-  if (t.includes("vivo")) {
-    return [2, "vivo"];
-  }
-
-  if (
-    t.includes("tai nghe") ||
-    t.includes("airpods") ||
-    t.includes("headphone")
-  ) {
-    return [3, "tai-nghe"];
-  }
-
-  if (
-    t.includes("ban phim") ||
-    t.includes("keyboard")
-  ) {
-    return [3, "ban-phim"];
-  }
-
-  if (
-    t.includes("chuot") ||
-    t.includes("mouse")
-  ) {
-    return [3, "chuot"];
-  }
-
-  if (
-    t.includes("laptop") ||
-    t.includes("macbook")
-  ) {
-    return [3, "laptop"];
-  }
-
-  if (
-    t.includes("loa bluetooth") ||
-    t.includes("speaker")
-  ) {
-    return [3, "loa"];
-  }
-
-  if (
-    t.includes("man hinh") ||
-    t.includes("monitor")
-  ) {
-    return [3, "man-hinh"];
-  }
-
-  if (
-    t.includes("apple watch") ||
-    t.includes("smartwatch") ||
-    t.includes("galaxy watch") ||
-    t.includes("dong ho thong minh")
-  ) {
-    return [4, "dong-ho-thong-minh"];
-  }
-
-  if (t.includes("dong ho nam")) {
-    return [4, "dong-ho-nam"];
-  }
-
-  if (t.includes("dong ho nu")) {
-    return [4, "dong-ho-nu"];
-  }
-
-  if (t.includes("dong ho the thao")) {
-    return [4, "dong-ho-the-thao"];
-  }
-
-  return null;
-}
-
-function shopluxRenderSubcategories(
-  categoryId,
-  selected = null
-) {
   const select =
-    document.getElementById(
-      "shopluxSubcategory"
-    );
+    document.getElementById("subcategory");
 
-  if (!select) return;
-
-  const items =
-    SHOPLUX_ADMIN_SUBCATEGORIES[
-      Number(categoryId)
-    ] || [];
-
-  select.innerHTML = "";
-
-  items.forEach(([value, label]) => {
-    const option =
-      document.createElement("option");
-
-    option.value = value;
-    option.textContent = label;
-
-    if (value === selected) {
-      option.selected = true;
-    }
-
-    select.appendChild(option);
-  });
+  select.innerHTML =
+    SUBCATEGORIES[categoryId]
+      .map(([id,name]) =>
+        `<option value="${id}" ${id === selected ? "selected" : ""}>
+          ${name}
+        </option>`
+      )
+      .join("");
 }
 
-function shopluxSetCategory(
-  categoryId,
-  subcategoryId
-) {
-  const category =
+async function login() {
+
+  const username =
+    document.getElementById("username").value;
+
+  const password =
+    document.getElementById("password").value;
+
+  const res = await fetch(API + "/auth/login", {
+    method: "POST",
+    headers: {
+      "Content-Type":"application/json"
+    },
+    body: JSON.stringify({
+      username,
+      password
+    })
+  });
+
+  const data = await res.json();
+
+  if (!data.success) {
+    alert("Sai tài khoản hoặc mật khẩu");
+    return;
+  }
+
+  localStorage.setItem(
+    "shoplux_admin",
+    "true"
+  );
+
+  showDashboard();
+}
+
+function logout() {
+
+  localStorage.removeItem(
+    "shoplux_admin"
+  );
+
+  location.reload();
+}
+
+function showDashboard() {
+
+  document
+    .getElementById("login")
+    .classList.add("hidden");
+
+  document
+    .getElementById("dashboard")
+    .classList.remove("hidden");
+
+  loadData();
+}
+
+async function loadData() {
+
+  const [pRes,oRes] =
+    await Promise.all([
+      fetch(API + "/products"),
+      fetch(API + "/admin/orders")
+    ]);
+
+  const pData =
+    await pRes.json();
+
+  const oData =
+    await oRes.json();
+
+  products =
+    pData.data || [];
+
+  const orders =
+    oData.data || [];
+
+  document.getElementById(
+    "countProducts"
+  ).textContent =
+    products.length;
+
+  document.getElementById(
+    "countOrders"
+  ).textContent =
+    orders.length;
+
+  document.getElementById(
+    "revenue"
+  ).textContent =
+    orders
+      .reduce(
+        (sum,o) =>
+          sum + Number(o.total || 0),
+        0
+      )
+      .toLocaleString("vi-VN") +
+    " ₫";
+
+  renderProducts();
+}
+
+function productImages(product) {
+
+  if (
+    Array.isArray(product.images) &&
+    product.images.length
+  ) {
+    return product.images;
+  }
+
+  if (product.image) {
+    return [product.image];
+  }
+
+  return [];
+}
+
+function renderProducts() {
+
+  const list =
     document.getElementById(
-      "shopluxCategory"
+      "productList"
     );
 
-  if (!category) return;
+  list.innerHTML =
+    products.map(p => {
 
-  category.value =
-    String(categoryId);
+      const image =
+        productImages(p)[0] ||
+        "https://via.placeholder.com/100";
 
-  shopluxRenderSubcategories(
-    categoryId,
-    subcategoryId
+      return `
+        <div class="border rounded p-3 flex gap-3 items-center">
+
+          <img
+            src="${image}"
+            class="w-16 h-16 object-cover rounded border"
+          >
+
+          <div class="flex-1 min-w-0">
+
+            <div class="font-bold truncate">
+              ${p.name}
+            </div>
+
+            <div class="text-[#ee4d2d] font-black">
+              ${Number(p.price || 0).toLocaleString("vi-VN")} ₫
+            </div>
+
+          </div>
+
+          <button
+            onclick="editProduct(${p.id})"
+            class="bg-blue-600 text-white px-3 py-2 rounded"
+          >
+            <i class="fas fa-pen"></i>
+            Sửa
+          </button>
+
+          <button
+            onclick="deleteProduct(${p.id})"
+            class="bg-red-600 text-white px-3 py-2 rounded"
+          >
+            <i class="fas fa-trash"></i>
+            Xóa
+          </button>
+
+        </div>
+      `;
+    }).join("");
+}
+
+function fileToBase64(file) {
+
+  return new Promise(
+    (resolve,reject) => {
+
+      const reader =
+        new FileReader();
+
+      reader.onload =
+        () => resolve(reader.result);
+
+      reader.onerror =
+        reject;
+
+      reader.readAsDataURL(file);
+    }
   );
 }
 
-document.addEventListener(
-  "DOMContentLoaded",
-  function () {
+async function previewImages() {
 
-    const category =
-      document.getElementById(
-        "shopluxCategory"
-      );
+  const input =
+    document.getElementById("images");
 
-    if (category) {
-      shopluxRenderSubcategories(
-        category.value
-      );
+  const files =
+    [...input.files].slice(0,4);
 
-      category.addEventListener(
-        "change",
-        function () {
-          shopluxRenderSubcategories(
-            this.value
-          );
-        }
-      );
-    }
-
-    // Tìm ô tên sản phẩm hiện tại
-    const inputs =
-      document.querySelectorAll("input");
-
-    let nameInput = null;
-
-    inputs.forEach(input => {
-      const placeholder =
-        shopluxNormalize(
-          input.placeholder || ""
-        );
-
-      if (
-        placeholder.includes(
-          "ten san pham"
-        )
-      ) {
-        nameInput = input;
-      }
-    });
-
-    if (nameInput) {
-      nameInput.addEventListener(
-        "input",
-        function () {
-          const detected =
-            shopluxAdminDetect(
-              this.value
-            );
-
-          if (detected) {
-            shopluxSetCategory(
-              detected[0],
-              detected[1]
-            );
-          }
-        }
-      );
-    }
+  if (input.files.length > 4) {
+    alert("Chỉ được chọn tối đa 4 ảnh.");
   }
-);
 
-// Dùng được bởi code submit hiện tại
-window.shopluxGetSelectedCategory =
-  function (productName = "") {
+  currentImages =
+    await Promise.all(
+      files.map(fileToBase64)
+    );
 
-    const detected =
-      shopluxAdminDetect(productName);
+  renderPreview();
+}
 
-    if (detected) {
-      return {
-        categoryId: detected[0],
-        subcategoryId: detected[1]
-      };
-    }
+function renderPreview() {
 
-    const category =
+  document.getElementById(
+    "preview"
+  ).innerHTML =
+    currentImages.map(
+      (img,index) => `
+        <div class="relative">
+
+          <img
+            src="${img}"
+            class="w-full aspect-square object-cover border rounded"
+          >
+
+          <button
+            type="button"
+            onclick="removeImage(${index})"
+            class="absolute top-1 right-1 bg-red-600 text-white w-6 h-6 rounded-full"
+          >
+            ×
+          </button>
+
+        </div>
+      `
+    ).join("");
+}
+
+function removeImage(index) {
+
+  currentImages.splice(
+    index,
+    1
+  );
+
+  renderPreview();
+}
+
+async function saveProduct() {
+
+  const id =
+    document.getElementById(
+      "editId"
+    ).value;
+
+  const name =
+    document.getElementById(
+      "name"
+    ).value.trim();
+
+  const price =
+    document.getElementById(
+      "price"
+    ).value;
+
+  const categoryId =
+    Number(
       document.getElementById(
-        "shopluxCategory"
-      );
+        "category"
+      ).value
+    );
 
-    const subcategory =
-      document.getElementById(
-        "shopluxSubcategory"
-      );
+  const subcategoryId =
+    document.getElementById(
+      "subcategory"
+    ).value;
 
-    return {
-      categoryId:
-        category
-          ? Number(category.value)
-          : 1,
+  const desc =
+    document.getElementById(
+      "desc"
+    ).value.trim();
 
-      subcategoryId:
-        subcategory
-          ? subcategory.value
-          : "khac"
-    };
+  if (!name || !price) {
+
+    alert(
+      "Nhập tên và giá sản phẩm."
+    );
+
+    return;
+  }
+
+  const payload = {
+    name,
+    price:Number(price),
+    categoryId,
+    subcategoryId,
+    images:currentImages,
+    desc
   };
 
-// ============================================================
-// END SHOPLUX ADMIN CATEGORY V2
-// ============================================================
-</script>
+  const url =
+    id
+      ? `${API}/admin/products/${id}`
+      : `${API}/admin/products`;
 
+  const method =
+    id ? "PUT" : "POST";
+
+  const res =
+    await fetch(url,{
+      method,
+      headers:{
+        "Content-Type":
+          "application/json"
+      },
+      body:JSON.stringify(payload)
+    });
+
+  const data =
+    await res.json();
+
+  if (!data.success) {
+
+    alert(
+      data.message ||
+      "Có lỗi xảy ra"
+    );
+
+    return;
+  }
+
+  alert(
+    id
+      ? "Cập nhật thành công!"
+      : "Đăng sản phẩm thành công!"
+  );
+
+  cancelEdit();
+
+  loadData();
+}
+
+function editProduct(id) {
+
+  const p =
+    products.find(
+      item =>
+        Number(item.id) ===
+        Number(id)
+    );
+
+  if (!p) return;
+
+  document.getElementById(
+    "editId"
+  ).value =
+    p.id;
+
+  document.getElementById(
+    "name"
+  ).value =
+    p.name || "";
+
+  document.getElementById(
+    "price"
+  ).value =
+    p.price || "";
+
+  document.getElementById(
+    "category"
+  ).value =
+    p.categoryId || 1;
+
+  renderSubcategories(
+    p.subcategoryId ||
+    "khac"
+  );
+
+  document.getElementById(
+    "desc"
+  ).value =
+    p.desc || "";
+
+  currentImages =
+    productImages(p).slice(0,4);
+
+  renderPreview();
+
+  document.getElementById(
+    "formTitle"
+  ).textContent =
+    "SỬA SẢN PHẨM";
+
+  document.getElementById(
+    "saveButton"
+  ).textContent =
+    "LƯU CẬP NHẬT";
+
+  document.getElementById(
+    "cancelButton"
+  ).classList.remove(
+    "hidden"
+  );
+
+  window.scrollTo({
+    top:0,
+    behavior:"smooth"
+  });
+}
+
+function cancelEdit() {
+
+  document.getElementById(
+    "editId"
+  ).value = "";
+
+  document.getElementById(
+    "name"
+  ).value = "";
+
+  document.getElementById(
+    "price"
+  ).value = "";
+
+  document.getElementById(
+    "desc"
+  ).value = "";
+
+  document.getElementById(
+    "images"
+  ).value = "";
+
+  document.getElementById(
+    "category"
+  ).value = "1";
+
+  currentImages = [];
+
+  renderSubcategories();
+  renderPreview();
+
+  document.getElementById(
+    "formTitle"
+  ).textContent =
+    "THÊM SẢN PHẨM";
+
+  document.getElementById(
+    "saveButton"
+  ).textContent =
+    "ĐĂNG BÁN";
+
+  document.getElementById(
+    "cancelButton"
+  ).classList.add(
+    "hidden"
+  );
+}
+
+async function deleteProduct(id) {
+
+  if (
+    !confirm(
+      "Bạn chắc chắn muốn xóa?"
+    )
+  ) return;
+
+  await fetch(
+    `${API}/admin/products/${id}`,
+    {
+      method:"DELETE"
+    }
+  );
+
+  loadData();
+}
+
+renderSubcategories();
+
+if (
+  localStorage.getItem(
+    "shoplux_admin"
+  ) === "true"
+) {
+  showDashboard();
+}
+
+</script>
 
 </body>
 </html>

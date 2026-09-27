@@ -708,36 +708,216 @@ function renderHomeView(container) {
   `;
 }
 
+function getProductImages(p) {
+
+  if (
+    Array.isArray(p.images) &&
+    p.images.length
+  ) {
+    return p.images;
+  }
+
+  if (p.image) {
+    return [p.image];
+  }
+
+  return [
+    "https://via.placeholder.com/500?text=ShopLux"
+  ];
+}
+
+
 function renderProductCards(products) {
-  return products.map(p => `
-    <div class="bg-white rounded shadow-sm hover:shadow-md transition border border-gray-100 flex flex-col justify-between overflow-hidden relative group">
-      <div class="absolute top-0 right-0 bg-[#ffd839] text-[#ee4d2d] text-[9px] font-bold px-1 py-0.5 uppercase z-10">${p.discount}</div>
-      <a href="?id=${p.id}" class="w-full aspect-square bg-gray-100 overflow-hidden block">
-        <img src="${p.image}" class="w-full h-full object-cover group-hover:scale-105 transition duration-200" alt="${p.name}">
-      </a>
-      <div class="p-2 flex-1 flex flex-col justify-between">
-        <a href="?id=${p.id}" class="text-[11px] text-gray-800 line-clamp-2 leading-relaxed mb-1 hover:text-[#ee4d2d]">${p.name}</a>
-        <div>
-          <div class="flex items-baseline space-x-1">
-            <span class="text-[#ee4d2d] font-bold text-xs">${p.price.toLocaleString()} ₫</span>
-            <span class="text-[9px] text-gray-400 line-through">${p.originalPrice.toLocaleString()} ₫</span>
-          </div>
-          <div class="flex justify-between items-center text-[9px] text-gray-400 mt-1">
-            <span>⭐ ${p.rating}</span>
-            <span>Đã bán ${p.sold}</span>
-          </div>
+
+  return products.map(p => {
+
+    const images =
+      getProductImages(p);
+
+    const image =
+      images[0];
+
+    const price =
+      Number(p.price || 0);
+
+    const originalPrice =
+      Number(
+        p.originalPrice ||
+        Math.round(price * 1.3)
+      );
+
+    return `
+      <div
+        class="
+          bg-white
+          rounded
+          shadow-sm
+          hover:shadow-md
+          transition
+          border
+          border-gray-100
+          flex
+          flex-col
+          justify-between
+          overflow-hidden
+          relative
+          group
+        "
+      >
+
+        <div
+          class="
+            absolute
+            top-0
+            right-0
+            bg-[#ffd839]
+            text-[#ee4d2d]
+            text-[9px]
+            font-bold
+            px-1
+            py-0.5
+            z-10
+          "
+        >
+          ${p.discount || "-20%"}
         </div>
+
+        <a
+          href="?id=${p.id}"
+          class="
+            w-full
+            aspect-square
+            bg-gray-100
+            overflow-hidden
+            block
+          "
+        >
+
+          <img
+            src="${image}"
+            class="
+              w-full
+              h-full
+              object-cover
+              group-hover:scale-105
+              transition
+              duration-200
+            "
+          >
+
+        </a>
+
+        <div
+          class="
+            p-2
+            flex-1
+            flex
+            flex-col
+            justify-between
+          "
+        >
+
+          <a
+            href="?id=${p.id}"
+            class="
+              text-[11px]
+              text-gray-800
+              line-clamp-2
+              mb-2
+            "
+          >
+            ${p.name}
+          </a>
+
+          <div>
+
+            <div class="flex items-baseline gap-1">
+
+              <span
+                class="
+                  text-[#ee4d2d]
+                  font-bold
+                  text-xs
+                "
+              >
+                ${price.toLocaleString("vi-VN")} ₫
+              </span>
+
+              <span
+                class="
+                  text-[9px]
+                  text-gray-400
+                  line-through
+                "
+              >
+                ${originalPrice.toLocaleString("vi-VN")} ₫
+              </span>
+
+            </div>
+
+            <div
+              class="
+                flex
+                justify-between
+                text-[9px]
+                text-gray-400
+                mt-1
+              "
+            >
+
+              <span>
+                ⭐ ${p.rating || 5}
+              </span>
+
+              <span>
+                Đã bán ${p.sold || "0"}
+              </span>
+
+            </div>
+
+          </div>
+
+        </div>
+
+        <div class="p-2 pt-0 flex gap-1">
+
+          <button
+            onclick="addToCartAndNotify(${p.id})"
+            class="
+              w-8
+              h-7
+              bg-orange-100
+              border
+              border-[#ee4d2d]
+              text-[#ee4d2d]
+              rounded
+            "
+          >
+            <i class="fas fa-cart-plus"></i>
+          </button>
+
+          <a
+            href="?id=${p.id}"
+            class="
+              flex-1
+              text-center
+              bg-[#ee4d2d]
+              text-white
+              py-1.5
+              rounded
+              text-[10px]
+              font-bold
+            "
+          >
+            XEM CHI TIẾT
+          </a>
+
+        </div>
+
       </div>
-      <div class="p-2 pt-0 flex space-x-1">
-        <button onclick="addToCartAndNotify(${p.id})" title="Thêm vào giỏ hàng" class="w-8 h-7 bg-orange-100 border border-[#ee4d2d] text-[#ee4d2d] rounded flex items-center justify-center hover:bg-orange-200 transition">
-          <i class="fas fa-cart-plus text-xs"></i>
-        </button>
-        <button onclick="buyNowDirect(${p.id})" class="flex-1 bg-[#ee4d2d] hover:bg-[#d73211] text-white py-1 rounded text-[10px] font-bold uppercase transition">
-          Mua Ngay
-        </button>
-      </div>
-    </div>
-  `).join('');
+    `;
+
+  }).join("");
 }
 
 // LOGIN & REGISTER PAGES
@@ -886,56 +1066,281 @@ function renderSearchView(container, keyword) {
 }
 
 function renderProductDetailView(container, id) {
-  const p = allProducts.find(item => item.id === id);
+
+  const p =
+    allProducts.find(
+      item =>
+        Number(item.id) ===
+        Number(id)
+    );
+
   if (!p) {
-    container.innerHTML = `<div class="bg-white p-8 text-center">Sản phẩm không tồn tại. <a href="/" class="text-[#ee4d2d]">Quay lại</a></div>`;
+
+    container.innerHTML = `
+      <div class="p-10 text-center">
+        Không tìm thấy sản phẩm.
+      </div>
+    `;
+
     return;
   }
 
+  const images =
+    getProductImages(p);
+
+  const price =
+    Number(p.price || 0);
+
+  const originalPrice =
+    Number(
+      p.originalPrice ||
+      Math.round(price * 1.3)
+    );
+
   container.innerHTML = `
-    <div class="max-w-6xl mx-auto px-4 py-6">
-      <div class="bg-white p-6 rounded shadow-sm">
-        <div class="text-xs text-gray-400 mb-4">
-          <a href="/" class="hover:text-gray-600">Trang chủ</a> > 
-          <a href="?search=" class="hover:text-gray-600">Sản phẩm</a> > 
-          <span class="text-gray-800 font-medium">${p.name}</span>
-        </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-          <div class="aspect-square bg-gray-100 rounded overflow-hidden border">
-            <img src="${p.image}" class="w-full h-full object-cover">
-          </div>
-          <div class="flex flex-col justify-between">
-            <div>
-              <div class="flex items-center space-x-2 text-xs mb-2">
-                <span class="bg-[#ee4d2d] text-white px-1.5 py-0.5 text-[10px] font-bold rounded">ShopLux Mall</span>
-                <span class="text-yellow-500 font-bold">⭐ ${p.rating}</span>
-                <span class="text-gray-400">|</span>
-                <span class="text-gray-500">Đã bán ${p.sold}</span>
-              </div>
-              <h1 class="text-xl font-bold text-gray-800 leading-snug">${p.name}</h1>
-              <div class="my-4 p-4 bg-[#fafafa] rounded flex items-baseline space-x-3">
-                <span class="text-2xl font-bold text-[#ee4d2d]">${p.price.toLocaleString()} ₫</span>
-                <span class="text-sm text-gray-400 line-through">${p.originalPrice.toLocaleString()} ₫</span>
-                <span class="text-xs bg-[#ffd839] text-[#ee4d2d] font-bold px-1.5 py-0.5 rounded">${p.discount}</span>
-              </div>
-              <div class="text-xs text-gray-600 space-y-2 border-t pt-4">
-                <p><strong>Vận chuyển:</strong> Miễn phí vận chuyển toàn quốc đơn từ 0Đ.</p>
-                <p><strong>Chi tiết:</strong> ${p.desc}</p>
-              </div>
+
+    <div
+      class="
+        max-w-6xl
+        mx-auto
+        px-4
+        py-6
+      "
+    >
+
+      <div
+        class="
+          bg-white
+          rounded
+          shadow-sm
+          p-5
+        "
+      >
+
+        <div
+          class="
+            grid
+            md:grid-cols-2
+            gap-8
+          "
+        >
+
+          <!-- GALLERY -->
+
+          <div>
+
+            <div
+              class="
+                aspect-square
+                bg-gray-100
+                border
+                rounded
+                overflow-hidden
+              "
+            >
+
+              <img
+                id="mainProductImage"
+                src="${images[0]}"
+                class="
+                  w-full
+                  h-full
+                  object-cover
+                "
+              >
+
             </div>
-            <div class="pt-6 border-t flex space-x-3">
-              <button onclick="addToCartAndNotify(${p.id})" class="flex-1 bg-orange-100 border border-[#ee4d2d] text-[#ee4d2d] py-3 rounded font-bold uppercase text-xs hover:bg-orange-200 transition">
-                <i class="fas fa-cart-plus mr-1"></i> Thêm Vào Giỏ Hàng
-              </button>
-              <button onclick="buyNowDirect(${p.id})" class="flex-1 bg-[#ee4d2d] text-white py-3 rounded font-bold uppercase text-xs hover:bg-[#d73211] transition">
-                Mua Ngay
-              </button>
+
+            <div
+              class="
+                grid
+                grid-cols-4
+                gap-2
+                mt-3
+              "
+            >
+
+              ${images.map((img,index) => `
+
+                <button
+                  onclick="changeProductImage('${img}')"
+                  class="
+                    aspect-square
+                    border
+                    rounded
+                    overflow-hidden
+                    hover:border-[#ee4d2d]
+                  "
+                >
+
+                  <img
+                    src="${img}"
+                    class="
+                      w-full
+                      h-full
+                      object-cover
+                    "
+                  >
+
+                </button>
+
+              `).join("")}
+
             </div>
+
           </div>
+
+
+          <!-- INFO -->
+
+          <div>
+
+            <div
+              class="
+                inline-block
+                bg-[#ee4d2d]
+                text-white
+                px-2
+                py-1
+                rounded
+                text-[10px]
+                font-bold
+                mb-3
+              "
+            >
+              ShopLux Mall
+            </div>
+
+            <h1
+              class="
+                text-2xl
+                font-black
+                text-gray-800
+              "
+            >
+              ${p.name}
+            </h1>
+
+            <div
+              class="
+                mt-4
+                bg-gray-50
+                p-4
+                rounded
+              "
+            >
+
+              <span
+                class="
+                  text-3xl
+                  font-black
+                  text-[#ee4d2d]
+                "
+              >
+                ${price.toLocaleString("vi-VN")} ₫
+              </span>
+
+              <span
+                class="
+                  ml-3
+                  text-gray-400
+                  line-through
+                "
+              >
+                ${originalPrice.toLocaleString("vi-VN")} ₫
+              </span>
+
+            </div>
+
+            <div
+              class="
+                mt-5
+                border-t
+                pt-5
+                text-gray-600
+                leading-6
+              "
+            >
+
+              <p>
+                <strong>Mô tả:</strong>
+                ${p.desc || "Sản phẩm chính hãng ShopLux."}
+              </p>
+
+              <p class="mt-2">
+                <strong>Đánh giá:</strong>
+                ⭐ ${p.rating || 5}
+              </p>
+
+              <p class="mt-2">
+                <strong>Đã bán:</strong>
+                ${p.sold || "0"}
+              </p>
+
+            </div>
+
+            <div
+              class="
+                flex
+                gap-3
+                mt-8
+              "
+            >
+
+              <button
+                onclick="addToCartAndNotify(${p.id})"
+                class="
+                  flex-1
+                  border
+                  border-[#ee4d2d]
+                  bg-orange-50
+                  text-[#ee4d2d]
+                  py-3
+                  rounded
+                  font-bold
+                "
+              >
+                <i class="fas fa-cart-plus"></i>
+                THÊM VÀO GIỎ
+              </button>
+
+              <button
+                onclick="buyNowDirect(${p.id})"
+                class="
+                  flex-1
+                  bg-[#ee4d2d]
+                  text-white
+                  py-3
+                  rounded
+                  font-bold
+                "
+              >
+                MUA NGAY
+              </button>
+
+            </div>
+
+          </div>
+
         </div>
+
       </div>
+
     </div>
   `;
+}
+
+
+function changeProductImage(src) {
+
+  const image =
+    document.getElementById(
+      "mainProductImage"
+    );
+
+  if (image) {
+    image.src = src;
+  }
 }
 
 function renderSellerChannelView(container) {
