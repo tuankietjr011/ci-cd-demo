@@ -2,1297 +2,227 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <title>ShopLux - Mua Sắm Online</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>ShopLux Fashion | Authentic Fashion</title>
 
   <script src="https://cdn.tailwindcss.com"></script>
 
-  <link
-    rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-  >
-
   <style>
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
-      margin: 0;
-      background: #f5f5f5;
-      font-family: Arial, Helvetica, sans-serif;
-      color: #222;
-    }
-
-    :root {
-      --red: #e60023;
-      --dark-red: #c9001e;
-      --light-red: #fff0f2;
-    }
-
-    .shoplux-red {
-      background: var(--red);
-    }
-
-    .shoplux-text {
-      color: var(--red);
-    }
-
-    .product-card {
-      transition: 0.2s ease;
-      border: 1px solid transparent;
-    }
-
-    .product-card:hover {
-      transform: translateY(-3px);
-      border-color: var(--red);
-      box-shadow: 0 5px 18px rgba(0,0,0,.12);
-    }
-
-    .category-item {
-      transition: .2s;
-    }
-
-    .category-item:hover {
-      color: var(--red);
-      transform: translateY(-2px);
-    }
-
-    .line-clamp-2 {
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-    }
-
-    .banner {
-      background:
-        linear-gradient(
-          120deg,
-          #b5001c,
-          #e60023,
-          #ff405a
-        );
-    }
+    body{background:#f6f6f6}
+    .red{background:#c9001e}
+    .red-text{color:#c9001e}
+    .product-card{transition:.2s}
+    .product-card:hover{transform:translateY(-4px);box-shadow:0 8px 25px #0002}
   </style>
 </head>
 
 <body>
 
-<!-- ========================================= -->
-<!-- TOP BAR -->
-<!-- ========================================= -->
+<header class="red text-white">
 
-<div class="shoplux-red text-white text-xs">
-
-  <div
-    class="
-      max-w-7xl
-      mx-auto
-      px-4
-      py-2
-      flex
-      justify-between
-      items-center
-    "
-  >
-
-    <div class="hidden md:flex gap-4">
-
-      <a href="/admin.html" class="hover:underline">
-        Kênh Người Bán
-      </a>
-
-      <span>|</span>
-
-      <a href="/admin.html" class="hover:underline">
-        Trở thành Người bán ShopLux
-      </a>
-
-      <span>|</span>
-
-      <span>
-        Kết nối
-        <i class="fab fa-facebook ml-1"></i>
-        <i class="fab fa-instagram ml-1"></i>
-      </span>
-
-    </div>
-
-    <div class="flex gap-4 ml-auto">
-
-      <span>
-        <i class="far fa-bell"></i>
-        Thông Báo
-      </span>
-
-      <span>
-        <i class="far fa-circle-question"></i>
-        Hỗ Trợ
-      </span>
-
-      <a href="/admin.html">
-        Tài Khoản
-      </a>
-
-    </div>
-
+  <div class="max-w-7xl mx-auto px-4 py-2 text-xs flex justify-between">
+    <span>SHOPLUX AUTHENTIC FASHION</span>
+    <a href="/admin.html">Kênh người bán</a>
   </div>
 
-</div>
+  <div class="max-w-7xl mx-auto px-4 py-5 flex items-center gap-8">
 
-
-<!-- ========================================= -->
-<!-- MAIN HEADER -->
-<!-- ========================================= -->
-
-<header class="shoplux-red text-white sticky top-0 z-40 shadow">
-
-  <div
-    class="
-      max-w-7xl
-      mx-auto
-      px-4
-      py-4
-      flex
-      items-center
-      gap-8
-    "
-  >
-
-    <!-- LOGO -->
-
-    <a
-      href="/"
-      class="
-        flex
-        items-center
-        gap-2
-        shrink-0
-      "
-    >
-
-      <div
-        class="
-          w-11
-          h-11
-          border-2
-          border-white
-          rounded-lg
-          flex
-          items-center
-          justify-center
-          font-black
-          text-2xl
-        "
-      >
-        L
-      </div>
-
-      <span
-        class="
-          text-2xl
-          font-black
-          hidden
-          sm:block
-        "
-      >
-        ShopLux
+    <a href="/" class="text-3xl font-black">
+      ShopLux
+      <span class="block text-[10px] tracking-[4px]">
+        FASHION
       </span>
-
     </a>
 
+    <div class="flex-1 bg-white p-1 flex rounded">
 
-    <!-- SEARCH -->
-
-    <div class="flex-1">
-
-      <div
-        class="
-          bg-white
-          p-1
-          rounded-sm
-          flex
-          shadow
-        "
+      <input
+        id="searchInput"
+        class="flex-1 px-4 outline-none text-gray-800"
+        placeholder="Tìm áo, giày, thương hiệu..."
       >
 
-        <input
-          id="searchInput"
-          type="search"
-          placeholder="ShopLux bao ship 0Đ - Đăng ký ngay!"
-          class="
-            flex-1
-            text-gray-700
-            px-4
-            py-2.5
-            outline-none
-          "
-        >
-
-        <button
-          onclick="performSearch()"
-          class="
-            shoplux-red
-            text-white
-            px-7
-            rounded-sm
-            hover:opacity-90
-          "
-        >
-          <i class="fas fa-search"></i>
-        </button>
-
-      </div>
-
-      <div
-        class="
-          hidden
-          md:flex
-          gap-4
-          mt-2
-          text-xs
-        "
+      <button
+        onclick="performSearch()"
+        class="red px-7 py-2 rounded text-white"
       >
-
-        <a href="/?category=1&subcategory=do-bong-da">
-          Áo Bóng Đá
-        </a>
-
-        <a href="/?category=1&subcategory=ao-thun">
-          Áo Thun
-        </a>
-
-        <a href="/?category=2&subcategory=iphone">
-          iPhone
-        </a>
-
-        <a href="/?category=3&subcategory=tai-nghe">
-          Tai Nghe
-        </a>
-
-        <a href="/?category=3&subcategory=ban-phim">
-          Bàn Phím
-        </a>
-
-        <a href="/?category=4&subcategory=dong-ho-thong-minh">
-          Smart Watch
-        </a>
-
-      </div>
+        🔍
+      </button>
 
     </div>
 
-
-    <!-- CART -->
-
-    <button
-      onclick="openCart()"
-      class="
-        relative
-        text-3xl
-        px-3
-      "
-    >
-
-      <i class="fas fa-shopping-cart"></i>
-
-      <span
-        id="cartCount"
-        class="
-          absolute
-          -top-2
-          right-0
-          bg-white
-          shoplux-text
-          border
-          border-red-200
-          text-xs
-          font-bold
-          rounded-full
-          min-w-5
-          h-5
-          flex
-          items-center
-          justify-center
-          px-1
-        "
-      >
-        0
-      </span>
-
+    <button onclick="openCart()" class="text-2xl">
+      🛒
+      <span id="cartCount" class="text-sm">0</span>
     </button>
 
   </div>
 
 </header>
 
+<nav class="bg-white border-b sticky top-0 z-30">
 
-<!-- ========================================= -->
-<!-- HOME ONLY CONTENT -->
-<!-- ========================================= -->
+  <div class="max-w-7xl mx-auto flex justify-center overflow-x-auto">
 
-<div id="homeTop">
+    <a href="/" class="px-6 py-4 font-bold">TRANG CHỦ</a>
+    <a href="/?category=1" class="px-6 py-4 font-bold">NAM</a>
+    <a href="/?category=2" class="px-6 py-4 font-bold">NỮ</a>
+    <a href="/?category=3" class="px-6 py-4 font-bold">GIÀY DÉP</a>
+    <a href="/?category=4" class="px-6 py-4 font-bold">PHỤ KIỆN</a>
+    <a href="/?category=5" class="px-6 py-4 font-bold red-text">ĐỒ BÓNG ĐÁ</a>
 
-  <!-- BANNER -->
-
-  <section class="max-w-7xl mx-auto px-4 pt-5">
-
-    <div
-      class="
-        grid
-        lg:grid-cols-3
-        gap-2
-      "
-    >
-
-      <div
-        class="
-          banner
-          lg:col-span-2
-          rounded-sm
-          min-h-[235px]
-          text-white
-          p-8
-          flex
-          items-center
-          overflow-hidden
-          relative
-        "
-      >
-
-        <div class="relative z-10">
-
-          <div
-            class="
-              inline-block
-              bg-yellow-300
-              text-red-700
-              font-black
-              px-3
-              py-1
-              rounded
-              text-sm
-              mb-4
-            "
-          >
-            SHOPLUX 9.9
-          </div>
-
-          <h1
-            class="
-              text-3xl
-              md:text-5xl
-              font-black
-              leading-tight
-            "
-          >
-            SIÊU SALE
-            <br>
-            GIÁ SỐC HÔM NAY
-          </h1>
-
-          <p class="mt-3 text-lg">
-            Deal hot • Freeship • Voucher mỗi ngày
-          </p>
-
-          <a
-            href="#products"
-            class="
-              inline-block
-              bg-white
-              shoplux-text
-              font-black
-              px-6
-              py-3
-              mt-5
-              rounded
-            "
-          >
-            MUA NGAY
-          </a>
-
-        </div>
-
-        <div
-          class="
-            absolute
-            -right-16
-            -bottom-20
-            w-80
-            h-80
-            rounded-full
-            bg-white/10
-          "
-        ></div>
-
-      </div>
-
-
-      <div class="grid grid-rows-2 gap-2">
-
-        <a
-          href="/?category=1"
-          class="
-            bg-white
-            rounded-sm
-            p-5
-            flex
-            items-center
-            justify-between
-            border
-          "
-        >
-
-          <div>
-
-            <div class="shoplux-text font-black text-xl">
-              THỜI TRANG
-            </div>
-
-            <div class="text-gray-500 mt-1">
-              Deal mới mỗi ngày
-            </div>
-
-          </div>
-
-          <div class="text-5xl">
-            👕
-          </div>
-
-        </a>
-
-
-        <a
-          href="/?category=3"
-          class="
-            bg-white
-            rounded-sm
-            p-5
-            flex
-            items-center
-            justify-between
-            border
-          "
-        >
-
-          <div>
-
-            <div class="shoplux-text font-black text-xl">
-              CÔNG NGHỆ
-            </div>
-
-            <div class="text-gray-500 mt-1">
-              Giá tốt chính hãng
-            </div>
-
-          </div>
-
-          <div class="text-5xl">
-            🎧
-          </div>
-
-        </a>
-
-      </div>
-
-    </div>
-
-  </section>
-
-
-  <!-- SERVICES -->
-
-  <section class="max-w-7xl mx-auto px-4 mt-4">
-
-    <div
-      class="
-        bg-white
-        grid
-        grid-cols-4
-        md:grid-cols-8
-        gap-2
-        p-5
-        border
-      "
-    >
-
-      <a href="/?category=1" class="category-item text-center">
-
-        <div
-          class="
-            mx-auto
-            w-12
-            h-12
-            rounded-xl
-            bg-red-50
-            flex
-            items-center
-            justify-center
-            text-2xl
-          "
-        >
-          👕
-        </div>
-
-        <div class="text-xs mt-2">
-          Thời Trang
-        </div>
-
-      </a>
-
-
-      <a href="/?category=2" class="category-item text-center">
-
-        <div
-          class="
-            mx-auto
-            w-12
-            h-12
-            rounded-xl
-            bg-red-50
-            flex
-            items-center
-            justify-center
-            text-2xl
-          "
-        >
-          📱
-        </div>
-
-        <div class="text-xs mt-2">
-          Điện Thoại
-        </div>
-
-      </a>
-
-
-      <a href="/?category=3" class="category-item text-center">
-
-        <div
-          class="
-            mx-auto
-            w-12
-            h-12
-            rounded-xl
-            bg-red-50
-            flex
-            items-center
-            justify-center
-            text-2xl
-          "
-        >
-          💻
-        </div>
-
-        <div class="text-xs mt-2">
-          Điện Tử
-        </div>
-
-      </a>
-
-
-      <a href="/?category=4" class="category-item text-center">
-
-        <div
-          class="
-            mx-auto
-            w-12
-            h-12
-            rounded-xl
-            bg-red-50
-            flex
-            items-center
-            justify-center
-            text-2xl
-          "
-        >
-          ⌚
-        </div>
-
-        <div class="text-xs mt-2">
-          Đồng Hồ
-        </div>
-
-      </a>
-
-
-      <a href="/?category=1&subcategory=do-bong-da" class="category-item text-center">
-
-        <div
-          class="
-            mx-auto
-            w-12
-            h-12
-            rounded-xl
-            bg-red-50
-            flex
-            items-center
-            justify-center
-            text-2xl
-          "
-        >
-          ⚽
-        </div>
-
-        <div class="text-xs mt-2">
-          Đồ Bóng Đá
-        </div>
-
-      </a>
-
-
-      <a href="/?category=3&subcategory=tai-nghe" class="category-item text-center">
-
-        <div
-          class="
-            mx-auto
-            w-12
-            h-12
-            rounded-xl
-            bg-red-50
-            flex
-            items-center
-            justify-center
-            text-2xl
-          "
-        >
-          🎧
-        </div>
-
-        <div class="text-xs mt-2">
-          Tai Nghe
-        </div>
-
-      </a>
-
-
-      <a href="/?category=3&subcategory=ban-phim" class="category-item text-center">
-
-        <div
-          class="
-            mx-auto
-            w-12
-            h-12
-            rounded-xl
-            bg-red-50
-            flex
-            items-center
-            justify-center
-            text-2xl
-          "
-        >
-          ⌨️
-        </div>
-
-        <div class="text-xs mt-2">
-          Bàn Phím
-        </div>
-
-      </a>
-
-
-      <a href="/?category=4&subcategory=dong-ho-thong-minh" class="category-item text-center">
-
-        <div
-          class="
-            mx-auto
-            w-12
-            h-12
-            rounded-xl
-            bg-red-50
-            flex
-            items-center
-            justify-center
-            text-2xl
-          "
-        >
-          🔥
-        </div>
-
-        <div class="text-xs mt-2">
-          Deal Hot
-        </div>
-
-      </a>
-
-    </div>
-
-  </section>
-
-
-  <!-- CATEGORIES -->
-
-  <section class="max-w-7xl mx-auto px-4 mt-5">
-
-    <div class="bg-white border">
-
-      <div
-        class="
-          px-5
-          py-4
-          border-b
-          text-gray-500
-          font-medium
-        "
-      >
-        DANH MỤC
-      </div>
-
-      <div
-        class="
-          grid
-          grid-cols-2
-          sm:grid-cols-4
-          md:grid-cols-8
-        "
-      >
-
-        <a
-          href="/?category=1&subcategory=ao-thun"
-          class="
-            category-item
-            border-r
-            border-b
-            p-5
-            text-center
-          "
-        >
-          <div class="text-4xl">👕</div>
-          <div class="mt-3 text-sm">Áo Thun</div>
-        </a>
-
-        <a
-          href="/?category=1&subcategory=do-bong-da"
-          class="
-            category-item
-            border-r
-            border-b
-            p-5
-            text-center
-          "
-        >
-          <div class="text-4xl">⚽</div>
-          <div class="mt-3 text-sm">Đồ Bóng Đá</div>
-        </a>
-
-        <a
-          href="/?category=2&subcategory=iphone"
-          class="
-            category-item
-            border-r
-            border-b
-            p-5
-            text-center
-          "
-        >
-          <div class="text-4xl">📱</div>
-          <div class="mt-3 text-sm">iPhone</div>
-        </a>
-
-        <a
-          href="/?category=2&subcategory=samsung"
-          class="
-            category-item
-            border-r
-            border-b
-            p-5
-            text-center
-          "
-        >
-          <div class="text-4xl">📲</div>
-          <div class="mt-3 text-sm">Samsung</div>
-        </a>
-
-        <a
-          href="/?category=3&subcategory=tai-nghe"
-          class="
-            category-item
-            border-r
-            border-b
-            p-5
-            text-center
-          "
-        >
-          <div class="text-4xl">🎧</div>
-          <div class="mt-3 text-sm">Tai Nghe</div>
-        </a>
-
-        <a
-          href="/?category=3&subcategory=ban-phim"
-          class="
-            category-item
-            border-r
-            border-b
-            p-5
-            text-center
-          "
-        >
-          <div class="text-4xl">⌨️</div>
-          <div class="mt-3 text-sm">Bàn Phím</div>
-        </a>
-
-        <a
-          href="/?category=3&subcategory=chuot"
-          class="
-            category-item
-            border-r
-            border-b
-            p-5
-            text-center
-          "
-        >
-          <div class="text-4xl">🖱️</div>
-          <div class="mt-3 text-sm">Chuột</div>
-        </a>
-
-        <a
-          href="/?category=4"
-          class="
-            category-item
-            border-b
-            p-5
-            text-center
-          "
-        >
-          <div class="text-4xl">⌚</div>
-          <div class="mt-3 text-sm">Đồng Hồ</div>
-        </a>
-
-      </div>
-
-    </div>
-
-  </section>
-
-
-  <!-- FLASH SALE -->
-
-  <section class="max-w-7xl mx-auto px-4 mt-5">
-
-    <div
-      class="
-        bg-white
-        border
-        p-5
-        flex
-        items-center
-        justify-between
-      "
-    >
-
-      <div class="flex items-center gap-3">
-
-        <span
-          class="
-            shoplux-text
-            text-2xl
-            font-black
-            italic
-          "
-        >
-          FLASH SALE
-        </span>
-
-        <span
-          class="
-            bg-black
-            text-white
-            px-2
-            py-1
-            rounded
-            text-xs
-          "
-        >
-          00
-        </span>
-
-        <span>:</span>
-
-        <span
-          class="
-            bg-black
-            text-white
-            px-2
-            py-1
-            rounded
-            text-xs
-          "
-        >
-          59
-        </span>
-
-        <span>:</span>
-
-        <span
-          class="
-            bg-black
-            text-white
-            px-2
-            py-1
-            rounded
-            text-xs
-          "
-        >
-          59
-        </span>
-
-      </div>
-
-      <a
-        href="#products"
-        class="shoplux-text text-sm"
-      >
-        Xem tất cả →
-      </a>
-
-    </div>
-
-  </section>
-
-</div>
-
-
-<!-- ========================================= -->
-<!-- PRODUCTS -->
-<!-- app.js render vào đây -->
-<!-- ========================================= -->
-
-<main
-  id="app"
-  class="min-h-[500px]"
->
-
-  <div
-    class="
-      max-w-7xl
-      mx-auto
-      px-4
-      py-10
-      text-center
-      text-gray-400
-    "
-  >
-    Đang tải sản phẩm...
   </div>
 
-</main>
+</nav>
 
+<section id="hero" class="bg-black text-white">
 
-<!-- ========================================= -->
-<!-- CART MODAL -->
-<!-- ========================================= -->
+  <div class="max-w-7xl mx-auto px-6 py-20 md:py-28">
+
+    <div class="max-w-2xl">
+
+      <p class="red-text font-black tracking-[4px]">
+        SHOPLUX FASHION
+      </p>
+
+      <h1 class="text-4xl md:text-6xl font-black mt-4">
+        THỜI TRANG
+        <br>
+        CHÍNH HÃNG
+      </h1>
+
+      <p class="text-gray-300 mt-5 text-lg">
+        Phong cách mới. Sản phẩm chất lượng.
+        Trải nghiệm mua sắm hiện đại.
+      </p>
+
+      <div class="flex gap-3 mt-7">
+
+        <a href="#app" class="red px-7 py-3 font-black">
+          MUA NGAY
+        </a>
+
+        <a href="/?category=5" class="border px-7 py-3 font-black">
+          ĐỒ BÓNG ĐÁ
+        </a>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+<section id="brands" class="bg-white">
+
+  <div class="max-w-7xl mx-auto px-4 py-8">
+
+    <p class="text-center text-xs text-gray-400 tracking-[3px]">
+      THƯƠNG HIỆU NỔI BẬT
+    </p>
+
+    <div class="grid grid-cols-3 md:grid-cols-6 text-center gap-5 mt-5 font-black text-xl">
+      <span>NIKE</span>
+      <span>adidas</span>
+      <span>PUMA</span>
+      <span>NB</span>
+      <span>MLB</span>
+      <span>VANS</span>
+    </div>
+
+  </div>
+
+</section>
+
+<main id="app" class="min-h-[500px]"></main>
 
 <div
   id="cartModal"
-  class="
-    hidden
-    fixed
-    inset-0
-    bg-black/50
-    z-50
-    items-center
-    justify-center
-    p-4
-  "
+  class="hidden fixed inset-0 bg-black/60 z-50 items-center justify-center p-4"
 >
+  <div class="bg-white max-w-xl w-full rounded-xl p-5">
 
-  <div
-    class="
-      bg-white
-      rounded-lg
-      w-full
-      max-w-2xl
-      max-h-[80vh]
-      overflow-auto
-    "
-  >
-
-    <div
-      class="
-        p-5
-        border-b
-        flex
-        justify-between
-        items-center
-      "
-    >
-
-      <h2 class="font-black text-xl">
-        GIỎ HÀNG SHOPLUX
-      </h2>
-
-      <button
-        onclick="closeCart()"
-        class="text-3xl text-gray-400"
-      >
-        ×
-      </button>
-
+    <div class="flex justify-between">
+      <h2 class="font-black text-xl">GIỎ HÀNG</h2>
+      <button onclick="closeCart()">✕</button>
     </div>
 
-    <div
-      id="cartItems"
-      class="p-5"
-    ></div>
+    <div id="cartItems" class="mt-5"></div>
 
   </div>
-
 </div>
 
+<footer class="bg-black text-white mt-10">
 
-<!-- ========================================= -->
-<!-- FOOTER -->
-<!-- ========================================= -->
-
-<footer
-  class="
-    bg-white
-    border-t-4
-    border-[#e60023]
-    mt-10
-  "
->
-
-  <div
-    class="
-      max-w-7xl
-      mx-auto
-      px-4
-      py-10
-      grid
-      sm:grid-cols-2
-      lg:grid-cols-4
-      gap-10
-      text-sm
-    "
-  >
+  <div class="max-w-7xl mx-auto px-4 py-12 grid md:grid-cols-4 gap-8">
 
     <div>
-
-      <h3 class="font-black mb-4">
-        VỀ SHOPLUX
-      </h3>
-
-      <p class="text-gray-500 leading-6">
-        Nền tảng mua sắm trực tuyến với hàng ngàn
-        sản phẩm giá tốt mỗi ngày.
+      <div class="text-2xl font-black">ShopLux</div>
+      <p class="text-gray-400 mt-3">
+        Fashion store dành cho phong cách hiện đại.
       </p>
-
     </div>
-
 
     <div>
-
-      <h3 class="font-black mb-4">
-        CHĂM SÓC KHÁCH HÀNG
-      </h3>
-
-      <p class="text-gray-500 mb-2">
-        Trung Tâm Trợ Giúp
-      </p>
-
-      <p class="text-gray-500">
-        Hướng Dẫn Mua Hàng
-      </p>
-
+      <b>MUA SẮM</b>
+      <p class="text-gray-400 mt-3">Nam</p>
+      <p class="text-gray-400">Nữ</p>
+      <p class="text-gray-400">Giày dép</p>
     </div>
-
 
     <div>
-
-      <h3 class="font-black mb-4">
-        THANH TOÁN
-      </h3>
-
-      <p class="text-gray-500">
-        COD • Ví điện tử • Chuyển khoản
-      </p>
-
+      <b>HỖ TRỢ</b>
+      <p class="text-gray-400 mt-3">Đổi trả</p>
+      <p class="text-gray-400">Giao hàng</p>
     </div>
-
 
     <div>
-
-      <h3 class="font-black mb-4">
-        THEO DÕI SHOPLUX
-      </h3>
-
-      <p class="text-gray-500">
-        Facebook • Instagram • TikTok
-      </p>
-
+      <b>SHOPLUX</b>
+      <p class="text-gray-400 mt-3">Authentic Fashion</p>
     </div>
 
-  </div>
-
-  <div
-    class="
-      border-t
-      text-center
-      py-5
-      text-xs
-      text-gray-400
-    "
-  >
-    © 2026 ShopLux Việt Nam
   </div>
 
 </footer>
 
-
 <script src="/app.js"></script>
 
 <script>
+const q = new URLSearchParams(location.search);
 
-  // Ẩn banner + danh mục khi đang xem
-  // tìm kiếm / category / chi tiết sản phẩm
+if (q.toString()) {
+  document.getElementById("hero").style.display = "none";
+  document.getElementById("brands").style.display = "none";
+}
 
-  const params =
-    new URLSearchParams(
-      window.location.search
-    );
+function openCart() {
+  const modal = document.getElementById("cartModal");
+  const items = JSON.parse(localStorage.getItem("shoplux_cart") || "[]");
 
-  if (
-    params.has("category") ||
-    params.has("subcategory") ||
-    params.has("search") ||
-    params.has("id")
-  ) {
-    const homeTop =
-      document.getElementById(
-        "homeTop"
-      );
-
-    if (homeTop) {
-      homeTop.style.display =
-        "none";
-    }
-  }
-
-
-  function openCart() {
-
-    const modal =
-      document.getElementById(
-        "cartModal"
-      );
-
-    const container =
-      document.getElementById(
-        "cartItems"
-      );
-
-    const currentCart =
-      JSON.parse(
-        localStorage.getItem(
-          "shoplux_cart"
-        ) || "[]"
-      );
-
-    if (!currentCart.length) {
-
-      container.innerHTML = `
-        <div
-          class="
-            text-center
-            py-12
-            text-gray-400
-          "
-        >
-          <div class="text-6xl mb-4">
-            🛒
-          </div>
-
-          Chưa có sản phẩm trong giỏ hàng.
-        </div>
-      `;
-
-    } else {
-
-      container.innerHTML =
-        currentCart.map(
-          item => `
-            <div
-              class="
-                flex
-                gap-4
-                items-center
-                border-b
-                py-4
-              "
-            >
-
-              <img
-                src="${item.image}"
-                class="
-                  w-16
-                  h-16
-                  object-cover
-                  border
-                  rounded
-                "
-              >
-
-              <div class="flex-1">
-
-                <div class="font-bold">
-                  ${item.name}
-                </div>
-
-                <div
-                  class="
-                    shoplux-text
-                    font-black
-                    mt-1
-                  "
-                >
-                  ${Number(
-                    item.price || 0
-                  ).toLocaleString(
-                    "vi-VN"
-                  )} ₫
-                </div>
-
-              </div>
-
-              <div>
-                x${item.qty || 1}
-              </div>
-
+  cartItems.innerHTML = items.length
+    ? items.map(item => `
+        <div class="flex gap-3 py-3 border-b">
+          <img src="${item.image}" class="w-16 h-16 object-cover">
+          <div class="flex-1">
+            <b>${item.name}</b>
+            <div class="red-text font-bold">
+              ${Number(item.price).toLocaleString("vi-VN")} ₫
             </div>
-          `
-        ).join("");
+          </div>
+          <span>x${item.qty}</span>
+        </div>
+      `).join("")
+    : `<div class="text-center text-gray-400 py-10">Giỏ hàng trống</div>`;
 
-    }
+  modal.classList.remove("hidden");
+  modal.classList.add("flex");
+}
 
-    modal.classList.remove(
-      "hidden"
-    );
-
-    modal.classList.add(
-      "flex"
-    );
-  }
-
-
-  function closeCart() {
-
-    const modal =
-      document.getElementById(
-        "cartModal"
-      );
-
-    modal.classList.add(
-      "hidden"
-    );
-
-    modal.classList.remove(
-      "flex"
-    );
-  }
-
+function closeCart() {
+  cartModal.classList.add("hidden");
+  cartModal.classList.remove("flex");
+}
 </script>
 
 </body>

@@ -3,740 +3,400 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>ShopLux Admin</title>
+  <title>ShopLux Fashion Admin</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 
-<body class="bg-gray-100 text-sm">
+<body class="bg-gray-100">
 
-<header class="bg-[#ee4d2d] text-white px-6 py-4 flex justify-between">
-  <h1 class="font-black text-lg">SHOPLUX ADMIN</h1>
+<header class="bg-[#c9001e] text-white p-4">
+  <div class="max-w-7xl mx-auto flex justify-between items-center">
+    <div>
+      <h1 class="text-xl font-black">SHOPLUX FASHION</h1>
+      <p class="text-xs opacity-80">ADMIN CENTER</p>
+    </div>
 
-  <div class="space-x-3">
-    <a href="/" class="bg-white/20 px-3 py-2 rounded">
+    <a href="/" class="border border-white px-4 py-2 rounded">
       Trang khách
     </a>
-
-    <button onclick="logout()" class="bg-white text-[#ee4d2d] px-3 py-2 rounded font-bold">
-      Đăng xuất
-    </button>
   </div>
 </header>
 
-<!-- LOGIN -->
-<div id="login" class="max-w-sm mx-auto mt-20 bg-white p-6 shadow rounded">
+<main class="max-w-7xl mx-auto p-5">
 
-  <h2 class="font-black text-lg mb-5 text-center">
-    ĐĂNG NHẬP ADMIN
-  </h2>
+  <div class="grid lg:grid-cols-5 gap-5">
 
-  <input
-    id="username"
-    value="admin"
-    class="border p-3 w-full mb-3 rounded"
-    placeholder="Tài khoản"
-  >
+    <section class="lg:col-span-2 bg-white rounded-xl shadow-sm p-5">
 
-  <input
-    id="password"
-    value="admin123"
-    type="password"
-    class="border p-3 w-full mb-4 rounded"
-    placeholder="Mật khẩu"
-  >
-
-  <button
-    onclick="login()"
-    class="w-full bg-[#ee4d2d] text-white p-3 rounded font-bold"
-  >
-    ĐĂNG NHẬP
-  </button>
-
-</div>
-
-<!-- DASHBOARD -->
-<main id="dashboard" class="hidden max-w-7xl mx-auto p-5">
-
-  <div class="grid md:grid-cols-3 gap-4 mb-6">
-
-    <div class="bg-white shadow rounded p-5">
-      <div class="text-gray-500">Sản phẩm</div>
-      <div id="countProducts" class="text-2xl font-black">0</div>
-    </div>
-
-    <div class="bg-white shadow rounded p-5">
-      <div class="text-gray-500">Đơn hàng</div>
-      <div id="countOrders" class="text-2xl font-black">0</div>
-    </div>
-
-    <div class="bg-white shadow rounded p-5">
-      <div class="text-gray-500">Doanh thu</div>
-      <div id="revenue" class="text-2xl font-black text-[#ee4d2d]">0 ₫</div>
-    </div>
-
-  </div>
-
-  <div class="grid lg:grid-cols-5 gap-6">
-
-    <!-- FORM -->
-    <div class="lg:col-span-2 bg-white shadow rounded p-5">
-
-      <h2 id="formTitle" class="font-black text-lg mb-5">
+      <h2 id="formTitle" class="font-black text-xl mb-5">
         THÊM SẢN PHẨM
       </h2>
 
       <input type="hidden" id="editId">
 
       <label class="font-bold">Tên sản phẩm</label>
+      <input id="name" class="border rounded p-3 w-full mt-1 mb-4">
+
+      <label class="font-bold">Thương hiệu</label>
       <input
-        id="name"
-        class="border p-3 w-full rounded mb-4 mt-1"
-        placeholder="Ví dụ: iPhone 17 Pro Max"
+        id="brand"
+        placeholder="Nike, adidas, Puma..."
+        class="border rounded p-3 w-full mt-1 mb-4"
       >
 
-      <label class="font-bold">Giá bán</label>
-      <input
-        id="price"
-        type="number"
-        class="border p-3 w-full rounded mb-4 mt-1"
-        placeholder="29990000"
-      >
+      <div class="grid grid-cols-2 gap-3">
 
-      <label class="font-bold">Danh mục chính</label>
+        <div>
+          <label class="font-bold">Giá bán</label>
+          <input
+            id="price"
+            type="number"
+            class="border rounded p-3 w-full mt-1 mb-4"
+          >
+        </div>
+
+        <div>
+          <label class="font-bold">Giá gốc</label>
+          <input
+            id="originalPrice"
+            type="number"
+            class="border rounded p-3 w-full mt-1 mb-4"
+          >
+        </div>
+
+      </div>
+
+      <label class="font-bold">Danh mục</label>
 
       <select
         id="category"
         onchange="renderSubcategories()"
-        class="border p-3 w-full rounded mb-4 mt-1 bg-white"
+        class="border rounded p-3 w-full mt-1 mb-4"
       >
-        <option value="1">Thời Trang</option>
-        <option value="2">Điện Thoại</option>
-        <option value="3">Thiết Bị Điện Tử</option>
-        <option value="4">Đồng Hồ</option>
+        <option value="1">Nam</option>
+        <option value="2">Nữ</option>
+        <option value="3">Giày Dép</option>
+        <option value="4">Phụ Kiện</option>
+        <option value="5">Đồ Bóng Đá</option>
       </select>
 
       <label class="font-bold">Danh mục con</label>
 
       <select
         id="subcategory"
-        class="border p-3 w-full rounded mb-4 mt-1 bg-white"
+        class="border rounded p-3 w-full mt-1 mb-4"
       ></select>
 
-      <label class="font-bold">
-        Ảnh sản phẩm (tối đa 4 ảnh)
-      </label>
+      <label class="font-bold">Size</label>
+
+      <div id="sizes" class="flex flex-wrap gap-2 my-3">
+        <label><input type="checkbox" value="S"> S</label>
+        <label><input type="checkbox" value="M"> M</label>
+        <label><input type="checkbox" value="L"> L</label>
+        <label><input type="checkbox" value="XL"> XL</label>
+        <label><input type="checkbox" value="XXL"> XXL</label>
+        <label><input type="checkbox" value="39"> 39</label>
+        <label><input type="checkbox" value="40"> 40</label>
+        <label><input type="checkbox" value="41"> 41</label>
+        <label><input type="checkbox" value="42"> 42</label>
+        <label><input type="checkbox" value="43"> 43</label>
+      </div>
+
+      <label class="font-bold">Ảnh sản phẩm (tối đa 4)</label>
 
       <input
         id="images"
         type="file"
-        accept="image/*"
         multiple
-        onchange="previewImages()"
-        class="border p-3 w-full rounded mt-1"
+        accept="image/*"
+        onchange="readImages()"
+        class="border rounded p-3 w-full mt-1"
       >
 
-      <div
-        id="preview"
-        class="grid grid-cols-4 gap-2 my-4"
-      ></div>
+      <div id="preview" class="grid grid-cols-4 gap-2 my-4"></div>
 
       <label class="font-bold">Mô tả</label>
 
       <textarea
         id="desc"
         rows="4"
-        class="border p-3 w-full rounded mt-1 mb-4"
-        placeholder="Mô tả sản phẩm..."
+        class="border rounded p-3 w-full mt-1 mb-4"
       ></textarea>
 
       <div class="flex gap-2">
 
         <button
-          id="saveButton"
           onclick="saveProduct()"
-          class="flex-1 bg-[#ee4d2d] text-white p-3 rounded font-black"
+          id="saveButton"
+          class="flex-1 bg-[#c9001e] text-white rounded p-3 font-black"
         >
-          ĐĂNG BÁN
+          ĐĂNG SẢN PHẨM
         </button>
 
         <button
+          onclick="resetForm()"
           id="cancelButton"
-          onclick="cancelEdit()"
-          class="hidden bg-gray-500 text-white px-5 rounded font-bold"
+          class="hidden bg-gray-500 text-white rounded px-5"
         >
-          HỦY
+          Hủy
         </button>
 
       </div>
 
-    </div>
+    </section>
 
-    <!-- PRODUCTS -->
-    <div class="lg:col-span-3 bg-white shadow rounded p-5">
+    <section class="lg:col-span-3 bg-white rounded-xl shadow-sm p-5">
 
-      <h2 class="font-black text-lg mb-5">
-        DANH SÁCH SẢN PHẨM
+      <h2 class="font-black text-xl mb-5">
+        SẢN PHẨM ĐANG BÁN
       </h2>
 
       <div id="productList" class="space-y-3"></div>
 
-    </div>
+    </section>
 
   </div>
 
 </main>
 
 <script>
-
 const API = "/api";
 
 let products = [];
 let currentImages = [];
 
-const SUBCATEGORIES = {
+const subs = {
   1: [
-    ["ao-thun","Áo thun"],
-    ["do-bong-da","Đồ bóng đá"],
-    ["ao-so-mi","Áo sơ mi"],
-    ["quan-jeans","Quần jeans"],
-    ["ao-khoac","Áo khoác"],
-    ["khac","Khác"]
+    ["ao-thun-nam","Áo thun"],
+    ["ao-polo-nam","Áo polo"],
+    ["ao-so-mi-nam","Áo sơ mi"],
+    ["ao-khoac-nam","Áo khoác"],
+    ["quan-jeans-nam","Quần jeans"],
+    ["quan-short-nam","Quần short"]
   ],
-
   2: [
-    ["iphone","iPhone"],
-    ["samsung","Samsung"],
-    ["xiaomi","Xiaomi"],
-    ["oppo","OPPO"],
-    ["vivo","Vivo"],
-    ["phu-kien-dien-thoai","Phụ kiện điện thoại"],
-    ["khac","Khác"]
+    ["ao-nu","Áo nữ"],
+    ["vay-dam","Váy / Đầm"],
+    ["quan-nu","Quần nữ"],
+    ["ao-khoac-nu","Áo khoác nữ"]
   ],
-
   3: [
-    ["tai-nghe","Tai nghe"],
-    ["ban-phim","Bàn phím"],
-    ["chuot","Chuột"],
-    ["laptop","Laptop"],
-    ["loa","Loa"],
-    ["man-hinh","Màn hình"],
-    ["khac","Khác"]
+    ["sneaker","Sneaker"],
+    ["giay-the-thao","Giày thể thao"],
+    ["dep","Dép"]
   ],
-
   4: [
-    ["dong-ho-thong-minh","Đồng hồ thông minh"],
-    ["dong-ho-nam","Đồng hồ nam"],
-    ["dong-ho-nu","Đồng hồ nữ"],
-    ["dong-ho-the-thao","Đồng hồ thể thao"],
-    ["khac","Khác"]
+    ["tui-balo","Túi / Balo"],
+    ["mu","Mũ"],
+    ["kinh","Kính"],
+    ["that-lung","Thắt lưng"],
+    ["vi","Ví"]
+  ],
+  5: [
+    ["ao-clb","Áo CLB"],
+    ["ao-doi-tuyen","Áo đội tuyển"],
+    ["quan-bong-da","Quần bóng đá"],
+    ["giay-bong-da","Giày bóng đá"],
+    ["phu-kien-bong-da","Phụ kiện bóng đá"]
   ]
 };
 
 function renderSubcategories(selected = "") {
+  const id = Number(category.value);
 
-  const categoryId =
-    Number(document.getElementById("category").value);
-
-  const select =
-    document.getElementById("subcategory");
-
-  select.innerHTML =
-    SUBCATEGORIES[categoryId]
-      .map(([id,name]) =>
-        `<option value="${id}" ${id === selected ? "selected" : ""}>
-          ${name}
-        </option>`
-      )
-      .join("");
+  subcategory.innerHTML = (subs[id] || [])
+    .map(([value,name]) =>
+      `<option value="${value}" ${value === selected ? "selected" : ""}>${name}</option>`
+    )
+    .join("");
 }
 
-async function login() {
-
-  const username =
-    document.getElementById("username").value;
-
-  const password =
-    document.getElementById("password").value;
-
-  const res = await fetch(API + "/auth/login", {
-    method: "POST",
-    headers: {
-      "Content-Type":"application/json"
-    },
-    body: JSON.stringify({
-      username,
-      password
-    })
+function fileBase64(file) {
+  return new Promise(resolve => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.readAsDataURL(file);
   });
+}
 
-  const data = await res.json();
+async function readImages() {
+  const files = [...images.files].slice(0,4);
 
-  if (!data.success) {
-    alert("Sai tài khoản hoặc mật khẩu");
-    return;
-  }
-
-  localStorage.setItem(
-    "shoplux_admin",
-    "true"
+  currentImages = await Promise.all(
+    files.map(fileBase64)
   );
-
-  showDashboard();
-}
-
-function logout() {
-
-  localStorage.removeItem(
-    "shoplux_admin"
-  );
-
-  location.reload();
-}
-
-function showDashboard() {
-
-  document
-    .getElementById("login")
-    .classList.add("hidden");
-
-  document
-    .getElementById("dashboard")
-    .classList.remove("hidden");
-
-  loadData();
-}
-
-async function loadData() {
-
-  const [pRes,oRes] =
-    await Promise.all([
-      fetch(API + "/products"),
-      fetch(API + "/admin/orders")
-    ]);
-
-  const pData =
-    await pRes.json();
-
-  const oData =
-    await oRes.json();
-
-  products =
-    pData.data || [];
-
-  const orders =
-    oData.data || [];
-
-  document.getElementById(
-    "countProducts"
-  ).textContent =
-    products.length;
-
-  document.getElementById(
-    "countOrders"
-  ).textContent =
-    orders.length;
-
-  document.getElementById(
-    "revenue"
-  ).textContent =
-    orders
-      .reduce(
-        (sum,o) =>
-          sum + Number(o.total || 0),
-        0
-      )
-      .toLocaleString("vi-VN") +
-    " ₫";
-
-  renderProducts();
-}
-
-function productImages(product) {
-
-  if (
-    Array.isArray(product.images) &&
-    product.images.length
-  ) {
-    return product.images;
-  }
-
-  if (product.image) {
-    return [product.image];
-  }
-
-  return [];
-}
-
-function renderProducts() {
-
-  const list =
-    document.getElementById(
-      "productList"
-    );
-
-  list.innerHTML =
-    products.map(p => {
-
-      const image =
-        productImages(p)[0] ||
-        "https://via.placeholder.com/100";
-
-      return `
-        <div class="border rounded p-3 flex gap-3 items-center">
-
-          <img
-            src="${image}"
-            class="w-16 h-16 object-cover rounded border"
-          >
-
-          <div class="flex-1 min-w-0">
-
-            <div class="font-bold truncate">
-              ${p.name}
-            </div>
-
-            <div class="text-[#ee4d2d] font-black">
-              ${Number(p.price || 0).toLocaleString("vi-VN")} ₫
-            </div>
-
-          </div>
-
-          <button
-            onclick="editProduct(${p.id})"
-            class="bg-blue-600 text-white px-3 py-2 rounded"
-          >
-            <i class="fas fa-pen"></i>
-            Sửa
-          </button>
-
-          <button
-            onclick="deleteProduct(${p.id})"
-            class="bg-red-600 text-white px-3 py-2 rounded"
-          >
-            <i class="fas fa-trash"></i>
-            Xóa
-          </button>
-
-        </div>
-      `;
-    }).join("");
-}
-
-function fileToBase64(file) {
-
-  return new Promise(
-    (resolve,reject) => {
-
-      const reader =
-        new FileReader();
-
-      reader.onload =
-        () => resolve(reader.result);
-
-      reader.onerror =
-        reject;
-
-      reader.readAsDataURL(file);
-    }
-  );
-}
-
-async function previewImages() {
-
-  const input =
-    document.getElementById("images");
-
-  const files =
-    [...input.files].slice(0,4);
-
-  if (input.files.length > 4) {
-    alert("Chỉ được chọn tối đa 4 ảnh.");
-  }
-
-  currentImages =
-    await Promise.all(
-      files.map(fileToBase64)
-    );
 
   renderPreview();
 }
 
 function renderPreview() {
-
-  document.getElementById(
-    "preview"
-  ).innerHTML =
-    currentImages.map(
-      (img,index) => `
-        <div class="relative">
-
-          <img
-            src="${img}"
-            class="w-full aspect-square object-cover border rounded"
-          >
-
-          <button
-            type="button"
-            onclick="removeImage(${index})"
-            class="absolute top-1 right-1 bg-red-600 text-white w-6 h-6 rounded-full"
-          >
-            ×
-          </button>
-
-        </div>
-      `
-    ).join("");
+  preview.innerHTML = currentImages.map((src,i) => `
+    <div class="relative">
+      <img src="${src}" class="w-full aspect-square object-cover rounded">
+      <button
+        onclick="removeImage(${i})"
+        class="absolute top-1 right-1 bg-red-600 text-white rounded-full w-6 h-6"
+      >×</button>
+    </div>
+  `).join("");
 }
 
-function removeImage(index) {
-
-  currentImages.splice(
-    index,
-    1
-  );
-
+function removeImage(i) {
+  currentImages.splice(i,1);
   renderPreview();
+}
+
+function selectedSizes() {
+  return [
+    ...document.querySelectorAll("#sizes input:checked")
+  ].map(el => el.value);
+}
+
+async function loadProducts() {
+  const response = await fetch(API + "/products");
+  const json = await response.json();
+
+  products = json.data || [];
+
+  productList.innerHTML = products.map(p => `
+    <div class="border rounded-lg p-3 flex items-center gap-3">
+
+      <img
+        src="${p.image || (p.images || [])[0] || "https://placehold.co/100"}"
+        class="w-16 h-16 rounded object-cover"
+      >
+
+      <div class="flex-1">
+        <div class="font-black">${p.name}</div>
+        <div class="text-xs text-gray-500">${p.brand || "ShopLux"}</div>
+        <div class="text-[#c9001e] font-bold">
+          ${Number(p.price || 0).toLocaleString("vi-VN")} ₫
+        </div>
+      </div>
+
+      <button
+        onclick="editProduct(${p.id})"
+        class="bg-gray-900 text-white px-3 py-2 rounded"
+      >
+        Sửa
+      </button>
+
+      <button
+        onclick="deleteProduct(${p.id})"
+        class="bg-[#c9001e] text-white px-3 py-2 rounded"
+      >
+        Xóa
+      </button>
+
+    </div>
+  `).join("");
 }
 
 async function saveProduct() {
-
-  const id =
-    document.getElementById(
-      "editId"
-    ).value;
-
-  const name =
-    document.getElementById(
-      "name"
-    ).value.trim();
-
-  const price =
-    document.getElementById(
-      "price"
-    ).value;
-
-  const categoryId =
-    Number(
-      document.getElementById(
-        "category"
-      ).value
-    );
-
-  const subcategoryId =
-    document.getElementById(
-      "subcategory"
-    ).value;
-
-  const desc =
-    document.getElementById(
-      "desc"
-    ).value.trim();
-
-  if (!name || !price) {
-
-    alert(
-      "Nhập tên và giá sản phẩm."
-    );
-
-    return;
-  }
+  const id = editId.value;
 
   const payload = {
-    name,
-    price:Number(price),
-    categoryId,
-    subcategoryId,
-    images:currentImages,
-    desc
+    name: name.value.trim(),
+    brand: brand.value.trim(),
+    price: Number(price.value),
+    originalPrice: Number(originalPrice.value),
+    categoryId: Number(category.value),
+    subcategoryId: subcategory.value,
+    sizes: selectedSizes(),
+    images: currentImages,
+    desc: desc.value.trim()
   };
 
-  const url =
-    id
-      ? `${API}/admin/products/${id}`
-      : `${API}/admin/products`;
-
-  const method =
-    id ? "PUT" : "POST";
-
-  const res =
-    await fetch(url,{
-      method,
-      headers:{
-        "Content-Type":
-          "application/json"
-      },
-      body:JSON.stringify(payload)
-    });
-
-  const data =
-    await res.json();
-
-  if (!data.success) {
-
-    alert(
-      data.message ||
-      "Có lỗi xảy ra"
-    );
-
+  if (!payload.name || !payload.price) {
+    alert("Nhập tên và giá sản phẩm");
     return;
   }
 
-  alert(
-    id
-      ? "Cập nhật thành công!"
-      : "Đăng sản phẩm thành công!"
+  const response = await fetch(
+    id ? `${API}/admin/products/${id}` : `${API}/admin/products`,
+    {
+      method: id ? "PUT" : "POST",
+      headers: {"Content-Type":"application/json"},
+      body: JSON.stringify(payload)
+    }
   );
 
-  cancelEdit();
+  const json = await response.json();
 
-  loadData();
+  if (!json.success) {
+    alert(json.message || "Có lỗi xảy ra");
+    return;
+  }
+
+  resetForm();
+  loadProducts();
 }
 
 function editProduct(id) {
-
-  const p =
-    products.find(
-      item =>
-        Number(item.id) ===
-        Number(id)
-    );
-
+  const p = products.find(x => Number(x.id) === Number(id));
   if (!p) return;
 
-  document.getElementById(
-    "editId"
-  ).value =
-    p.id;
+  editId.value = p.id;
+  name.value = p.name || "";
+  brand.value = p.brand || "";
+  price.value = p.price || "";
+  originalPrice.value = p.originalPrice || "";
+  category.value = p.categoryId || 1;
 
-  document.getElementById(
-    "name"
-  ).value =
-    p.name || "";
+  renderSubcategories(p.subcategoryId);
 
-  document.getElementById(
-    "price"
-  ).value =
-    p.price || "";
+  desc.value = p.desc || "";
+  currentImages = (p.images || (p.image ? [p.image] : [])).slice(0,4);
 
-  document.getElementById(
-    "category"
-  ).value =
-    p.categoryId || 1;
-
-  renderSubcategories(
-    p.subcategoryId ||
-    "khac"
-  );
-
-  document.getElementById(
-    "desc"
-  ).value =
-    p.desc || "";
-
-  currentImages =
-    productImages(p).slice(0,4);
+  document.querySelectorAll("#sizes input").forEach(input => {
+    input.checked = (p.sizes || []).includes(input.value);
+  });
 
   renderPreview();
 
-  document.getElementById(
-    "formTitle"
-  ).textContent =
-    "SỬA SẢN PHẨM";
+  formTitle.textContent = "SỬA SẢN PHẨM";
+  saveButton.textContent = "LƯU THAY ĐỔI";
+  cancelButton.classList.remove("hidden");
 
-  document.getElementById(
-    "saveButton"
-  ).textContent =
-    "LƯU CẬP NHẬT";
-
-  document.getElementById(
-    "cancelButton"
-  ).classList.remove(
-    "hidden"
-  );
-
-  window.scrollTo({
-    top:0,
-    behavior:"smooth"
-  });
+  window.scrollTo({top:0,behavior:"smooth"});
 }
 
-function cancelEdit() {
-
-  document.getElementById(
-    "editId"
-  ).value = "";
-
-  document.getElementById(
-    "name"
-  ).value = "";
-
-  document.getElementById(
-    "price"
-  ).value = "";
-
-  document.getElementById(
-    "desc"
-  ).value = "";
-
-  document.getElementById(
-    "images"
-  ).value = "";
-
-  document.getElementById(
-    "category"
-  ).value = "1";
+function resetForm() {
+  editId.value = "";
+  name.value = "";
+  brand.value = "";
+  price.value = "";
+  originalPrice.value = "";
+  desc.value = "";
+  images.value = "";
+  category.value = 1;
 
   currentImages = [];
+
+  document.querySelectorAll("#sizes input").forEach(x => {
+    x.checked = false;
+  });
 
   renderSubcategories();
   renderPreview();
 
-  document.getElementById(
-    "formTitle"
-  ).textContent =
-    "THÊM SẢN PHẨM";
-
-  document.getElementById(
-    "saveButton"
-  ).textContent =
-    "ĐĂNG BÁN";
-
-  document.getElementById(
-    "cancelButton"
-  ).classList.add(
-    "hidden"
-  );
+  formTitle.textContent = "THÊM SẢN PHẨM";
+  saveButton.textContent = "ĐĂNG SẢN PHẨM";
+  cancelButton.classList.add("hidden");
 }
 
 async function deleteProduct(id) {
+  if (!confirm("Xóa sản phẩm này?")) return;
 
-  if (
-    !confirm(
-      "Bạn chắc chắn muốn xóa?"
-    )
-  ) return;
+  await fetch(`${API}/admin/products/${id}`, {
+    method:"DELETE"
+  });
 
-  await fetch(
-    `${API}/admin/products/${id}`,
-    {
-      method:"DELETE"
-    }
-  );
-
-  loadData();
+  loadProducts();
 }
 
 renderSubcategories();
-
-if (
-  localStorage.getItem(
-    "shoplux_admin"
-  ) === "true"
-) {
-  showDashboard();
-}
-
+loadProducts();
 </script>
 
 </body>
