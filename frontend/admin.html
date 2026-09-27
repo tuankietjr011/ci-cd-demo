@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>ShopLux Admin Portal</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-gray-100 font-sans text-xs min-h-screen">
+  <header class="bg-[#d0011b] text-white py-3 px-6 shadow flex justify-between items-center">
+    <div class="flex items-center space-x-3">
+      <div class="w-8 h-8 bg-white text-[#d0011b] font-black rounded flex items-center justify-center text-lg">L</div>
+      <span class="text-base font-bold uppercase tracking-wide">ShopLux Admin Portal</span>
+    </div>
+    <div class="space-x-3">
+      <a href="/" class="bg-white/20 hover:bg-white/30 px-3 py-1.5 rounded font-bold transition">Xem Trang Khách</a>
+      <button onclick="logoutAdmin()" class="bg-white text-[#d0011b] hover:bg-gray-100 px-3 py-1.5 rounded font-bold transition">Đăng Xuất</button>
+    </div>
+  </header>
+
+  <div id="admin-login-box" class="max-w-sm mx-auto my-20 p-6 bg-white rounded shadow-lg border-t-4 border-[#d0011b] space-y-4">
+    <div class="text-center">
+      <i class="fas fa-shield-halved text-[#d0011b] text-3xl mb-2"></i>
+      <h2 class="text-sm font-black text-gray-800 uppercase">Đăng Nhập Quản Trị Viên</h2>
+    </div>
+    <div class="bg-yellow-50 p-2.5 rounded text-yellow-800 text-[11px] border border-yellow-200">
+      Tài khoản: <strong>admin</strong> | Mật khẩu: <strong>admin123</strong>
+    </div>
+    <input id="adm-user" value="admin" class="w-full border p-2.5 rounded focus:outline-[#d0011b]">
+    <input id="adm-pass" type="password" value="admin123" class="w-full border p-2.5 rounded focus:outline-[#d0011b]">
+    <button onclick="loginAdmin()" class="w-full bg-[#d0011b] hover:bg-red-700 text-white py-2.5 rounded font-bold uppercase transition">Vào Hệ Thống</button>
+  </div>
+
+  <main id="admin-dashboard" class="max-w-6xl mx-auto p-6 space-y-6 hidden">
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <div class="bg-white p-4 rounded shadow border flex items-center space-x-4">
+        <div class="w-10 h-10 rounded-full bg-red-100 text-[#d0011b] flex items-center justify-center text-lg font-bold"><i class="fas fa-receipt"></i></div>
+        <div><p class="text-gray-400">Tổng Đơn Hàng</p><h3 id="stat-orders" class="text-lg font-black text-gray-800">0 đơn</h3></div>
+      </div>
+      <div class="bg-white p-4 rounded shadow border flex items-center space-x-4">
+        <div class="w-10 h-10 rounded-full bg-green-100 text-green-600 flex items-center justify-center text-lg font-bold"><i class="fas fa-coins"></i></div>
+        <div><p class="text-gray-400">Tổng Doanh Thu</p><h3 id="stat-revenue" class="text-lg font-black text-green-600">0 ₫</h3></div>
+      </div>
+      <div class="bg-white p-4 rounded shadow border flex items-center space-x-4">
+        <div class="w-10 h-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center text-lg font-bold"><i class="fas fa-boxes-stacked"></i></div>
+        <div><p class="text-gray-400">Sản Phẩm Đang Bán</p><h3 id="stat-products" class="text-lg font-black text-blue-600">0 món</h3></div>
+      </div>
+    </div>
+
+    <div class="bg-white p-5 rounded shadow border space-y-3">
+      <h2 class="font-black text-sm text-gray-800 flex items-center space-x-2 border-b pb-2">
+        <i class="fas fa-truck-ramp-box text-[#d0011b]"></i>
+        <span>QUẢN LÝ TIẾN TRÌNH VẬN CHUYỂN ĐƠN HÀNG (4 BƯỚC)</span>
+      </h2>
+      <div class="overflow-x-auto">
+        <table class="w-full text-left border-collapse">
+          <thead>
+            <tr class="bg-gray-50 border-b text-gray-600">
+              <th class="p-2.5">MÃ ĐƠN</th>
+              <th class="p-2.5">KHÁCH HÀNG</th>
+              <th class="p-2.5">TỔNG TIỀN</th>
+              <th class="p-2.5">TIẾN TRÌNH HIỆN TẠI</th>
+              <th class="p-2.5 text-center">THAO TÁC CẬP NHẬT</th>
+            </tr>
+          </thead>
+          <tbody id="orders-table-body" class="divide-y text-[11px]"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      <div class="lg:col-span-4 bg-white p-4 rounded shadow border space-y-3">
+        <h3 class="font-black text-xs text-[#d0011b] border-b pb-2">THÊM SẢN PHẨM MỚI</h3>
+        <input id="p-name" placeholder="Tên sản phẩm *" class="w-full border p-2 rounded focus:outline-[#d0011b]">
+        <input id="p-price" type="number" placeholder="Giá bán (₫) *" class="w-full border p-2 rounded focus:outline-[#d0011b]">
+        <input id="p-img" placeholder="Link ảnh URL" class="w-full border p-2 rounded focus:outline-[#d0011b]">
+        <textarea id="p-desc" placeholder="Mô tả tóm tắt..." class="w-full border p-2 rounded focus:outline-[#d0011b]" rows="2"></textarea>
+        <button onclick="createProduct()" class="w-full bg-[#d0011b] hover:bg-red-700 text-white py-2 rounded font-bold uppercase transition">Đăng Bán Ngay</button>
+      </div>
+      <div class="lg:col-span-8 bg-white p-4 rounded shadow border space-y-3">
+        <h3 class="font-black text-xs text-gray-800 border-b pb-2">DANH SÁCH MẶT HÀNG TRÊN SÀN</h3>
+        <div id="products-list" class="divide-y max-h-72 overflow-y-auto"></div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    const API = '/api';
+    let isLogged = localStorage.getItem('shoplux_admin') === 'true';
+
+    function checkAuth() {
+      document.getElementById('admin-login-box').classList.toggle('hidden', isLogged);
+      document.getElementById('admin-dashboard').classList.toggle('hidden', !isLogged);
+      if (isLogged) loadData();
+    }
+
+    async function loginAdmin() {
+      const u = document.getElementById('adm-user').value.trim();
+      const p = document.getElementById('adm-pass').value.trim();
+      const res = await fetch(API + '/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username: u, password: p })
+      });
+      const d = await res.json();
+      if (d.success && (d.user.role === 'admin' || d.user.username === 'admin')) {
+        isLogged = true;
+        localStorage.setItem('shoplux_admin', 'true');
+        checkAuth();
+      } else {
+        alert('Tài khoản hoặc mật khẩu không chính xác!');
+      }
+    }
+
+    function logoutAdmin() {
+      localStorage.removeItem('shoplux_admin');
+      isLogged = false;
+      checkAuth();
+    }
+
+    async function loadData() {
+      const [oRes, pRes] = await Promise.all([fetch(API + '/admin/orders'), fetch(API + '/products')]);
+      const orders = (await oRes.json()).data || [];
+      const prods = (await pRes.json()).data || [];
+
+      document.getElementById('stat-orders').innerText = orders.length + ' đơn';
+      document.getElementById('stat-products').innerText = prods.length + ' món';
+      document.getElementById('stat-revenue').innerText = orders.reduce((s, o) => s + (o.total || 0), 0).toLocaleString() + ' ₫';
+
+      const steps = ['', '1. Đã Đặt Đơn', '2. Đang Chuẩn Bị', '3. Đang Vận Chuyển', '4. Đã Nhận Thành Công'];
+      document.getElementById('orders-table-body').innerHTML = orders.map(o => {
+        const s = o.statusStep || 1;
+        return '<tr class="hover:bg-gray-50">' +
+          '<td class="p-2.5 font-bold text-[#d0011b]">#' + o.orderId + '<br><span class="text-[9px] text-gray-400 font-normal">' + o.createdAt + '</span></td>' +
+          '<td class="p-2.5"><strong>' + o.fullname + '</strong> (' + o.phone + ')<br><span class="text-gray-400">' + o.address + '</span></td>' +
+          '<td class="p-2.5 font-bold text-gray-800">' + o.total.toLocaleString() + ' ₫</td>' +
+          '<td class="p-2.5"><span class="px-2 py-0.5 rounded font-bold text-[10px] ' + (s === 4 ? 'bg-green-100 text-green-700' : 'bg-red-50 text-[#d0011b] border border-red-200') + '">' + steps[s] + '</span></td>' +
+          '<td class="p-2.5 text-center space-x-1">' +
+            '<button onclick="changeStatus(\'' + o.orderId + '\', 1)" class="px-2 py-0.5 border rounded ' + (s === 1 ? 'bg-[#d0011b] text-white font-bold' : '') + '">B1</button>' +
+            '<button onclick="changeStatus(\'' + o.orderId + '\', 2)" class="px-2 py-0.5 border rounded ' + (s === 2 ? 'bg-[#d0011b] text-white font-bold' : '') + '">B2</button>' +
+            '<button onclick="changeStatus(\'' + o.orderId + '\', 3)" class="px-2 py-0.5 border rounded ' + (s === 3 ? 'bg-[#d0011b] text-white font-bold' : '') + '">B3</button>' +
+            '<button onclick="changeStatus(\'' + o.orderId + '\', 4)" class="px-2 py-0.5 border rounded ' + (s === 4 ? 'bg-green-600 text-white font-bold' : '') + '">B4 (Xong)</button>' +
+          '</td>' +
+        '</tr>';
+      }).join('');
+
+      document.getElementById('products-list').innerHTML = prods.map(p => {
+        return '<div class="py-2 flex justify-between items-center">' +
+          '<div class="flex items-center space-x-3 w-4/5">' +
+            '<img src="' + p.image + '" class="w-8 h-8 rounded object-cover border flex-shrink-0">' +
+            '<div class="truncate"><p class="font-bold truncate text-gray-800">' + p.name + '</p><span class="text-[#d0011b] font-bold">' + p.price.toLocaleString() + ' ₫</span></div>' +
+          '</div>' +
+          '<button onclick="deleteProduct(' + p.id + ')" class="text-red-500 hover:text-red-700 font-bold px-2 py-1"><i class="fas fa-trash-can mr-1"></i>Xóa</button>' +
+        '</div>';
+      }).join('');
+    }
+
+    async function changeStatus(orderId, step) {
+      await fetch(API + '/admin/orders/' + orderId + '/status', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ step })
+      });
+      loadData();
+    }
+
+    async function createProduct() {
+      const name = document.getElementById('p-name').value.trim();
+      const price = document.getElementById('p-price').value.trim();
+      const image = document.getElementById('p-img').value.trim();
+      const desc = document.getElementById('p-desc').value.trim();
+      if (!name || !price) return alert('Vui lòng nhập tên và giá sản phẩm!');
+
+      await fetch(API + '/admin/products', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, price, image, desc })
+      });
+      alert('Đăng bán sản phẩm thành công!');
+      document.getElementById('p-name').value = '';
+      document.getElementById('p-price').value = '';
+      loadData();
+    }
+
+    async function deleteProduct(id) {
+      if (!confirm('Bạn có chắc muốn xóa sản phẩm này?')) return;
+      await fetch(API + '/admin/products/' + id, { method: 'DELETE' });
+      loadData();
+    }
+
+    checkAuth();
+  </script>
+</body>
+</html>
