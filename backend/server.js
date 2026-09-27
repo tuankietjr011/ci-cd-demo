@@ -102,6 +102,14 @@ app.delete("/api/admin/products/:id", (req, res) => {
   res.json({ success: true });
 });
 
+
+app.get("/admin.html", (req, res) => {
+  res.sendFile(path.join(__dirname, "../frontend/admin.html"));
+});
+app.get("/admin", (req, res) => {
+  res.sendFile(path.join(__dirname, "../frontend/admin.html"));
+});
+
 app.get("*", (req, res) => res.sendFile(path.join(__dirname, "../frontend/index.html")));
 
 const PORT = process.env.PORT || 3000;
