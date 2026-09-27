@@ -1,110 +1,620 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>ShopLux Fashion | Authentic Fashion</title>
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>ShopLux | Maison Luxury Fashion</title>
 
   <script src="https://cdn.tailwindcss.com"></script>
 
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+  >
+
   <style>
-    body{background:#f6f6f6}
-    .red{background:#c9001e}
-    .red-text{color:#c9001e}
-    .product-card{transition:.2s}
-    .product-card:hover{transform:translateY(-4px);box-shadow:0 8px 25px #0002}
+    :root {
+      --brown: #3b2416;
+      --brown-dark: #1f120c;
+      --brown-light: #5c3824;
+      --gold: #c9a227;
+      --champagne: #e8d5a3;
+      --ivory: #f7f1e7;
+      --cream: #efe4d2;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: var(--ivory);
+      color: var(--brown-dark);
+      font-family: Arial, sans-serif;
+    }
+
+    .luxury-font {
+      font-family: Georgia, "Times New Roman", serif;
+    }
+
+    .mega-parent {
+      position: relative;
+    }
+
+    .mega-menu {
+      display: none;
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      min-width: 500px;
+      background: #fffdf8;
+      border-top: 3px solid var(--gold);
+      box-shadow: 0 15px 40px rgba(31, 18, 12, .2);
+      z-index: 100;
+    }
+
+    .mega-parent:hover .mega-menu {
+      display: block;
+    }
+
+    .nav-item {
+      position: relative;
+    }
+
+    .nav-item::after {
+      content: "";
+      position: absolute;
+      bottom: 8px;
+      left: 50%;
+      width: 0;
+      height: 1px;
+      background: var(--gold);
+      transition: .25s;
+      transform: translateX(-50%);
+    }
+
+    .nav-item:hover::after {
+      width: 55%;
+    }
+
+    .brand-link {
+      transition: .25s;
+    }
+
+    .brand-link:hover {
+      color: var(--gold);
+      transform: translateY(-3px);
+    }
+
+    .hero {
+      background:
+        radial-gradient(
+          circle at 75% 40%,
+          #70452d 0%,
+          #3b2416 30%,
+          #1f120c 70%
+        );
+    }
+
+    .royal-line {
+      width: 70px;
+      height: 1px;
+      background: var(--gold);
+    }
+
+    @media (max-width: 900px) {
+      .desktop-nav {
+        overflow-x: auto;
+        justify-content: flex-start;
+      }
+
+      .mega-menu {
+        display: none !important;
+      }
+    }
   </style>
 </head>
 
 <body>
 
-<header class="red text-white">
+<!-- TOP -->
 
-  <div class="max-w-7xl mx-auto px-4 py-2 text-xs flex justify-between">
-    <span>SHOPLUX AUTHENTIC FASHION</span>
-    <a href="/admin.html">Kênh người bán</a>
+<div
+  class="text-xs"
+  style="
+    background:#1f120c;
+    color:#e8d5a3;
+    border-bottom:1px solid #5c3824;
+  "
+>
+  <div
+    class="
+      max-w-7xl
+      mx-auto
+      px-4
+      py-2
+      flex
+      justify-between
+    "
+  >
+    <span>SHOPLUX MAISON • AUTHENTIC FASHION</span>
+
+    <a href="/admin.html">
+      KÊNH NGƯỜI BÁN
+    </a>
   </div>
+</div>
 
-  <div class="max-w-7xl mx-auto px-4 py-5 flex items-center gap-8">
 
-    <a href="/" class="text-3xl font-black">
-      ShopLux
-      <span class="block text-[10px] tracking-[4px]">
-        FASHION
-      </span>
+<!-- HEADER -->
+
+<header
+  style="
+    background:#3b2416;
+    color:#fffdf8;
+  "
+>
+
+  <div
+    class="
+      max-w-7xl
+      mx-auto
+      px-4
+      py-6
+      flex
+      items-center
+      gap-8
+    "
+  >
+
+    <a href="/" class="shrink-0 text-center">
+
+      <div
+        class="
+          luxury-font
+          text-3xl
+          md:text-4xl
+          tracking-[5px]
+        "
+        style="color:#e8d5a3"
+      >
+        SHOPLUX
+      </div>
+
+      <div
+        class="
+          text-[9px]
+          tracking-[4px]
+          mt-1
+        "
+      >
+        MAISON • LUXURY FASHION
+      </div>
+
     </a>
 
-    <div class="flex-1 bg-white p-1 flex rounded">
 
-      <input
-        id="searchInput"
-        class="flex-1 px-4 outline-none text-gray-800"
-        placeholder="Tìm áo, giày, thương hiệu..."
+    <div class="flex-1">
+
+      <div
+        class="
+          flex
+          bg-[#fffdf8]
+          border
+        "
+        style="border-color:#c9a227"
       >
 
-      <button
-        onclick="performSearch()"
-        class="red px-7 py-2 rounded text-white"
-      >
-        🔍
-      </button>
+        <input
+          id="searchInput"
+          placeholder="Tìm kiếm sản phẩm, thương hiệu..."
+          class="
+            flex-1
+            bg-transparent
+            text-[#1f120c]
+            px-5
+            py-3
+            outline-none
+          "
+        >
+
+        <button
+          onclick="performSearch()"
+          class="
+            px-7
+            text-xl
+          "
+          style="
+            background:#c9a227;
+            color:#1f120c;
+          "
+        >
+          <i class="fa-solid fa-magnifying-glass"></i>
+        </button>
+
+      </div>
 
     </div>
 
-    <button onclick="openCart()" class="text-2xl">
-      🛒
-      <span id="cartCount" class="text-sm">0</span>
+
+    <button
+      onclick="openCart()"
+      class="relative text-2xl"
+      style="color:#e8d5a3"
+    >
+      <i class="fa-solid fa-bag-shopping"></i>
+
+      <span
+        id="cartCount"
+        class="
+          absolute
+          -top-3
+          -right-3
+          text-[10px]
+          rounded-full
+          w-5
+          h-5
+          flex
+          items-center
+          justify-center
+        "
+        style="
+          background:#c9a227;
+          color:#1f120c;
+        "
+      >
+        0
+      </span>
     </button>
 
   </div>
 
 </header>
 
-<nav class="bg-white border-b sticky top-0 z-30">
 
-  <div class="max-w-7xl mx-auto flex justify-center overflow-x-auto">
+<!-- NAV -->
 
-    <a href="/" class="px-6 py-4 font-bold">TRANG CHỦ</a>
-    <a href="/?category=1" class="px-6 py-4 font-bold">NAM</a>
-    <a href="/?category=2" class="px-6 py-4 font-bold">NỮ</a>
-    <a href="/?category=3" class="px-6 py-4 font-bold">GIÀY DÉP</a>
-    <a href="/?category=4" class="px-6 py-4 font-bold">PHỤ KIỆN</a>
-    <a href="/?category=5" class="px-6 py-4 font-bold red-text">ĐỒ BÓNG ĐÁ</a>
+<nav
+  class="bg-[#fffdf8] border-b"
+  style="border-color:#e8d5a3"
+>
 
-  </div>
+  <div
+    class="
+      desktop-nav
+      max-w-7xl
+      mx-auto
+      flex
+      justify-center
+      items-center
+      whitespace-nowrap
+    "
+  >
 
-</nav>
+    <a
+      href="/"
+      class="nav-item px-5 py-5 font-bold text-sm"
+    >
+      TRANG CHỦ
+    </a>
 
-<section id="hero" class="bg-black text-white">
 
-  <div class="max-w-7xl mx-auto px-6 py-20 md:py-28">
+    <!-- ÁO -->
 
-    <div class="max-w-2xl">
+    <div class="mega-parent">
 
-      <p class="red-text font-black tracking-[4px]">
-        SHOPLUX FASHION
-      </p>
+      <a
+        href="/?type=ao"
+        class="nav-item block px-5 py-5 font-bold text-sm"
+      >
+        ÁO
+        <i class="fa-solid fa-chevron-down text-[9px] ml-1"></i>
+      </a>
 
-      <h1 class="text-4xl md:text-6xl font-black mt-4">
-        THỜI TRANG
-        <br>
-        CHÍNH HÃNG
-      </h1>
+      <div class="mega-menu p-7">
 
-      <p class="text-gray-300 mt-5 text-lg">
-        Phong cách mới. Sản phẩm chất lượng.
-        Trải nghiệm mua sắm hiện đại.
-      </p>
+        <div class="grid grid-cols-2 gap-10">
 
-      <div class="flex gap-3 mt-7">
+          <div>
 
-        <a href="#app" class="red px-7 py-3 font-black">
-          MUA NGAY
-        </a>
+            <h3
+              class="
+                luxury-font
+                font-bold
+                text-lg
+                mb-4
+              "
+              style="color:#70452d"
+            >
+              NAM
+            </h3>
 
-        <a href="/?category=5" class="border px-7 py-3 font-black">
-          ĐỒ BÓNG ĐÁ
-        </a>
+            <div class="space-y-3 text-sm">
+
+              <a class="block hover:text-[#c9a227]" href="/?type=ao&gender=nam&subcategory=ao-thun">Áo Thun</a>
+              <a class="block hover:text-[#c9a227]" href="/?type=ao&gender=nam&subcategory=ao-polo">Áo Polo</a>
+              <a class="block hover:text-[#c9a227]" href="/?type=ao&gender=nam&subcategory=ao-so-mi">Áo Sơ Mi</a>
+              <a class="block hover:text-[#c9a227]" href="/?type=ao&gender=nam&subcategory=ao-khoac">Áo Khoác</a>
+              <a class="block hover:text-[#c9a227]" href="/?type=ao&gender=nam&subcategory=ao-len">Áo Len</a>
+              <a class="block hover:text-[#c9a227]" href="/?type=ao&gender=nam&subcategory=hoodie-sweater">Hoodie / Sweater</a>
+              <a class="block hover:text-[#c9a227]" href="/?type=ao&gender=nam&subcategory=khac">Khác</a>
+
+            </div>
+
+          </div>
+
+
+          <div>
+
+            <h3
+              class="luxury-font font-bold text-lg mb-4"
+              style="color:#70452d"
+            >
+              NỮ
+            </h3>
+
+            <div class="space-y-3 text-sm">
+
+              <a class="block hover:text-[#c9a227]" href="/?type=ao&gender=nu&subcategory=ao-thun">Áo Thun</a>
+              <a class="block hover:text-[#c9a227]" href="/?type=ao&gender=nu&subcategory=ao-croptop">Áo Croptop</a>
+              <a class="block hover:text-[#c9a227]" href="/?type=ao&gender=nu&subcategory=ao-so-mi">Áo Sơ Mi</a>
+              <a class="block hover:text-[#c9a227]" href="/?type=ao&gender=nu&subcategory=ao-khoac">Áo Khoác</a>
+              <a class="block hover:text-[#c9a227]" href="/?type=ao&gender=nu&subcategory=ao-len">Áo Len</a>
+              <a class="block hover:text-[#c9a227]" href="/?type=ao&gender=nu&subcategory=hoodie-sweater">Hoodie / Sweater</a>
+              <a class="block hover:text-[#c9a227]" href="/?type=ao&gender=nu&subcategory=khac">Khác</a>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- QUẦN -->
+
+    <div class="mega-parent">
+
+      <a
+        href="/?type=quan"
+        class="nav-item block px-5 py-5 font-bold text-sm"
+      >
+        QUẦN
+        <i class="fa-solid fa-chevron-down text-[9px] ml-1"></i>
+      </a>
+
+      <div class="mega-menu p-7">
+
+        <div class="grid grid-cols-2 gap-10">
+
+          <div>
+
+            <h3 class="luxury-font font-bold text-lg mb-4">
+              NAM
+            </h3>
+
+            <div class="space-y-3 text-sm">
+
+              <a class="block" href="/?type=quan&gender=nam&subcategory=quan-jeans">Quần Jeans</a>
+              <a class="block" href="/?type=quan&gender=nam&subcategory=quan-kaki">Quần Kaki</a>
+              <a class="block" href="/?type=quan&gender=nam&subcategory=quan-tay">Quần Tây</a>
+              <a class="block" href="/?type=quan&gender=nam&subcategory=quan-jogger">Quần Jogger</a>
+              <a class="block" href="/?type=quan&gender=nam&subcategory=quan-short">Quần Short</a>
+
+            </div>
+
+          </div>
+
+          <div>
+
+            <h3 class="luxury-font font-bold text-lg mb-4">
+              NỮ
+            </h3>
+
+            <div class="space-y-3 text-sm">
+
+              <a class="block" href="/?type=quan&gender=nu&subcategory=quan-jeans">Quần Jeans</a>
+              <a class="block" href="/?type=quan&gender=nu&subcategory=quan-tay">Quần Tây</a>
+              <a class="block" href="/?type=quan&gender=nu&subcategory=quan-ong-rong">Quần Ống Rộng</a>
+              <a class="block" href="/?type=quan&gender=nu&subcategory=legging">Legging</a>
+              <a class="block" href="/?type=quan&gender=nu&subcategory=quan-short">Quần Short</a>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- GIÀY -->
+
+    <div class="mega-parent">
+
+      <a
+        href="/?type=giay-dep"
+        class="nav-item block px-5 py-5 font-bold text-sm"
+      >
+        GIÀY DÉP
+        <i class="fa-solid fa-chevron-down text-[9px] ml-1"></i>
+      </a>
+
+      <div class="mega-menu p-7">
+
+        <div class="grid grid-cols-2 gap-10">
+
+          <div>
+
+            <h3 class="luxury-font font-bold text-lg mb-4">
+              NAM
+            </h3>
+
+            <div class="space-y-3 text-sm">
+              <a class="block" href="/?type=giay-dep&gender=nam&subcategory=sneaker">Sneaker</a>
+              <a class="block" href="/?type=giay-dep&gender=nam&subcategory=giay-the-thao">Giày Thể Thao</a>
+              <a class="block" href="/?type=giay-dep&gender=nam&subcategory=giay-tay">Giày Tây</a>
+              <a class="block" href="/?type=giay-dep&gender=nam&subcategory=sandal">Sandal</a>
+              <a class="block" href="/?type=giay-dep&gender=nam&subcategory=dep">Dép</a>
+            </div>
+
+          </div>
+
+          <div>
+
+            <h3 class="luxury-font font-bold text-lg mb-4">
+              NỮ
+            </h3>
+
+            <div class="space-y-3 text-sm">
+              <a class="block" href="/?type=giay-dep&gender=nu&subcategory=sneaker">Sneaker</a>
+              <a class="block" href="/?type=giay-dep&gender=nu&subcategory=giay-the-thao">Giày Thể Thao</a>
+              <a class="block" href="/?type=giay-dep&gender=nu&subcategory=cao-got">Giày Cao Gót</a>
+              <a class="block" href="/?type=giay-dep&gender=nu&subcategory=sandal">Sandal</a>
+              <a class="block" href="/?type=giay-dep&gender=nu&subcategory=dep">Dép</a>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- PHỤ KIỆN -->
+
+    <div class="mega-parent">
+
+      <a
+        href="/?type=phu-kien"
+        class="nav-item block px-5 py-5 font-bold text-sm"
+      >
+        PHỤ KIỆN
+        <i class="fa-solid fa-chevron-down text-[9px] ml-1"></i>
+      </a>
+
+      <div class="mega-menu p-7">
+
+        <div class="grid grid-cols-2 gap-10">
+
+          <div>
+            <h3 class="luxury-font font-bold text-lg mb-4">NAM</h3>
+
+            <div class="space-y-3 text-sm">
+              <a class="block" href="/?type=phu-kien&gender=nam&subcategory=tui-balo">Túi / Balo</a>
+              <a class="block" href="/?type=phu-kien&gender=nam&subcategory=mu">Mũ</a>
+              <a class="block" href="/?type=phu-kien&gender=nam&subcategory=vi">Ví</a>
+              <a class="block" href="/?type=phu-kien&gender=nam&subcategory=that-lung">Thắt Lưng</a>
+              <a class="block" href="/?type=phu-kien&gender=nam&subcategory=kinh">Kính</a>
+            </div>
+          </div>
+
+          <div>
+            <h3 class="luxury-font font-bold text-lg mb-4">NỮ</h3>
+
+            <div class="space-y-3 text-sm">
+              <a class="block" href="/?type=phu-kien&gender=nu&subcategory=tui-balo">Túi / Balo</a>
+              <a class="block" href="/?type=phu-kien&gender=nu&subcategory=mu">Mũ</a>
+              <a class="block" href="/?type=phu-kien&gender=nu&subcategory=vi">Ví</a>
+              <a class="block" href="/?type=phu-kien&gender=nu&subcategory=kinh">Kính</a>
+              <a class="block" href="/?type=phu-kien&gender=nu&subcategory=trang-suc">Trang Sức</a>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- FOOTBALL -->
+
+    <div class="mega-parent">
+
+      <a
+        href="/?type=bong-da"
+        class="nav-item block px-5 py-5 font-bold text-sm"
+      >
+        ĐỒ BÓNG ĐÁ
+        <i class="fa-solid fa-chevron-down text-[9px] ml-1"></i>
+      </a>
+
+      <div
+        class="mega-menu p-7"
+        style="min-width:300px"
+      >
+
+        <div class="space-y-4 text-sm">
+
+          <a
+            class="block"
+            href="/?type=bong-da&subcategory=ao-bong-da"
+          >
+            Áo Bóng Đá
+          </a>
+
+          <a
+            class="block"
+            href="/?type=bong-da&subcategory=giay-bong-da"
+          >
+            Giày Bóng Đá
+          </a>
+
+          <a
+            class="block"
+            href="/?type=bong-da&subcategory=phu-kien-bong-da"
+          >
+            Phụ Kiện Bóng Đá
+          </a>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- BRAND -->
+
+    <div class="mega-parent">
+
+      <span
+        class="nav-item block px-5 py-5 font-bold text-sm cursor-pointer"
+      >
+        THƯƠNG HIỆU
+        <i class="fa-solid fa-chevron-down text-[9px] ml-1"></i>
+      </span>
+
+      <div
+        class="mega-menu p-7"
+        style="min-width:300px"
+      >
+
+        <div class="space-y-4 luxury-font text-lg">
+
+          <a class="block" href="/?brand=Nike">NIKE</a>
+          <a class="block" href="/?brand=adidas">adidas</a>
+          <a class="block" href="/?brand=Louis%20Vuitton">LOUIS VUITTON</a>
+          <a class="block" href="/?brand=Gucci">GUCCI</a>
+          <a class="block" href="/?brand=Dior">DIOR</a>
+
+        </div>
 
       </div>
 
@@ -112,116 +622,421 @@
 
   </div>
 
-</section>
+</nav>
 
-<section id="brands" class="bg-white">
 
-  <div class="max-w-7xl mx-auto px-4 py-8">
+<!-- HOME -->
 
-    <p class="text-center text-xs text-gray-400 tracking-[3px]">
-      THƯƠNG HIỆU NỔI BẬT
-    </p>
+<div id="homeContent">
 
-    <div class="grid grid-cols-3 md:grid-cols-6 text-center gap-5 mt-5 font-black text-xl">
-      <span>NIKE</span>
-      <span>adidas</span>
-      <span>PUMA</span>
-      <span>NB</span>
-      <span>MLB</span>
-      <span>VANS</span>
+  <section class="hero text-[#fffdf8]">
+
+    <div
+      class="
+        max-w-7xl
+        mx-auto
+        px-6
+        py-24
+        md:py-32
+      "
+    >
+
+      <div class="max-w-3xl">
+
+        <div
+          class="
+            text-xs
+            tracking-[6px]
+            mb-5
+          "
+          style="color:#c9a227"
+        >
+          SHOPLUX • MAISON
+        </div>
+
+        <div class="royal-line mb-7"></div>
+
+        <h1
+          class="
+            luxury-font
+            text-5xl
+            md:text-7xl
+            leading-tight
+          "
+        >
+          THE ROYAL
+          <br>
+          COLLECTION
+        </h1>
+
+        <p
+          class="
+            luxury-font
+            text-xl
+            md:text-2xl
+            mt-5
+          "
+          style="color:#e8d5a3"
+        >
+          Luxury • Elegance • Timeless
+        </p>
+
+        <p
+          class="
+            max-w-xl
+            mt-6
+            text-gray-300
+            leading-7
+          "
+        >
+          Khám phá phong cách thời trang cao cấp
+          dành cho những cá tính khác biệt.
+        </p>
+
+        <a
+          href="#app"
+          class="
+            inline-block
+            mt-8
+            px-8
+            py-4
+            font-bold
+            tracking-[2px]
+          "
+          style="
+            background:#c9a227;
+            color:#1f120c;
+          "
+        >
+          KHÁM PHÁ BỘ SƯU TẬP
+        </a>
+
+      </div>
+
     </div>
 
+  </section>
+
+
+  <!-- BRANDS -->
+
+  <section
+    style="
+      background:#fffdf8;
+      border-bottom:1px solid #e8d5a3;
+    "
+  >
+
+    <div class="max-w-7xl mx-auto px-4 py-12">
+
+      <div class="text-center">
+
+        <div
+          class="
+            text-[10px]
+            tracking-[5px]
+          "
+          style="color:#70452d"
+        >
+          SELECTED HOUSES
+        </div>
+
+        <h2
+          class="
+            luxury-font
+            text-2xl
+            mt-2
+          "
+        >
+          THƯƠNG HIỆU NỔI BẬT
+        </h2>
+
+      </div>
+
+      <div
+        class="
+          grid
+          grid-cols-2
+          md:grid-cols-5
+          gap-6
+          mt-9
+          text-center
+          items-center
+        "
+      >
+
+        <a
+          href="/?brand=Nike"
+          class="brand-link luxury-font text-xl font-bold"
+        >
+          NIKE
+        </a>
+
+        <a
+          href="/?brand=adidas"
+          class="brand-link text-xl font-black"
+        >
+          adidas
+        </a>
+
+        <a
+          href="/?brand=Louis%20Vuitton"
+          class="brand-link luxury-font text-xl font-bold"
+        >
+          LOUIS VUITTON
+        </a>
+
+        <a
+          href="/?brand=Gucci"
+          class="brand-link luxury-font text-2xl font-bold"
+        >
+          GUCCI
+        </a>
+
+        <a
+          href="/?brand=Dior"
+          class="brand-link luxury-font text-2xl"
+        >
+          DIOR
+        </a>
+
+      </div>
+
+    </div>
+
+  </section>
+
+</div>
+
+
+<!-- PRODUCTS -->
+
+<main
+  id="app"
+  class="min-h-[500px]"
+>
+  <div class="text-center py-20">
+    Đang tải bộ sưu tập...
   </div>
+</main>
 
-</section>
 
-<main id="app" class="min-h-[500px]"></main>
+<!-- CART -->
 
 <div
   id="cartModal"
-  class="hidden fixed inset-0 bg-black/60 z-50 items-center justify-center p-4"
+  class="
+    hidden
+    fixed
+    inset-0
+    bg-black/70
+    z-[200]
+    items-center
+    justify-center
+    p-4
+  "
 >
-  <div class="bg-white max-w-xl w-full rounded-xl p-5">
 
-    <div class="flex justify-between">
-      <h2 class="font-black text-xl">GIỎ HÀNG</h2>
-      <button onclick="closeCart()">✕</button>
+  <div
+    class="
+      bg-[#fffdf8]
+      max-w-2xl
+      w-full
+      max-h-[80vh]
+      overflow-auto
+      shadow-2xl
+    "
+  >
+
+    <div
+      class="
+        flex
+        justify-between
+        items-center
+        p-6
+        border-b
+      "
+      style="border-color:#e8d5a3"
+    >
+
+      <h2 class="luxury-font text-2xl">
+        YOUR BAG
+      </h2>
+
+      <button
+        onclick="closeCart()"
+        class="text-2xl"
+      >
+        ×
+      </button>
+
     </div>
 
-    <div id="cartItems" class="mt-5"></div>
+    <div
+      id="cartItems"
+      class="p-6"
+    ></div>
 
   </div>
+
 </div>
 
-<footer class="bg-black text-white mt-10">
 
-  <div class="max-w-7xl mx-auto px-4 py-12 grid md:grid-cols-4 gap-8">
+<!-- FOOTER -->
+
+<footer
+  style="
+    background:#1f120c;
+    color:#fffdf8;
+  "
+>
+
+  <div
+    class="
+      max-w-7xl
+      mx-auto
+      px-4
+      py-14
+      grid
+      md:grid-cols-4
+      gap-10
+    "
+  >
 
     <div>
-      <div class="text-2xl font-black">ShopLux</div>
-      <p class="text-gray-400 mt-3">
-        Fashion store dành cho phong cách hiện đại.
+
+      <div
+        class="
+          luxury-font
+          text-3xl
+          tracking-[4px]
+        "
+        style="color:#e8d5a3"
+      >
+        SHOPLUX
+      </div>
+
+      <p class="text-gray-400 text-sm mt-4 leading-6">
+        Maison Luxury Fashion.
+        Phong cách sang trọng vượt thời gian.
       </p>
+
     </div>
 
     <div>
-      <b>MUA SẮM</b>
-      <p class="text-gray-400 mt-3">Nam</p>
-      <p class="text-gray-400">Nữ</p>
-      <p class="text-gray-400">Giày dép</p>
+      <b style="color:#e8d5a3">COLLECTION</b>
+      <p class="text-gray-400 mt-4">Áo</p>
+      <p class="text-gray-400 mt-2">Quần</p>
+      <p class="text-gray-400 mt-2">Giày Dép</p>
     </div>
 
     <div>
-      <b>HỖ TRỢ</b>
-      <p class="text-gray-400 mt-3">Đổi trả</p>
-      <p class="text-gray-400">Giao hàng</p>
+      <b style="color:#e8d5a3">SERVICES</b>
+      <p class="text-gray-400 mt-4">Hỗ trợ khách hàng</p>
+      <p class="text-gray-400 mt-2">Đổi trả</p>
+      <p class="text-gray-400 mt-2">Giao hàng</p>
     </div>
 
     <div>
-      <b>SHOPLUX</b>
-      <p class="text-gray-400 mt-3">Authentic Fashion</p>
+      <b style="color:#e8d5a3">MAISON</b>
+      <p class="text-gray-400 mt-4">Authentic Fashion</p>
+      <p class="text-gray-400 mt-2">ShopLux Việt Nam</p>
     </div>
 
   </div>
 
 </footer>
 
+
 <script src="/app.js"></script>
 
 <script>
-const q = new URLSearchParams(location.search);
-
-if (q.toString()) {
-  document.getElementById("hero").style.display = "none";
-  document.getElementById("brands").style.display = "none";
-}
-
 function openCart() {
-  const modal = document.getElementById("cartModal");
-  const items = JSON.parse(localStorage.getItem("shoplux_cart") || "[]");
+  const modal =
+    document.getElementById("cartModal");
 
-  cartItems.innerHTML = items.length
-    ? items.map(item => `
-        <div class="flex gap-3 py-3 border-b">
-          <img src="${item.image}" class="w-16 h-16 object-cover">
+  const container =
+    document.getElementById("cartItems");
+
+  const cart =
+    JSON.parse(
+      localStorage.getItem("shoplux_cart") || "[]"
+    );
+
+  if (!cart.length) {
+    container.innerHTML = `
+      <div class="text-center py-14 text-gray-400">
+        <i class="fa-solid fa-bag-shopping text-4xl mb-4"></i>
+        <p>Giỏ hàng đang trống.</p>
+      </div>
+    `;
+  } else {
+    container.innerHTML =
+      cart.map(item => `
+        <div
+          class="
+            flex
+            items-center
+            gap-4
+            py-4
+            border-b
+          "
+        >
+
+          <img
+            src="${item.image}"
+            class="
+              w-20
+              h-20
+              object-cover
+            "
+          >
+
           <div class="flex-1">
-            <b>${item.name}</b>
-            <div class="red-text font-bold">
+
+            <div class="font-bold">
+              ${item.name}
+            </div>
+
+            <div
+              class="mt-1"
+              style="color:#70452d"
+            >
               ${Number(item.price).toLocaleString("vi-VN")} ₫
             </div>
+
           </div>
-          <span>x${item.qty}</span>
+
+          <div>
+            x${item.qty}
+          </div>
+
         </div>
-      `).join("")
-    : `<div class="text-center text-gray-400 py-10">Giỏ hàng trống</div>`;
+      `).join("");
+  }
 
   modal.classList.remove("hidden");
   modal.classList.add("flex");
 }
 
 function closeCart() {
-  cartModal.classList.add("hidden");
-  cartModal.classList.remove("flex");
+  const modal =
+    document.getElementById("cartModal");
+
+  modal.classList.add("hidden");
+  modal.classList.remove("flex");
+}
+
+const query =
+  new URLSearchParams(location.search);
+
+if (query.toString()) {
+  const home =
+    document.getElementById("homeContent");
+
+  if (home) {
+    home.style.display = "none";
+  }
 }
 </script>
 

@@ -1,157 +1,405 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
+
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>ShopLux Fashion Admin</title>
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1"
+  >
+
+  <title>ShopLux Maison Admin</title>
+
   <script src="https://cdn.tailwindcss.com"></script>
+
 </head>
 
-<body class="bg-gray-100">
+<body class="bg-[#f7f1e7] text-[#1f120c]">
 
-<header class="bg-[#c9001e] text-white p-4">
-  <div class="max-w-7xl mx-auto flex justify-between items-center">
+<header
+  class="text-[#e8d5a3]"
+  style="background:#3b2416"
+>
+
+  <div
+    class="
+      max-w-7xl
+      mx-auto
+      px-5
+      py-5
+      flex
+      justify-between
+      items-center
+    "
+  >
+
     <div>
-      <h1 class="text-xl font-black">SHOPLUX FASHION</h1>
-      <p class="text-xs opacity-80">ADMIN CENTER</p>
+
+      <h1
+        class="
+          text-2xl
+          font-black
+          tracking-[3px]
+        "
+      >
+        SHOPLUX
+      </h1>
+
+      <p
+        class="
+          text-[10px]
+          tracking-[4px]
+        "
+      >
+        MAISON ADMIN
+      </p>
+
     </div>
 
-    <a href="/" class="border border-white px-4 py-2 rounded">
-      Trang khách
+    <a
+      href="/"
+      class="
+        border
+        px-5
+        py-2
+      "
+      style="border-color:#c9a227"
+    >
+      TRANG KHÁCH
     </a>
+
   </div>
+
 </header>
 
-<main class="max-w-7xl mx-auto p-5">
 
-  <div class="grid lg:grid-cols-5 gap-5">
+<main
+  class="
+    max-w-7xl
+    mx-auto
+    p-5
+  "
+>
 
-    <section class="lg:col-span-2 bg-white rounded-xl shadow-sm p-5">
+  <div
+    class="
+      grid
+      lg:grid-cols-5
+      gap-5
+    "
+  >
 
-      <h2 id="formTitle" class="font-black text-xl mb-5">
+    <!-- FORM -->
+
+    <section
+      class="
+        lg:col-span-2
+        bg-[#fffdf8]
+        border
+        p-6
+      "
+      style="border-color:#e8d5a3"
+    >
+
+      <h2
+        id="formTitle"
+        class="
+          text-xl
+          font-black
+          mb-6
+        "
+      >
         THÊM SẢN PHẨM
       </h2>
 
-      <input type="hidden" id="editId">
-
-      <label class="font-bold">Tên sản phẩm</label>
-      <input id="name" class="border rounded p-3 w-full mt-1 mb-4">
-
-      <label class="font-bold">Thương hiệu</label>
       <input
-        id="brand"
-        placeholder="Nike, adidas, Puma..."
-        class="border rounded p-3 w-full mt-1 mb-4"
+        id="editId"
+        type="hidden"
       >
+
+
+      <label class="font-bold text-sm">
+        Tên sản phẩm
+      </label>
+
+      <input
+        id="name"
+        class="
+          border
+          p-3
+          w-full
+          mt-2
+          mb-4
+        "
+      >
+
+
+      <label class="font-bold text-sm">
+        Thương hiệu
+      </label>
+
+      <select
+        id="brand"
+        class="
+          border
+          p-3
+          w-full
+          mt-2
+          mb-4
+        "
+      >
+        <option>Nike</option>
+        <option>adidas</option>
+        <option>Louis Vuitton</option>
+        <option>Gucci</option>
+        <option>Dior</option>
+      </select>
+
 
       <div class="grid grid-cols-2 gap-3">
 
         <div>
-          <label class="font-bold">Giá bán</label>
+
+          <label class="font-bold text-sm">
+            Giá bán
+          </label>
+
           <input
             id="price"
             type="number"
-            class="border rounded p-3 w-full mt-1 mb-4"
+            class="
+              border
+              p-3
+              w-full
+              mt-2
+              mb-4
+            "
           >
+
         </div>
 
         <div>
-          <label class="font-bold">Giá gốc</label>
+
+          <label class="font-bold text-sm">
+            Giá gốc
+          </label>
+
           <input
             id="originalPrice"
             type="number"
-            class="border rounded p-3 w-full mt-1 mb-4"
+            class="
+              border
+              p-3
+              w-full
+              mt-2
+              mb-4
+            "
           >
+
         </div>
 
       </div>
 
-      <label class="font-bold">Danh mục</label>
+
+      <label class="font-bold text-sm">
+        Loại sản phẩm
+      </label>
 
       <select
-        id="category"
-        onchange="renderSubcategories()"
-        class="border rounded p-3 w-full mt-1 mb-4"
+        id="type"
+        onchange="updateFields()"
+        class="
+          border
+          p-3
+          w-full
+          mt-2
+          mb-4
+        "
       >
-        <option value="1">Nam</option>
-        <option value="2">Nữ</option>
-        <option value="3">Giày Dép</option>
-        <option value="4">Phụ Kiện</option>
-        <option value="5">Đồ Bóng Đá</option>
+        <option value="ao">Áo</option>
+        <option value="quan">Quần</option>
+        <option value="giay-dep">Giày Dép</option>
+        <option value="phu-kien">Phụ Kiện</option>
+        <option value="bong-da">Đồ Bóng Đá</option>
       </select>
 
-      <label class="font-bold">Danh mục con</label>
+
+      <div id="genderWrap">
+
+        <label class="font-bold text-sm">
+          Giới tính
+        </label>
+
+        <select
+          id="gender"
+          onchange="renderSubcategories()"
+          class="
+            border
+            p-3
+            w-full
+            mt-2
+            mb-4
+          "
+        >
+          <option value="nam">Nam</option>
+          <option value="nu">Nữ</option>
+        </select>
+
+      </div>
+
+
+      <label class="font-bold text-sm">
+        Phân khúc
+      </label>
 
       <select
         id="subcategory"
-        class="border rounded p-3 w-full mt-1 mb-4"
+        class="
+          border
+          p-3
+          w-full
+          mt-2
+          mb-4
+        "
       ></select>
 
-      <label class="font-bold">Size</label>
 
-      <div id="sizes" class="flex flex-wrap gap-2 my-3">
-        <label><input type="checkbox" value="S"> S</label>
-        <label><input type="checkbox" value="M"> M</label>
-        <label><input type="checkbox" value="L"> L</label>
-        <label><input type="checkbox" value="XL"> XL</label>
-        <label><input type="checkbox" value="XXL"> XXL</label>
-        <label><input type="checkbox" value="39"> 39</label>
-        <label><input type="checkbox" value="40"> 40</label>
-        <label><input type="checkbox" value="41"> 41</label>
-        <label><input type="checkbox" value="42"> 42</label>
-        <label><input type="checkbox" value="43"> 43</label>
-      </div>
+      <label class="font-bold text-sm">
+        Size
+      </label>
 
-      <label class="font-bold">Ảnh sản phẩm (tối đa 4)</label>
+      <div
+        id="sizeList"
+        class="
+          flex
+          flex-wrap
+          gap-3
+          mt-3
+          mb-5
+        "
+      ></div>
+
+
+      <label class="font-bold text-sm">
+        Ảnh sản phẩm (tối đa 4)
+      </label>
 
       <input
         id="images"
         type="file"
-        multiple
         accept="image/*"
+        multiple
         onchange="readImages()"
-        class="border rounded p-3 w-full mt-1"
+        class="
+          border
+          p-3
+          w-full
+          mt-2
+        "
       >
 
-      <div id="preview" class="grid grid-cols-4 gap-2 my-4"></div>
+      <div
+        id="preview"
+        class="
+          grid
+          grid-cols-4
+          gap-2
+          my-4
+        "
+      ></div>
 
-      <label class="font-bold">Mô tả</label>
+
+      <label class="font-bold text-sm">
+        Mô tả
+      </label>
 
       <textarea
         id="desc"
-        rows="4"
-        class="border rounded p-3 w-full mt-1 mb-4"
+        rows="5"
+        class="
+          border
+          p-3
+          w-full
+          mt-2
+          mb-5
+        "
       ></textarea>
 
-      <div class="flex gap-2">
+
+      <div class="flex gap-3">
 
         <button
-          onclick="saveProduct()"
           id="saveButton"
-          class="flex-1 bg-[#c9001e] text-white rounded p-3 font-black"
+          onclick="saveProduct()"
+          class="
+            flex-1
+            py-4
+            font-black
+          "
+          style="
+            background:#3b2416;
+            color:#e8d5a3;
+          "
         >
           ĐĂNG SẢN PHẨM
         </button>
 
         <button
-          onclick="resetForm()"
           id="cancelButton"
-          class="hidden bg-gray-500 text-white rounded px-5"
+          onclick="resetForm()"
+          class="
+            hidden
+            bg-gray-500
+            text-white
+            px-5
+          "
         >
-          Hủy
+          HỦY
         </button>
 
       </div>
 
     </section>
 
-    <section class="lg:col-span-3 bg-white rounded-xl shadow-sm p-5">
 
-      <h2 class="font-black text-xl mb-5">
-        SẢN PHẨM ĐANG BÁN
-      </h2>
+    <!-- LIST -->
 
-      <div id="productList" class="space-y-3"></div>
+    <section
+      class="
+        lg:col-span-3
+        bg-[#fffdf8]
+        border
+        p-6
+      "
+      style="border-color:#e8d5a3"
+    >
+
+      <div
+        class="
+          flex
+          justify-between
+          items-center
+          mb-6
+        "
+      >
+
+        <h2 class="text-xl font-black">
+          DANH SÁCH SẢN PHẨM
+        </h2>
+
+        <span
+          id="productCount"
+          class="text-sm text-gray-500"
+        ></span>
+
+      </div>
+
+      <div
+        id="productList"
+        class="space-y-3"
+      ></div>
 
     </section>
 
@@ -159,244 +407,724 @@
 
 </main>
 
+
 <script>
+
 const API = "/api";
 
 let products = [];
 let currentImages = [];
 
-const subs = {
-  1: [
-    ["ao-thun-nam","Áo thun"],
-    ["ao-polo-nam","Áo polo"],
-    ["ao-so-mi-nam","Áo sơ mi"],
-    ["ao-khoac-nam","Áo khoác"],
-    ["quan-jeans-nam","Quần jeans"],
-    ["quan-short-nam","Quần short"]
-  ],
-  2: [
-    ["ao-nu","Áo nữ"],
-    ["vay-dam","Váy / Đầm"],
-    ["quan-nu","Quần nữ"],
-    ["ao-khoac-nu","Áo khoác nữ"]
-  ],
-  3: [
-    ["sneaker","Sneaker"],
-    ["giay-the-thao","Giày thể thao"],
-    ["dep","Dép"]
-  ],
-  4: [
-    ["tui-balo","Túi / Balo"],
-    ["mu","Mũ"],
-    ["kinh","Kính"],
-    ["that-lung","Thắt lưng"],
-    ["vi","Ví"]
-  ],
-  5: [
-    ["ao-clb","Áo CLB"],
-    ["ao-doi-tuyen","Áo đội tuyển"],
-    ["quan-bong-da","Quần bóng đá"],
-    ["giay-bong-da","Giày bóng đá"],
-    ["phu-kien-bong-da","Phụ kiện bóng đá"]
-  ]
+
+const SUBS = {
+
+  ao: {
+
+    nam: [
+      ["ao-thun", "Áo Thun"],
+      ["ao-polo", "Áo Polo"],
+      ["ao-so-mi", "Áo Sơ Mi"],
+      ["ao-khoac", "Áo Khoác"],
+      ["ao-len", "Áo Len"],
+      ["hoodie-sweater", "Hoodie / Sweater"],
+      ["khac", "Khác"]
+    ],
+
+    nu: [
+      ["ao-thun", "Áo Thun"],
+      ["ao-croptop", "Áo Croptop"],
+      ["ao-so-mi", "Áo Sơ Mi"],
+      ["ao-khoac", "Áo Khoác"],
+      ["ao-len", "Áo Len"],
+      ["hoodie-sweater", "Hoodie / Sweater"],
+      ["khac", "Khác"]
+    ]
+
+  },
+
+
+  quan: {
+
+    nam: [
+      ["quan-jeans", "Quần Jeans"],
+      ["quan-kaki", "Quần Kaki"],
+      ["quan-tay", "Quần Tây"],
+      ["quan-jogger", "Quần Jogger"],
+      ["quan-short", "Quần Short"],
+      ["khac", "Khác"]
+    ],
+
+    nu: [
+      ["quan-jeans", "Quần Jeans"],
+      ["quan-tay", "Quần Tây"],
+      ["quan-ong-rong", "Quần Ống Rộng"],
+      ["legging", "Legging"],
+      ["quan-short", "Quần Short"],
+      ["khac", "Khác"]
+    ]
+
+  },
+
+
+  "giay-dep": {
+
+    nam: [
+      ["sneaker", "Sneaker"],
+      ["giay-the-thao", "Giày Thể Thao"],
+      ["giay-tay", "Giày Tây"],
+      ["sandal", "Sandal"],
+      ["dep", "Dép"]
+    ],
+
+    nu: [
+      ["sneaker", "Sneaker"],
+      ["giay-the-thao", "Giày Thể Thao"],
+      ["cao-got", "Giày Cao Gót"],
+      ["sandal", "Sandal"],
+      ["dep", "Dép"]
+    ]
+
+  },
+
+
+  "phu-kien": {
+
+    nam: [
+      ["tui-balo", "Túi / Balo"],
+      ["mu", "Mũ"],
+      ["vi", "Ví"],
+      ["that-lung", "Thắt Lưng"],
+      ["kinh", "Kính"],
+      ["khac", "Khác"]
+    ],
+
+    nu: [
+      ["tui-balo", "Túi / Balo"],
+      ["mu", "Mũ"],
+      ["vi", "Ví"],
+      ["kinh", "Kính"],
+      ["trang-suc", "Trang Sức"],
+      ["khac", "Khác"]
+    ]
+
+  },
+
+
+  "bong-da": {
+
+    all: [
+      ["ao-bong-da", "Áo Bóng Đá"],
+      ["giay-bong-da", "Giày Bóng Đá"],
+      ["phu-kien-bong-da", "Phụ Kiện Bóng Đá"]
+    ]
+
+  }
+
 };
 
-function renderSubcategories(selected = "") {
-  const id = Number(category.value);
 
-  subcategory.innerHTML = (subs[id] || [])
-    .map(([value,name]) =>
-      `<option value="${value}" ${value === selected ? "selected" : ""}>${name}</option>`
+function updateFields() {
+
+  const isFootball =
+    type.value === "bong-da";
+
+  genderWrap.style.display =
+    isFootball
+      ? "none"
+      : "block";
+
+  if (isFootball) {
+    gender.value = "nam";
+  }
+
+  renderSubcategories();
+  renderSizes();
+}
+
+
+function renderSubcategories(
+  selected = ""
+) {
+
+  const productType =
+    type.value;
+
+  const genderKey =
+    productType === "bong-da"
+      ? "all"
+      : gender.value;
+
+  const data =
+    SUBS[productType]?.[genderKey] || [];
+
+  subcategory.innerHTML =
+    data.map(
+      ([value, label]) => `
+        <option
+          value="${value}"
+          ${value === selected ? "selected" : ""}
+        >
+          ${label}
+        </option>
+      `
+    ).join("");
+}
+
+
+function renderSizes(
+  selected = []
+) {
+
+  let sizes = [];
+
+  if (
+    type.value === "giay-dep" ||
+    (
+      type.value === "bong-da" &&
+      subcategory.value === "giay-bong-da"
     )
-    .join("");
+  ) {
+    sizes = [
+      "36","37","38","39",
+      "40","41","42","43","44"
+    ];
+  } else if (
+    type.value === "phu-kien"
+  ) {
+    sizes = [];
+  } else {
+    sizes = [
+      "S","M","L","XL","XXL"
+    ];
+  }
+
+  sizeList.innerHTML =
+    sizes.length
+      ? sizes.map(size => `
+          <label
+            class="
+              border
+              px-3
+              py-2
+              cursor-pointer
+            "
+          >
+            <input
+              type="checkbox"
+              value="${size}"
+              ${selected.includes(size) ? "checked" : ""}
+            >
+            ${size}
+          </label>
+        `).join("")
+      : `
+        <span class="text-sm text-gray-400">
+          Sản phẩm này không cần size.
+        </span>
+      `;
 }
 
-function fileBase64(file) {
-  return new Promise(resolve => {
-    const reader = new FileReader();
-    reader.onload = () => resolve(reader.result);
-    reader.readAsDataURL(file);
-  });
-}
 
-async function readImages() {
-  const files = [...images.files].slice(0,4);
+subcategory.addEventListener(
+  "change",
+  () => renderSizes()
+);
 
-  currentImages = await Promise.all(
-    files.map(fileBase64)
-  );
-
-  renderPreview();
-}
-
-function renderPreview() {
-  preview.innerHTML = currentImages.map((src,i) => `
-    <div class="relative">
-      <img src="${src}" class="w-full aspect-square object-cover rounded">
-      <button
-        onclick="removeImage(${i})"
-        class="absolute top-1 right-1 bg-red-600 text-white rounded-full w-6 h-6"
-      >×</button>
-    </div>
-  `).join("");
-}
-
-function removeImage(i) {
-  currentImages.splice(i,1);
-  renderPreview();
-}
 
 function selectedSizes() {
+
   return [
-    ...document.querySelectorAll("#sizes input:checked")
-  ].map(el => el.value);
+    ...document.querySelectorAll(
+      "#sizeList input:checked"
+    )
+  ].map(
+    input => input.value
+  );
 }
 
-async function loadProducts() {
-  const response = await fetch(API + "/products");
-  const json = await response.json();
 
-  products = json.data || [];
+function fileToBase64(file) {
 
-  productList.innerHTML = products.map(p => `
-    <div class="border rounded-lg p-3 flex items-center gap-3">
+  return new Promise(
+    resolve => {
 
-      <img
-        src="${p.image || (p.images || [])[0] || "https://placehold.co/100"}"
-        class="w-16 h-16 rounded object-cover"
-      >
+      const reader =
+        new FileReader();
 
-      <div class="flex-1">
-        <div class="font-black">${p.name}</div>
-        <div class="text-xs text-gray-500">${p.brand || "ShopLux"}</div>
-        <div class="text-[#c9001e] font-bold">
-          ${Number(p.price || 0).toLocaleString("vi-VN")} ₫
-        </div>
-      </div>
+      reader.onload =
+        () => resolve(reader.result);
 
-      <button
-        onclick="editProduct(${p.id})"
-        class="bg-gray-900 text-white px-3 py-2 rounded"
-      >
-        Sửa
-      </button>
+      reader.readAsDataURL(file);
 
-      <button
-        onclick="deleteProduct(${p.id})"
-        class="bg-[#c9001e] text-white px-3 py-2 rounded"
-      >
-        Xóa
-      </button>
-
-    </div>
-  `).join("");
-}
-
-async function saveProduct() {
-  const id = editId.value;
-
-  const payload = {
-    name: name.value.trim(),
-    brand: brand.value.trim(),
-    price: Number(price.value),
-    originalPrice: Number(originalPrice.value),
-    categoryId: Number(category.value),
-    subcategoryId: subcategory.value,
-    sizes: selectedSizes(),
-    images: currentImages,
-    desc: desc.value.trim()
-  };
-
-  if (!payload.name || !payload.price) {
-    alert("Nhập tên và giá sản phẩm");
-    return;
-  }
-
-  const response = await fetch(
-    id ? `${API}/admin/products/${id}` : `${API}/admin/products`,
-    {
-      method: id ? "PUT" : "POST",
-      headers: {"Content-Type":"application/json"},
-      body: JSON.stringify(payload)
     }
   );
+}
 
-  const json = await response.json();
 
-  if (!json.success) {
-    alert(json.message || "Có lỗi xảy ra");
+async function readImages() {
+
+  const files =
+    [...images.files].slice(0, 4);
+
+  currentImages =
+    await Promise.all(
+      files.map(fileToBase64)
+    );
+
+  renderPreview();
+}
+
+
+function renderPreview() {
+
+  preview.innerHTML =
+    currentImages.map(
+      (src, index) => `
+        <div class="relative">
+
+          <img
+            src="${src}"
+            class="
+              w-full
+              aspect-square
+              object-cover
+            "
+          >
+
+          <button
+            onclick="removeImage(${index})"
+            class="
+              absolute
+              top-1
+              right-1
+              bg-[#3b2416]
+              text-[#e8d5a3]
+              rounded-full
+              w-7
+              h-7
+            "
+          >
+            ×
+          </button>
+
+        </div>
+      `
+    ).join("");
+}
+
+
+function removeImage(index) {
+
+  currentImages.splice(
+    index,
+    1
+  );
+
+  renderPreview();
+}
+
+
+async function loadProducts() {
+
+  const response =
+    await fetch(
+      API + "/products"
+    );
+
+  const json =
+    await response.json();
+
+  products =
+    json.data || [];
+
+  productCount.textContent =
+    `${products.length} sản phẩm`;
+
+  renderProductList();
+}
+
+
+function renderProductList() {
+
+  productList.innerHTML =
+    products.length
+      ? products.map(product => {
+
+          const image =
+            product.images?.[0] ||
+            product.image ||
+            "https://placehold.co/100";
+
+          return `
+            <div
+              class="
+                border
+                p-4
+                flex
+                items-center
+                gap-4
+              "
+              style="border-color:#e8d5a3"
+            >
+
+              <img
+                src="${image}"
+                class="
+                  w-20
+                  h-20
+                  object-cover
+                "
+              >
+
+              <div class="flex-1">
+
+                <div
+                  class="
+                    text-xs
+                    tracking-[2px]
+                  "
+                  style="color:#70452d"
+                >
+                  ${product.brand || ""}
+                </div>
+
+                <div
+                  class="
+                    font-black
+                    mt-1
+                  "
+                >
+                  ${product.name}
+                </div>
+
+                <div
+                  class="
+                    font-bold
+                    mt-1
+                  "
+                  style="color:#70452d"
+                >
+                  ${Number(
+                    product.price || 0
+                  ).toLocaleString("vi-VN")} ₫
+                </div>
+
+                <div
+                  class="
+                    text-xs
+                    text-gray-400
+                    mt-1
+                  "
+                >
+                  ${product.type || ""}
+                  /
+                  ${product.gender || ""}
+                  /
+                  ${product.subcategory || ""}
+                </div>
+
+              </div>
+
+
+              <button
+                onclick="editProduct(${product.id})"
+                class="
+                  px-4
+                  py-2
+                  bg-[#70452d]
+                  text-white
+                "
+              >
+                SỬA
+              </button>
+
+
+              <button
+                onclick="deleteProduct(${product.id})"
+                class="
+                  px-4
+                  py-2
+                  bg-[#1f120c]
+                  text-[#e8d5a3]
+                "
+              >
+                XÓA
+              </button>
+
+            </div>
+          `;
+
+        }).join("")
+      : `
+        <div class="text-center py-20 text-gray-400">
+          Chưa có sản phẩm.
+        </div>
+      `;
+}
+
+
+async function saveProduct() {
+
+  const id =
+    editId.value;
+
+  const payload = {
+
+    name:
+      name.value.trim(),
+
+    brand:
+      brand.value,
+
+    type:
+      type.value,
+
+    gender:
+      type.value === "bong-da"
+        ? "all"
+        : gender.value,
+
+    subcategory:
+      subcategory.value,
+
+    price:
+      Number(price.value),
+
+    originalPrice:
+      Number(originalPrice.value),
+
+    sizes:
+      selectedSizes(),
+
+    images:
+      currentImages,
+
+    desc:
+      desc.value.trim()
+
+  };
+
+
+  if (
+    !payload.name ||
+    !payload.price
+  ) {
+    alert(
+      "Vui lòng nhập tên và giá sản phẩm"
+    );
     return;
   }
 
+
+  const url =
+    id
+      ? `${API}/admin/products/${id}`
+      : `${API}/admin/products`;
+
+
+  const response =
+    await fetch(
+      url,
+      {
+        method:
+          id ? "PUT" : "POST",
+
+        headers: {
+          "Content-Type":
+            "application/json"
+        },
+
+        body:
+          JSON.stringify(payload)
+      }
+    );
+
+
+  const json =
+    await response.json();
+
+
+  if (!json.success) {
+    alert(
+      json.message ||
+      "Không thể lưu sản phẩm"
+    );
+    return;
+  }
+
+
   resetForm();
-  loadProducts();
+  await loadProducts();
 }
 
+
 function editProduct(id) {
-  const p = products.find(x => Number(x.id) === Number(id));
-  if (!p) return;
 
-  editId.value = p.id;
-  name.value = p.name || "";
-  brand.value = p.brand || "";
-  price.value = p.price || "";
-  originalPrice.value = p.originalPrice || "";
-  category.value = p.categoryId || 1;
+  const product =
+    products.find(
+      p =>
+        Number(p.id) ===
+        Number(id)
+    );
 
-  renderSubcategories(p.subcategoryId);
+  if (!product) return;
 
-  desc.value = p.desc || "";
-  currentImages = (p.images || (p.image ? [p.image] : [])).slice(0,4);
 
-  document.querySelectorAll("#sizes input").forEach(input => {
-    input.checked = (p.sizes || []).includes(input.value);
-  });
+  editId.value =
+    product.id;
+
+  name.value =
+    product.name || "";
+
+  brand.value =
+    product.brand || "Nike";
+
+  price.value =
+    product.price || "";
+
+  originalPrice.value =
+    product.originalPrice || "";
+
+  type.value =
+    product.type || "ao";
+
+  gender.value =
+    product.gender === "nu"
+      ? "nu"
+      : "nam";
+
+  desc.value =
+    product.desc || "";
+
+
+  const isFootball =
+    type.value === "bong-da";
+
+  genderWrap.style.display =
+    isFootball
+      ? "none"
+      : "block";
+
+
+  renderSubcategories(
+    product.subcategory
+  );
+
+
+  renderSizes(
+    product.sizes || []
+  );
+
+
+  currentImages =
+    (
+      product.images?.length
+        ? product.images
+        : product.image
+          ? [product.image]
+          : []
+    ).slice(0, 4);
+
 
   renderPreview();
 
-  formTitle.textContent = "SỬA SẢN PHẨM";
-  saveButton.textContent = "LƯU THAY ĐỔI";
-  cancelButton.classList.remove("hidden");
 
-  window.scrollTo({top:0,behavior:"smooth"});
+  formTitle.textContent =
+    "SỬA SẢN PHẨM";
+
+  saveButton.textContent =
+    "LƯU THAY ĐỔI";
+
+  cancelButton.classList.remove(
+    "hidden"
+  );
+
+
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth"
+  });
 }
 
+
 function resetForm() {
+
   editId.value = "";
+
   name.value = "";
-  brand.value = "";
+
+  brand.value = "Nike";
+
   price.value = "";
+
   originalPrice.value = "";
+
+  type.value = "ao";
+
+  gender.value = "nam";
+
   desc.value = "";
+
   images.value = "";
-  category.value = 1;
 
   currentImages = [];
 
-  document.querySelectorAll("#sizes input").forEach(x => {
-    x.checked = false;
-  });
 
-  renderSubcategories();
+  formTitle.textContent =
+    "THÊM SẢN PHẨM";
+
+  saveButton.textContent =
+    "ĐĂNG SẢN PHẨM";
+
+  cancelButton.classList.add(
+    "hidden"
+  );
+
+
+  updateFields();
   renderPreview();
-
-  formTitle.textContent = "THÊM SẢN PHẨM";
-  saveButton.textContent = "ĐĂNG SẢN PHẨM";
-  cancelButton.classList.add("hidden");
 }
+
 
 async function deleteProduct(id) {
-  if (!confirm("Xóa sản phẩm này?")) return;
 
-  await fetch(`${API}/admin/products/${id}`, {
-    method:"DELETE"
-  });
+  if (
+    !confirm(
+      "Bạn chắc chắn muốn xóa sản phẩm này?"
+    )
+  ) {
+    return;
+  }
 
-  loadProducts();
+
+  const response =
+    await fetch(
+      `${API}/admin/products/${id}`,
+      {
+        method: "DELETE"
+      }
+    );
+
+
+  const json =
+    await response.json();
+
+
+  if (!json.success) {
+    alert(
+      "Không thể xóa sản phẩm"
+    );
+    return;
+  }
+
+
+  await loadProducts();
 }
 
-renderSubcategories();
+
+updateFields();
 loadProducts();
+
 </script>
 
 </body>

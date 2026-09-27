@@ -8,166 +8,268 @@ app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ extended: true, limit: "50mb" }));
 app.use(express.static(path.join(__dirname, "frontend")));
 
-// ==================== DATA ====================
+// =====================================================
+// DATA
+// =====================================================
 
 const categories = [
-  { id: 1, name: "Nam" },
-  { id: 2, name: "Nữ" },
-  { id: 3, name: "Giày Dép" },
-  { id: 4, name: "Phụ Kiện" },
-  { id: 5, name: "Đồ Bóng Đá" }
+  { id: "ao", name: "Áo" },
+  { id: "quan", name: "Quần" },
+  { id: "giay-dep", name: "Giày Dép" },
+  { id: "phu-kien", name: "Phụ Kiện" },
+  { id: "bong-da", name: "Đồ Bóng Đá" }
 ];
 
 const subcategories = {
-  1: [
-    { id: "ao-thun-nam", name: "Áo thun" },
-    { id: "ao-polo-nam", name: "Áo polo" },
-    { id: "ao-so-mi-nam", name: "Áo sơ mi" },
-    { id: "ao-khoac-nam", name: "Áo khoác" },
-    { id: "quan-jeans-nam", name: "Quần jeans" },
-    { id: "quan-short-nam", name: "Quần short" }
-  ],
-  2: [
-    { id: "ao-nu", name: "Áo nữ" },
-    { id: "vay-dam", name: "Váy / Đầm" },
-    { id: "quan-nu", name: "Quần nữ" },
-    { id: "ao-khoac-nu", name: "Áo khoác nữ" }
-  ],
-  3: [
-    { id: "sneaker", name: "Sneaker" },
-    { id: "giay-the-thao", name: "Giày thể thao" },
-    { id: "dep", name: "Dép" }
-  ],
-  4: [
-    { id: "tui-balo", name: "Túi / Balo" },
-    { id: "mu", name: "Mũ" },
-    { id: "kinh", name: "Kính" },
-    { id: "that-lung", name: "Thắt lưng" },
-    { id: "vi", name: "Ví" }
-  ],
-  5: [
-    { id: "ao-clb", name: "Áo CLB" },
-    { id: "ao-doi-tuyen", name: "Áo đội tuyển" },
-    { id: "quan-bong-da", name: "Quần bóng đá" },
-    { id: "giay-bong-da", name: "Giày bóng đá" },
-    { id: "phu-kien-bong-da", name: "Phụ kiện bóng đá" }
-  ]
+  ao: {
+    nam: [
+      { id: "ao-thun", name: "Áo Thun" },
+      { id: "ao-polo", name: "Áo Polo" },
+      { id: "ao-so-mi", name: "Áo Sơ Mi" },
+      { id: "ao-khoac", name: "Áo Khoác" },
+      { id: "ao-len", name: "Áo Len" },
+      { id: "hoodie-sweater", name: "Hoodie / Sweater" },
+      { id: "khac", name: "Khác" }
+    ],
+
+    nu: [
+      { id: "ao-thun", name: "Áo Thun" },
+      { id: "ao-croptop", name: "Áo Croptop" },
+      { id: "ao-so-mi", name: "Áo Sơ Mi" },
+      { id: "ao-khoac", name: "Áo Khoác" },
+      { id: "ao-len", name: "Áo Len" },
+      { id: "hoodie-sweater", name: "Hoodie / Sweater" },
+      { id: "khac", name: "Khác" }
+    ]
+  },
+
+  quan: {
+    nam: [
+      { id: "quan-jeans", name: "Quần Jeans" },
+      { id: "quan-kaki", name: "Quần Kaki" },
+      { id: "quan-tay", name: "Quần Tây" },
+      { id: "quan-jogger", name: "Quần Jogger" },
+      { id: "quan-short", name: "Quần Short" },
+      { id: "khac", name: "Khác" }
+    ],
+
+    nu: [
+      { id: "quan-jeans", name: "Quần Jeans" },
+      { id: "quan-tay", name: "Quần Tây" },
+      { id: "quan-ong-rong", name: "Quần Ống Rộng" },
+      { id: "legging", name: "Legging" },
+      { id: "quan-short", name: "Quần Short" },
+      { id: "khac", name: "Khác" }
+    ]
+  },
+
+  "giay-dep": {
+    nam: [
+      { id: "sneaker", name: "Sneaker" },
+      { id: "giay-the-thao", name: "Giày Thể Thao" },
+      { id: "giay-tay", name: "Giày Tây" },
+      { id: "sandal", name: "Sandal" },
+      { id: "dep", name: "Dép" }
+    ],
+
+    nu: [
+      { id: "sneaker", name: "Sneaker" },
+      { id: "giay-the-thao", name: "Giày Thể Thao" },
+      { id: "cao-got", name: "Giày Cao Gót" },
+      { id: "sandal", name: "Sandal" },
+      { id: "dep", name: "Dép" }
+    ]
+  },
+
+  "phu-kien": {
+    nam: [
+      { id: "tui-balo", name: "Túi / Balo" },
+      { id: "mu", name: "Mũ" },
+      { id: "vi", name: "Ví" },
+      { id: "that-lung", name: "Thắt Lưng" },
+      { id: "kinh", name: "Kính" },
+      { id: "khac", name: "Khác" }
+    ],
+
+    nu: [
+      { id: "tui-balo", name: "Túi / Balo" },
+      { id: "mu", name: "Mũ" },
+      { id: "vi", name: "Ví" },
+      { id: "kinh", name: "Kính" },
+      { id: "trang-suc", name: "Trang Sức" },
+      { id: "khac", name: "Khác" }
+    ]
+  },
+
+  "bong-da": {
+    all: [
+      { id: "ao-bong-da", name: "Áo Bóng Đá" },
+      { id: "giay-bong-da", name: "Giày Bóng Đá" },
+      { id: "phu-kien-bong-da", name: "Phụ Kiện Bóng Đá" }
+    ]
+  }
 };
+
+const brands = [
+  "Nike",
+  "adidas",
+  "Louis Vuitton",
+  "Gucci",
+  "Dior"
+];
+
+// =====================================================
+// PRODUCTS
+// =====================================================
 
 let products = [
   {
     id: 1,
-    name: "Áo Thun Nam Cotton Premium",
-    brand: "ShopLux",
-    price: 299000,
-    originalPrice: 399000,
-    categoryId: 1,
-    subcategoryId: "ao-thun-nam",
+    name: "Nike Premium Cotton T-Shirt",
+    brand: "Nike",
+    type: "ao",
+    gender: "nam",
+    subcategory: "ao-thun",
+    price: 1290000,
+    originalPrice: 1590000,
     sizes: ["S", "M", "L", "XL"],
     images: [
       "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=900"
     ],
-    image: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=900",
-    desc: "Áo thun nam cotton cao cấp, form hiện đại.",
+    desc: "Áo thun nam phong cách hiện đại, chất liệu cotton cao cấp.",
     rating: 4.9,
     sold: 128
   },
+
   {
     id: 2,
-    name: "Sneaker Trắng Premium",
-    brand: "ShopLux",
-    price: 799000,
-    originalPrice: 1090000,
-    categoryId: 3,
-    subcategoryId: "sneaker",
-    sizes: ["39", "40", "41", "42", "43"],
+    name: "Gucci Luxury Hoodie",
+    brand: "Gucci",
+    type: "ao",
+    gender: "nam",
+    subcategory: "hoodie-sweater",
+    price: 5990000,
+    originalPrice: 6990000,
+    sizes: ["M", "L", "XL"],
     images: [
-      "https://images.unsplash.com/photo-1549298916-b41d501d3772?w=900"
+      "https://images.unsplash.com/photo-1556821840-3a63f95609a7?w=900"
     ],
-    image: "https://images.unsplash.com/photo-1549298916-b41d501d3772?w=900",
-    desc: "Sneaker phong cách tối giản, dễ phối đồ.",
-    rating: 4.8,
-    sold: 86
+    desc: "Hoodie phong cách luxury với thiết kế sang trọng.",
+    rating: 4.9,
+    sold: 42
   },
+
   {
     id: 3,
-    name: "Áo Bóng Đá Bayern Munich",
+    name: "Dior Women's Fashion",
+    brand: "Dior",
+    type: "ao",
+    gender: "nu",
+    subcategory: "ao-thun",
+    price: 4590000,
+    originalPrice: 5290000,
+    sizes: ["S", "M", "L"],
+    images: [
+      "https://images.unsplash.com/photo-1525507119028-ed4c629a60a3?w=900"
+    ],
+    desc: "Thiết kế thời trang nữ thanh lịch và sang trọng.",
+    rating: 5,
+    sold: 31
+  },
+
+  {
+    id: 4,
+    name: "Louis Vuitton Luxury Bag",
+    brand: "Louis Vuitton",
+    type: "phu-kien",
+    gender: "nu",
+    subcategory: "tui-balo",
+    price: 12900000,
+    originalPrice: 14900000,
+    sizes: [],
+    images: [
+      "https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=900"
+    ],
+    desc: "Túi thời trang cao cấp dành cho phong cách sang trọng.",
+    rating: 4.9,
+    sold: 18
+  },
+
+  {
+    id: 5,
+    name: "adidas Football Jersey",
     brand: "adidas",
-    price: 399000,
-    originalPrice: 599000,
-    categoryId: 5,
-    subcategoryId: "ao-clb",
+    type: "bong-da",
+    gender: "all",
+    subcategory: "ao-bong-da",
+    price: 890000,
+    originalPrice: 1190000,
     sizes: ["S", "M", "L", "XL", "XXL"],
     images: [
       "https://images.unsplash.com/photo-1526232761682-d26e03ac148e?w=900"
     ],
-    image: "https://images.unsplash.com/photo-1526232761682-d26e03ac148e?w=900",
-    desc: "Áo bóng đá phong cách CLB, chất liệu thể thao thoáng khí.",
-    rating: 5,
-    sold: 215
+    desc: "Áo bóng đá thoáng khí, phù hợp thi đấu và luyện tập.",
+    rating: 4.9,
+    sold: 216
   }
 ];
 
 let orders = [];
 
-// ==================== AUTH ====================
-
-app.post("/api/auth/login", (req, res) => {
-  const { username, password } = req.body;
-
-  if (username === "admin" && password === "admin123") {
-    return res.json({
-      success: true,
-      user: { username: "admin", role: "admin" }
-    });
-  }
-
-  res.status(401).json({
-    success: false,
-    message: "Sai tài khoản hoặc mật khẩu"
-  });
-});
-
-// ==================== CATEGORY ====================
+// =====================================================
+// API
+// =====================================================
 
 app.get("/api/categories", (req, res) => {
-  res.json({ success: true, data: categories });
+  res.json({
+    success: true,
+    data: categories
+  });
 });
 
 app.get("/api/subcategories", (req, res) => {
-  res.json({ success: true, data: subcategories });
-});
-
-app.get("/api/subcategories/:categoryId", (req, res) => {
   res.json({
     success: true,
-    data: subcategories[Number(req.params.categoryId)] || []
+    data: subcategories
   });
 });
 
-// ==================== PRODUCTS ====================
+app.get("/api/brands", (req, res) => {
+  res.json({
+    success: true,
+    data: brands
+  });
+});
 
 app.get("/api/products", (req, res) => {
-  res.json({ success: true, data: products });
+  res.json({
+    success: true,
+    data: products
+  });
 });
+
+// =====================================================
+// ADMIN PRODUCT
+// =====================================================
 
 app.post("/api/admin/products", (req, res) => {
   const {
     name,
     brand,
+    type,
+    gender,
+    subcategory,
     price,
     originalPrice,
-    categoryId,
-    subcategoryId,
     sizes,
     images,
     desc
   } = req.body;
 
-  if (!name || !price) {
+  if (!name || !price || !type) {
     return res.status(400).json({
       success: false,
-      message: "Vui lòng nhập tên và giá sản phẩm"
+      message: "Thiếu thông tin sản phẩm"
     });
   }
 
@@ -178,11 +280,13 @@ app.post("/api/admin/products", (req, res) => {
   const product = {
     id: Date.now(),
     name: String(name).trim(),
-    brand: brand || "ShopLux",
+    brand: brand || "Nike",
+    type,
+    gender: gender || "all",
+    subcategory: subcategory || "",
     price: Number(price),
-    originalPrice: Number(originalPrice) || Number(price),
-    categoryId: Number(categoryId) || 1,
-    subcategoryId: subcategoryId || "",
+    originalPrice:
+      Number(originalPrice) || Number(price),
     sizes: Array.isArray(sizes) ? sizes : [],
     images: imageList,
     image: imageList[0] || "",
@@ -211,48 +315,40 @@ app.put("/api/admin/products/:id", (req, res) => {
     });
   }
 
-  const {
-    name,
-    brand,
-    price,
-    originalPrice,
-    categoryId,
-    subcategoryId,
-    sizes,
-    images,
-    desc
-  } = req.body;
+  const fields = [
+    "name",
+    "brand",
+    "type",
+    "gender",
+    "subcategory",
+    "desc"
+  ];
 
-  if (name !== undefined) product.name = String(name).trim();
-  if (brand !== undefined) product.brand = brand;
+  fields.forEach(field => {
+    if (req.body[field] !== undefined) {
+      product[field] = req.body[field];
+    }
+  });
 
-  if (price !== undefined) {
-    product.price = Number(price);
+  if (req.body.price !== undefined) {
+    product.price = Number(req.body.price);
   }
 
-  if (originalPrice !== undefined) {
+  if (req.body.originalPrice !== undefined) {
     product.originalPrice =
-      Number(originalPrice) || Number(product.price);
+      Number(req.body.originalPrice) || product.price;
   }
 
-  if (categoryId !== undefined) {
-    product.categoryId = Number(categoryId);
+  if (Array.isArray(req.body.sizes)) {
+    product.sizes = req.body.sizes;
   }
 
-  if (subcategoryId !== undefined) {
-    product.subcategoryId = subcategoryId;
-  }
+  if (Array.isArray(req.body.images)) {
+    product.images =
+      req.body.images.filter(Boolean).slice(0, 4);
 
-  if (Array.isArray(sizes)) {
-    product.sizes = sizes;
-  }
-
-  if (Array.isArray(images)) {
-    product.images = images.filter(Boolean).slice(0, 4);
     product.image = product.images[0] || "";
   }
-
-  if (desc !== undefined) product.desc = desc;
 
   res.json({
     success: true,
@@ -267,10 +363,14 @@ app.delete("/api/admin/products/:id", (req, res) => {
     p => Number(p.id) !== id
   );
 
-  res.json({ success: true });
+  res.json({
+    success: true
+  });
 });
 
-// ==================== ORDERS ====================
+// =====================================================
+// ORDERS
+// =====================================================
 
 app.get("/api/admin/orders", (req, res) => {
   res.json({
@@ -282,9 +382,10 @@ app.get("/api/admin/orders", (req, res) => {
 app.post("/api/orders", (req, res) => {
   const order = {
     ...req.body,
-    orderId: "SL" + Date.now(),
-    createdAt: new Date().toLocaleString("vi-VN"),
-    statusStep: 1
+    id: Date.now(),
+    code: "SL" + Date.now(),
+    createdAt: new Date().toISOString(),
+    status: "pending"
   };
 
   orders.unshift(order);
@@ -295,7 +396,9 @@ app.post("/api/orders", (req, res) => {
   });
 });
 
-// ==================== FRONTEND ====================
+// =====================================================
+// ROUTES
+// =====================================================
 
 app.get("/admin", (req, res) => {
   res.sendFile(
