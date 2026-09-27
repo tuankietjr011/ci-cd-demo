@@ -1,10 +1,24 @@
 const express = require("express");
-const cors = require("cors");
 const path = require("path");
+const fs = require("fs");
 
 const app = express();
-app.use(cors());
+const PORT = process.env.PORT || 3000;
+
+// CORS Middleware thuần không cần thư viện ngoài
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
+  if (req.method === "OPTIONS") return res.sendStatus(200);
+  next();
+});
+
 app.use(express.json({ limit: "10mb" }));
+app.use(express.urlencoded({ extended: true }));
+
+// Phục vụ file tĩnh
+app.use(express.static(path.join(__dirname, "frontend")));
 app.use(express.static(path.join(__dirname, "../frontend")));
 
 const users = [
@@ -33,11 +47,11 @@ let orders = [
 ];
 
 let products = [
-  { id: 1, categoryId: 1, name: "Áo Thun Nam Cotton Co Giãn 4 Chiều", price: 89000, originalPrice: 150000, discount: "-41%", rating: 4.9, sold: "12,4k", image: "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?w=500&q=80", desc: "Chất liệu cotton cao cấp, thấm hút mồ hôi tối đa." },
-  { id: 2, categoryId: 2, name: "Tai Nghe Bluetooth Không Dây ENC Chống Ồn", price: 249000, originalPrice: 450000, discount: "-45%", rating: 4.8, sold: "8,1k", image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500&q=80", desc: "Pin 40 giờ, lọc ồn chủ động, kháng nước IPX5." },
-  { id: 3, categoryId: 3, name: "Bàn Phím Cơ RGB Hotswap 3 Mode Kết Nối", price: 699000, originalPrice: 1100000, discount: "-36%", rating: 5.0, sold: "3,2k", image: "https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=500&q=80", desc: "Keycap PBT cao cấp, switch pre-lubed gõ siêu êm." },
-  { id: 4, categoryId: 3, name: "Chuột Gaming Không Dây Siêu Nhẹ 59g Sensor 3395", price: 450000, originalPrice: 790000, discount: "-43%", rating: 4.7, sold: "5,9k", image: "https://images.unsplash.com/photo-1615663245857-ac93bb7c39e7?w=500&q=80", desc: "Trọng lượng siêu nhẹ chỉ 59 gram, cảm biến quang học cực chuẩn." },
-  { id: 5, categoryId: 4, name: "Đồng Hồ Thông Minh AMOLED Nghe Gọi Tiếng Việt", price: 890000, originalPrice: 1590000, discount: "-44%", rating: 4.9, sold: "2,1k", image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500&q=80", desc: "Màn hình Always-on Display, theo dõi sức khỏe và nhịp tim 24/7." }
+  { id: 1, categoryId: 1, name: "Áo Thun Nam Cotton Co Giãn 4 Chiều", price: 89000, originalPrice: 150000, discount: "-41%", rating: 4.9, sold: "12,4k", image: "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?w=500&q=80", desc: "Chất liệu cotton cao cấp." },
+  { id: 2, categoryId: 2, name: "Tai Nghe Bluetooth Không Dây ENC Chống Ồn", price: 249000, originalPrice: 450000, discount: "-45%", rating: 4.8, sold: "8,1k", image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500&q=80", desc: "Pin 40 giờ, lọc ồn chủ động." },
+  { id: 3, categoryId: 3, name: "Bàn Phím Cơ RGB Hotswap 3 Mode Kết Nối", price: 699000, originalPrice: 1100000, discount: "-36%", rating: 5.0, sold: "3,2k", image: "https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=500&q=80", desc: "Keycap PBT cao cấp." },
+  { id: 4, categoryId: 3, name: "Chuột Gaming Không Dây Siêu Nhẹ 59g Sensor 3395", price: 450000, originalPrice: 790000, discount: "-43%", rating: 4.7, sold: "5,9k", image: "https://images.unsplash.com/photo-1615663245857-ac93bb7c39e7?w=500&q=80", desc: "Trọng lượng siêu nhẹ." },
+  { id: 5, categoryId: 4, name: "Đồng Hồ Thông Minh AMOLED Nghe Gọi Tiếng Việt", price: 890000, originalPrice: 1590000, discount: "-44%", rating: 4.9, sold: "2,1k", image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500&q=80", desc: "Màn hình Always-on Display." }
 ];
 
 const categories = [
@@ -68,12 +82,11 @@ app.get("/api/orders/:username", (req, res) => {
   res.json({ success: true, data: orders.filter(o => o.username === req.params.username) });
 });
 
-// APIS ADMIN
 app.get("/api/admin/orders", (req, res) => res.json({ success: true, data: orders }));
 
 app.put("/api/admin/orders/:orderId/status", (req, res) => {
   const order = orders.find(o => o.orderId === req.params.orderId);
-  if (!order) return res.status(404).json({ success: false, message: "Không tìm thấy đơn hàng!" });
+  if (!order) return res.status(404).json({ success: false, message: "Không tìm thấy đơn!" });
   order.statusStep = parseInt(req.body.step);
   res.json({ success: true, order });
 });
@@ -91,7 +104,7 @@ app.post("/api/admin/products", (req, res) => {
     sold: "0",
     categoryId: 1,
     image: image || "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500&q=80",
-    desc: desc || "Sản phẩm phân phối chính hãng bởi ShopLux."
+    desc: desc || "Sản phẩm mới chính hãng ShopLux."
   };
   products.unshift(p);
   res.json({ success: true, product: p });
@@ -102,15 +115,21 @@ app.delete("/api/admin/products/:id", (req, res) => {
   res.json({ success: true });
 });
 
+function serveFile(res, fileName) {
+  const candidates = [
+    path.join(__dirname, "frontend", fileName),
+    path.join(__dirname, "../frontend", fileName)
+  ];
+  for (const p of candidates) {
+    if (fs.existsSync(p)) return res.sendFile(p);
+  }
+  res.status(404).send(fileName + " not found");
+}
 
-app.get("/admin.html", (req, res) => {
-  res.sendFile(path.join(__dirname, "../frontend/admin.html"));
+app.get("/admin", (req, res) => serveFile(res, "admin.html"));
+app.get("/admin.html", (req, res) => serveFile(res, "admin.html"));
+app.get("*", (req, res) => serveFile(res, "index.html"));
+
+app.listen(PORT, "0.0.0.0", () => {
+  console.log("Application running at port " + PORT);
 });
-app.get("/admin", (req, res) => {
-  res.sendFile(path.join(__dirname, "../frontend/admin.html"));
-});
-
-app.get("*", (req, res) => res.sendFile(path.join(__dirname, "../frontend/index.html")));
-
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log("ShopLux Server running on port " + PORT));
