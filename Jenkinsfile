@@ -45,7 +45,8 @@ pipeline {
 
                 ssh ubuntu@13.250.52.12 '
                     cd ~/ci-cd-demo &&
-                    git pull origin main &&
+                    git fetch origin &&
+                    git reset --hard origin/main &&
                     docker compose up --build -d &&
                     docker compose ps
                 '
