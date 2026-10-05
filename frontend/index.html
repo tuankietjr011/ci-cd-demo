@@ -120,6 +120,33 @@
         display: none !important;
       }
     }
+
+    /* ============================= */
+/* PRODUCT THUMBNAIL NAV */
+/* ============================= */
+
+.product-thumb-nav {
+  display: none !important;
+}
+
+/* MÁY TÍNH:
+   chỉ hiện nút khi rê chuột vào hàng ảnh */
+@media (hover: hover) and (pointer: fine) {
+  #productThumbArea.has-thumb-overflow:hover
+  .product-thumb-nav {
+    display: flex !important;
+  }
+}
+
+/* ĐIỆN THOẠI / MÀN HÌNH CẢM ỨNG:
+   luôn hiện nút nếu hàng ảnh bị tràn */
+@media (hover: none), (pointer: coarse) {
+  #productThumbArea.has-thumb-overflow
+  .product-thumb-nav {
+    display: flex !important;
+  }
+}
+
   </style>
 </head>
 
@@ -147,9 +174,13 @@
   >
     <span>SHOPLUX MAISON • AUTHENTIC FASHION</span>
 
-    <a href="/admin.html">
-      KÊNH NGƯỜI BÁN
-    </a>
+    <a
+  id="sellerChannel"
+  href="/admin.html"
+  class="hidden"
+>
+  KÊNH NGƯỜI BÁN
+</a>
   </div>
 </div>
 
@@ -256,7 +287,10 @@
     >
       <i class="fa-regular fa-user text-xl"></i>
 
-      <span class="hidden md:block">
+      <span
+        id="accountName"
+        class="hidden md:block"
+      >
         TÀI KHOẢN
       </span>
 
@@ -294,33 +328,54 @@
         <!-- TITLE -->
         <div class="text-center mb-5">
 
-          <div
-            class="
-              w-12
-              h-12
-              rounded-full
-              mx-auto
-              flex
-              items-center
-              justify-center
-              text-xl
-              mb-3
-            "
-            style="
-              background:#3b2416;
-              color:#e8d5a3;
-            "
-          >
-            <i class="fa-regular fa-user"></i>
-          </div>
+          <a
+  id="accountAvatarLink"
+  href="/profile.html"
+  class="
+    w-12
+    h-12
+    rounded-full
+    mx-auto
+    mb-3
+    flex
+    items-center
+    justify-center
+    overflow-hidden
+    cursor-pointer
+  "
+  style="
+    background:#3b2416;
+    color:#e8d5a3;
+  "
+  title="Thông tin cá nhân"
+>
+
+  <i
+    id="accountAvatarIcon"
+    class="fa-regular fa-user text-xl"
+  ></i>
+
+  <img
+    id="accountAvatarImage"
+    alt="Avatar"
+    class="
+      hidden
+      w-full
+      h-full
+      object-cover
+    "
+  >
+
+</a>
 
           <div
-            class="
-              luxury-font
-              text-xl
-            "
-          >
-            ShopLux Member
+            id="accountDropdownName"
+              class="
+            luxury-font
+          text-xl
+          "
+            >
+          ShopLux Member
           </div>
 
           <p
@@ -336,50 +391,100 @@
         </div>
 
 
-        <!-- LOGIN -->
-        <a
-          href="/login.html"
-          class="
-            block
-            w-full
-            text-center
-            py-3
-            font-bold
-            tracking-[1px]
-            transition
-            hover:opacity-90
-          "
-          style="
-            background:#3b2416;
-            color:#e8d5a3;
-          "
-        >
-          ĐĂNG NHẬP
-        </a>
+       <!-- GUEST ACTIONS -->
+<div id="guestAccountActions">
+
+  <a
+    href="/login.html"
+    class="
+      block
+      w-full
+      text-center
+      py-3
+      font-bold
+      tracking-[1px]
+      transition
+      hover:opacity-90
+    "
+    style="
+      background:#3b2416;
+      color:#e8d5a3;
+    "
+  >
+    ĐĂNG NHẬP
+  </a>
+
+  <a
+    href="/register.html"
+    class="
+      block
+      w-full
+      text-center
+      py-3
+      mt-3
+      border
+      font-bold
+      tracking-[1px]
+      transition
+      hover:bg-[#f7f1e7]
+    "
+    style="
+      border-color:#c9a227;
+      color:#3b2416;
+    "
+  >
+    ĐĂNG KÝ TÀI KHOẢN
+  </a>
+
+</div>
 
 
-        <!-- REGISTER -->
-        <a
-          href="/register.html"
-          class="
-            block
-            w-full
-            text-center
-            py-3
-            mt-3
-            border
-            font-bold
-            tracking-[1px]
-            transition
-            hover:bg-[#f7f1e7]
-          "
-          style="
-            border-color:#c9a227;
-            color:#3b2416;
-          "
-        >
-          ĐĂNG KÝ TÀI KHOẢN
-        </a>
+<!-- LOGGED USER -->
+<div
+  id="loggedAccountActions"
+  class="hidden"
+>
+
+  <div
+    class="text-center text-sm mb-4 px-3 py-3"
+    style="background:#f7f1e7"
+  >
+
+    <div
+      id="accountEmail"
+      class="font-bold break-all"
+      style="color:#3b2416"
+    ></div>
+
+    <div class="text-xs text-gray-400 mt-1">
+      Thành viên ShopLux
+    </div>
+
+  </div>
+
+  <button
+    onclick="logoutShopLux()"
+    class="
+      block
+      w-full
+      text-center
+      py-3
+      border
+      font-bold
+      tracking-[1px]
+      transition
+      hover:bg-[#f7f1e7]
+    "
+    style="
+      border-color:#c9a227;
+      color:#3b2416;
+    "
+  >
+    <i class="fa-solid fa-right-from-bracket mr-2"></i>
+    ĐĂNG XUẤT
+  </button>
+
+</div>
 
 
         <div
@@ -404,33 +509,43 @@
             ></i>
 
             <span>
-              Theo dõi đơn hàng
+              <a
+            href="/orders.html"
+            class="hover:underline"
+          >
+            Theo dõi đơn hàng
+          </a>
             </span>
           </div>
 
 
-          <div class="flex items-center gap-3">
-            <i
-              class="fa-regular fa-heart w-4"
-              style="color:#c9a227"
-            ></i>
+          <a
+  href="/favorites.html"
+  class="flex items-center gap-3 hover:underline cursor-pointer"
+>
+  <i
+    class="fa-regular fa-heart w-4"
+    style="color:#c9a227"
+  ></i>
 
-            <span>
-              Sản phẩm yêu thích
-            </span>
-          </div>
+  <span>
+    Sản phẩm yêu thích
+  </span>
+</a>
 
+          <a
+  href="/offers.html"
+  class="flex items-center gap-3 hover:underline cursor-pointer"
+>
+  <i
+    class="fa-solid fa-crown w-4"
+    style="color:#c9a227"
+  ></i>
 
-          <div class="flex items-center gap-3">
-            <i
-              class="fa-solid fa-crown w-4"
-              style="color:#c9a227"
-            ></i>
-
-            <span>
-              Ưu đãi thành viên
-            </span>
-          </div>
+  <span>
+    Ưu đãi thành viên
+  </span>
+</a>
 
         </div>
 
@@ -1158,65 +1273,532 @@ function openCart() {
   const container =
     document.getElementById("cartItems");
 
-  const cart =
-    JSON.parse(
-      localStorage.getItem("shoplux_cart") || "[]"
-    );
+  cart =
+  typeof loadUserCart === "function"
+    ? loadUserCart()
+    : [];
 
+
+  // GIỎ HÀNG TRỐNG
   if (!cart.length) {
+
     container.innerHTML = `
       <div class="text-center py-14 text-gray-400">
-        <i class="fa-solid fa-bag-shopping text-4xl mb-4"></i>
-        <p>Giỏ hàng đang trống.</p>
+
+        <i
+          class="
+            fa-solid
+            fa-bag-shopping
+            text-4xl
+            mb-4
+          "
+        ></i>
+
+        <p>
+          Giỏ hàng đang trống.
+        </p>
+
       </div>
     `;
+
   } else {
-    container.innerHTML =
-      cart.map(item => `
+
+    // TÍNH TỔNG TIỀN
+    const selectedCartItems =
+  cart.filter(
+    item =>
+      item.selected === true
+  );
+
+
+const total =
+  selectedCartItems.reduce(
+    (sum, item) =>
+      sum +
+      Number(item.price || 0) *
+      Number(item.qty || 1),
+    0
+  );
+
+    // DANH SÁCH SẢN PHẨM
+    container.innerHTML = `
+
+      <div>
+
+        ${cart.map((item, index) => `
+
+  <div
+    class="
+      flex
+      items-center
+      gap-4
+      py-4
+      border-b
+    "
+    style="border-color:#e8d5a3"
+  >
+<div
+  class="
+    flex
+    items-start
+    pt-2
+  "
+>
+  <input
+    type="checkbox"
+    class="
+      cart-check
+      w-5
+      h-5
+      cursor-pointer
+      accent-[#3b2416]
+    "
+    data-index="${index}"
+    ${item.selected ? "checked" : ""}
+    onchange="toggleCartItem(${index}, this.checked)"
+  >
+</div>
+
+    <!-- ẢNH - BẤM VÀO XEM CHI TIẾT -->
+    <a
+      href="/?id=${item.id}"
+      class="shrink-0"
+    >
+      <img
+        src="${item.image}"
+        class="
+          w-20
+          h-20
+          object-cover
+          cursor-pointer
+          hover:opacity-80
+          transition
+        "
+      >
+    </a>
+
+
+    <!-- THÔNG TIN -->
+    <div class="flex-1">
+
+      <a
+        href="/?id=${item.id}"
+        class="
+          font-bold
+          hover:underline
+          cursor-pointer
+        "
+      >
+        ${item.name}
+      </a>
+
+      ${
+  item.size
+    ? `
+      <div class="mt-2 flex items-center gap-2">
+
+        <span class="text-xs text-gray-500">
+          Size:
+        </span>
+
+        <select
+          onchange="changeCartSize(${index}, this.value)"
+          class="
+            border
+            px-2
+            py-1
+            text-xs
+            bg-[#fffdf8]
+            outline-none
+          "
+          style="border-color:#c9a227"
+        >
+          ${["S", "M", "L", "XL"]
+            .map(size => `
+              <option
+                value="${size}"
+                ${item.size === size ? "selected" : ""}
+              >
+                ${size}
+              </option>
+            `)
+            .join("")}
+        </select>
+
+      </div>
+    `
+    : ""
+}
+
+      <div
+        class="mt-1"
+        style="color:#70452d"
+      >
+        ${Number(item.price).toLocaleString("vi-VN")} ₫
+      </div>
+
+
+      <!-- SỐ LƯỢNG + XÓA -->
+      <div
+        class="
+          flex
+          items-center
+          gap-4
+          mt-3
+        "
+      >
+
         <div
           class="
             flex
             items-center
-            gap-4
-            py-4
-            border-b
+            border
           "
+          style="border-color:#c9a227"
         >
 
-          <img
-            src="${item.image}"
+          <button
+            type="button"
+            onclick="changeCartQuantity(${index}, -1)"
             class="
-              w-20
-              h-20
-              object-cover
+              w-9
+              h-9
+              font-bold
+              hover:bg-[#f7f1e7]
             "
           >
+            −
+          </button>
 
-          <div class="flex-1">
+          <span
+            class="
+              w-10
+              text-center
+              font-bold
+            "
+          >
+            ${item.qty || 1}
+          </span>
 
-            <div class="font-bold">
-              ${item.name}
-            </div>
-
-            <div
-              class="mt-1"
-              style="color:#70452d"
-            >
-              ${Number(item.price).toLocaleString("vi-VN")} ₫
-            </div>
-
-          </div>
-
-          <div>
-            x${item.qty}
-          </div>
+          <button
+            type="button"
+            onclick="changeCartQuantity(${index}, 1)"
+            class="
+              w-9
+              h-9
+              font-bold
+              hover:bg-[#f7f1e7]
+            "
+          >
+            +
+          </button>
 
         </div>
-      `).join("");
+
+
+        <button
+          type="button"
+          onclick="removeCartItem(${index})"
+          class="
+            text-xs
+            font-bold
+            tracking-[1px]
+            hover:underline
+          "
+          style="color:#70452d"
+        >
+          <i class="fa-regular fa-trash-can mr-1"></i>
+          XÓA
+        </button>
+
+      </div>
+
+    </div>
+
+
+    <!-- THÀNH TIỀN -->
+    <div
+      class="
+        font-bold
+        text-right
+      "
+    >
+      ${(
+        Number(item.price || 0) *
+        Number(item.qty || 1)
+      ).toLocaleString("vi-VN")} ₫
+    </div>
+
+  </div>
+
+`).join("")}
+
+
+        <!-- TOTAL -->
+
+        <div
+          class="
+            flex
+            justify-between
+            items-center
+            mt-6
+            pt-5
+            border-t
+          "
+          style="border-color:#e8d5a3"
+        >
+
+          <span
+            class="
+              font-bold
+              tracking-[1px]
+            "
+          >
+            TỔNG CỘNG
+          </span>
+
+
+          <span
+            class="
+              text-xl
+              font-bold
+            "
+            style="color:#70452d"
+          >
+            ${total.toLocaleString("vi-VN")} ₫
+          </span>
+
+        </div>
+
+
+        <!-- CHECKOUT -->
+
+        <button
+          onclick="checkoutCart()"
+          class="
+            w-full
+            mt-6
+            py-4
+            font-bold
+            tracking-[2px]
+            transition
+            hover:opacity-90
+          "
+          style="
+            background:#3b2416;
+            color:#e8d5a3;
+          "
+        >
+          THANH TOÁN
+        </button>
+
+      </div>
+    `;
   }
+
 
   modal.classList.remove("hidden");
   modal.classList.add("flex");
+}
+
+function toggleCartItem(
+  index,
+  checked
+) {
+
+  const key =
+    typeof getCartStorageKey === "function"
+      ? getCartStorageKey()
+      : null;
+
+  if (!key) return;
+
+
+  const currentCart =
+    JSON.parse(
+      localStorage.getItem(key) || "[]"
+    );
+
+
+  if (!currentCart[index]) {
+    return;
+  }
+
+
+  currentCart[index].selected =
+    checked;
+
+
+  localStorage.setItem(
+    key,
+    JSON.stringify(currentCart)
+  );
+
+
+  // Đồng bộ biến cart trong app.js
+  cart = currentCart;
+
+
+  openCart();
+}
+
+
+function changeCartQuantity(index, amount) {
+
+  const key =
+    typeof getCartStorageKey === "function"
+      ? getCartStorageKey()
+      : null;
+
+  if (!key) return;
+
+
+  const currentCart =
+    JSON.parse(
+      localStorage.getItem(key) || "[]"
+    );
+
+
+  if (!currentCart[index]) {
+    return;
+  }
+
+
+  const currentQty =
+    Number(
+      currentCart[index].qty || 1
+    );
+
+
+  const newQty =
+    currentQty + amount;
+
+
+  if (newQty < 1) {
+    return;
+  }
+
+
+  currentCart[index].qty =
+    newQty;
+
+
+  localStorage.setItem(
+    key,
+    JSON.stringify(currentCart)
+  );
+
+
+  cart = currentCart;
+
+
+  if (
+    typeof updateCartCount ===
+    "function"
+  ) {
+    updateCartCount();
+  }
+
+
+  openCart();
+}
+
+
+function removeCartItem(index) {
+
+  const key =
+    typeof getCartStorageKey === "function"
+      ? getCartStorageKey()
+      : null;
+
+  if (!key) return;
+
+
+  const currentCart =
+    JSON.parse(
+      localStorage.getItem(key) || "[]"
+    );
+
+
+  if (!currentCart[index]) {
+    return;
+  }
+
+
+  currentCart.splice(
+    index,
+    1
+  );
+
+
+  localStorage.setItem(
+    key,
+    JSON.stringify(currentCart)
+  );
+
+
+  cart = currentCart;
+
+
+  if (
+    typeof updateCartCount ===
+    "function"
+  ) {
+    updateCartCount();
+  }
+
+
+  openCart();
+}
+function changeCartSize(index, newSize) {
+
+  const key =
+    typeof getCartStorageKey === "function"
+      ? getCartStorageKey()
+      : null;
+
+  if (!key) return;
+
+
+  const currentCart =
+    JSON.parse(
+      localStorage.getItem(key) || "[]"
+    );
+
+
+  if (!currentCart[index]) {
+    return;
+  }
+
+
+  const item =
+    currentCart[index];
+
+
+  item.size =
+    newSize;
+
+
+  // Cập nhật key theo size mới
+  // để không bị lỗi khi thanh toán/xóa sản phẩm
+  const color =
+    item.color || "";
+
+  item.key =
+    `${item.id}-${newSize}-${color}`;
+
+
+  localStorage.setItem(
+    key,
+    JSON.stringify(currentCart)
+  );
+
+
+  cart =
+    currentCart;
+
+
+  openCart();
 }
 
 function closeCart() {
@@ -1239,6 +1821,307 @@ if (query.toString()) {
   }
 }
 </script>
+<script>
+async function loadShopLuxAccount() {
 
+  const token =
+    localStorage.getItem("shoplux_token");
+
+  const accountName =
+    document.getElementById("accountName");
+
+  const dropdownName =
+    document.getElementById("accountDropdownName");
+
+  const emailElement =
+    document.getElementById("accountEmail");
+
+  const guestActions =
+    document.getElementById("guestAccountActions");
+
+  const loggedActions =
+    document.getElementById("loggedAccountActions");
+
+
+  // CHƯA ĐĂNG NHẬP
+  if (!token) {
+
+    if (accountName) {
+      accountName.textContent = "TÀI KHOẢN";
+    }
+
+    if (dropdownName) {
+      dropdownName.textContent = "ShopLux Member";
+    }
+
+    if (guestActions) {
+      guestActions.classList.remove("hidden");
+    }
+
+    if (loggedActions) {
+      loggedActions.classList.add("hidden");
+    }
+
+    return;
+  }
+
+
+  try {
+
+    const response = await fetch(
+      "/api/auth/me",
+      {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      }
+    );
+
+    const data = await response.json();
+
+
+    // TOKEN HẾT HẠN / KHÔNG HỢP LỆ
+    if (!response.ok || !data.success) {
+
+      localStorage.removeItem(
+        "shoplux_token"
+      );
+
+      localStorage.removeItem(
+        "shoplux_user"
+      );
+
+      showGuestAccount();
+
+      return;
+    }
+
+
+    const user = data.user;
+
+const avatarImage =
+  document.getElementById(
+    "accountAvatarImage"
+  );
+
+const avatarIcon =
+  document.getElementById(
+    "accountAvatarIcon"
+  );
+
+
+if (
+  user.avatar &&
+  avatarImage
+) {
+
+  avatarImage.src =
+    user.avatar;
+
+  avatarImage.classList.remove(
+    "hidden"
+  );
+
+  if (avatarIcon) {
+    avatarIcon.classList.add(
+      "hidden"
+    );
+  }
+
+} else {
+
+  if (avatarImage) {
+
+    avatarImage.classList.add(
+      "hidden"
+    );
+
+    avatarImage.removeAttribute(
+      "src"
+    );
+
+  }
+
+  if (avatarIcon) {
+    avatarIcon.classList.remove(
+      "hidden"
+    );
+  }
+
+}
+
+    // KÊNH NGƯỜI BÁN - CHỈ ADMIN
+const sellerChannel =
+  document.getElementById("sellerChannel");
+
+if (sellerChannel) {
+  if (user.role === "admin") {
+    sellerChannel.classList.remove("hidden");
+  } else {
+    sellerChannel.classList.add("hidden");
+  }
+}
+
+
+localStorage.setItem(
+  "shoplux_user",
+  JSON.stringify(user)
+);
+
+
+    localStorage.setItem(
+      "shoplux_user",
+      JSON.stringify(user)
+    );
+
+
+    // HEADER
+    if (accountName) {
+
+      const firstName =
+        user.fullname
+          ?.trim()
+          .split(/\s+/)
+          .pop();
+
+      accountName.textContent =
+        firstName
+          ? firstName.toUpperCase()
+          : "TÀI KHOẢN";
+    }
+
+
+    // DROPDOWN NAME
+    if (dropdownName) {
+
+      dropdownName.textContent =
+        user.fullname;
+    }
+
+
+    // EMAIL
+    if (emailElement) {
+
+      emailElement.textContent =
+        user.email;
+    }
+
+
+    // ẨN LOGIN / REGISTER
+    if (guestActions) {
+
+      guestActions.classList.add(
+        "hidden"
+      );
+    }
+
+
+    // HIỆN LOGOUT
+    if (loggedActions) {
+
+      loggedActions.classList.remove(
+        "hidden"
+      );
+    }
+
+  } catch (error) {
+
+    console.error(
+      "Account error:",
+      error
+    );
+
+  }
+
+}
+
+
+function showGuestAccount() {
+
+  const accountName =
+    document.getElementById("accountName");
+
+  const dropdownName =
+    document.getElementById(
+      "accountDropdownName"
+    );
+
+  const guestActions =
+    document.getElementById(
+      "guestAccountActions"
+    );
+
+  const loggedActions =
+    document.getElementById(
+      "loggedAccountActions"
+    );
+
+
+  if (accountName) {
+    accountName.textContent =
+      "TÀI KHOẢN";
+  }
+
+
+  if (dropdownName) {
+    dropdownName.textContent =
+      "ShopLux Member";
+  }
+
+
+  if (guestActions) {
+    guestActions.classList.remove(
+      "hidden"
+    );
+  }
+
+
+  if (loggedActions) {
+    loggedActions.classList.add(
+      "hidden"
+    );
+  }
+
+}
+
+
+function logoutShopLux() {
+
+  // Chỉ đăng xuất tài khoản.
+  // KHÔNG xóa giỏ hàng riêng của user.
+  localStorage.removeItem(
+    "shoplux_token"
+  );
+
+  localStorage.removeItem(
+    "shoplux_user"
+  );
+
+
+  // Xóa dữ liệu checkout tạm
+  localStorage.removeItem(
+    "shoplux_checkout"
+  );
+
+  localStorage.removeItem(
+    "shoplux_checkout_source"
+  );
+
+  localStorage.removeItem(
+    "shoplux_checkout_keys"
+  );
+
+
+  // Giỏ shoplux_cart_user_ID
+  // vẫn được giữ nguyên để đăng nhập lại còn sản phẩm.
+
+  window.location.href = "/";
+}
+
+document.addEventListener(
+  "DOMContentLoaded",
+  loadShopLuxAccount
+);
+</script>
 </body>
 </html>

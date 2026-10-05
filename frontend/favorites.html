@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Sản phẩm yêu thích | ShopLux</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    body {
+      background: #f7f1e7;
+      color: #1f120c;
+    }
+
+    .luxury-font {
+      font-family: Georgia, "Times New Roman", serif;
+    }
+  </style>
+</head>
+
+<body>
+
+<header
+  class="border-b"
+  style="
+    background:#3b2416;
+    color:#fffdf8;
+    border-color:#c9a227;
+  "
+>
+  <div
+    class="
+      max-w-7xl
+      mx-auto
+      px-4
+      py-6
+      flex
+      justify-between
+      items-center
+    "
+  >
+
+    <a href="/" class="text-center">
+
+      <div
+        class="
+          luxury-font
+          text-3xl
+          font-bold
+          tracking-[5px]
+        "
+        style="color:#e8d5a3"
+      >
+        SHOPLUX
+      </div>
+
+      <div
+        class="
+          text-[9px]
+          tracking-[4px]
+          mt-1
+        "
+      >
+        MAISON • LUXURY FASHION
+      </div>
+
+    </a>
+
+    <a
+      href="/"
+      class="font-bold"
+      style="color:#e8d5a3"
+    >
+      TRANG CHỦ
+    </a>
+
+  </div>
+</header>
+
+
+<main class="max-w-7xl mx-auto px-4 py-12">
+
+  <div class="text-center mb-10">
+
+    <div
+      class="text-[10px] tracking-[5px]"
+      style="color:#70452d"
+    >
+      SHOPLUX MEMBER
+    </div>
+
+    <h1
+      class="
+        luxury-font
+        text-4xl
+        mt-3
+      "
+    >
+<h1 class="luxury-font text-4xl mt-3">
+  SẢN PHẨM YÊU THÍCH
+</h1>
+  </h1>
+
+    <p
+      id="favoriteCount"
+      class="text-gray-500 mt-3"
+    ></p>
+
+  </div>
+
+
+  <div
+    id="emptyFavorites"
+    class="
+      hidden
+      text-center
+      bg-[#fffdf8]
+      border
+      py-16
+    "
+    style="border-color:#e8d5a3"
+  >
+
+    <div
+      class="
+        text-5xl
+        mb-5
+      "
+      style="color:#70452d"
+    >
+      ♡
+    </div>
+
+    <div
+      class="
+        luxury-font
+        text-2xl
+      "
+    >
+      Chưa có sản phẩm yêu thích
+    </div>
+
+    <a
+      href="/"
+      class="
+        inline-block
+        mt-7
+        px-8
+        py-3
+        font-bold
+      "
+      style="
+        background:#3b2416;
+        color:#e8d5a3;
+      "
+    >
+      TIẾP TỤC MUA SẮM
+    </a>
+
+  </div>
+
+
+  <div
+    id="favoriteList"
+    class="
+      grid
+      grid-cols-1
+      sm:grid-cols-2
+      lg:grid-cols-4
+      gap-6
+    "
+  ></div>
+
+</main>
+
+
+<script>
+
+const token =
+  localStorage.getItem("shoplux_token");
+
+
+if (!token) {
+  location.href = "/login.html";
+}
+
+
+let favorites =
+  JSON.parse(
+    localStorage.getItem(
+      "shoplux_favorites"
+    ) || "[]"
+  );
+
+
+function money(value) {
+  return Number(value || 0)
+    .toLocaleString("vi-VN") + " ₫";
+}
+
+
+function escapeHTML(value = "") {
+  return String(value)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+
+function renderFavorites() {
+
+  const container =
+    document.getElementById(
+      "favoriteList"
+    );
+
+  const empty =
+    document.getElementById(
+      "emptyFavorites"
+    );
+
+  const count =
+    document.getElementById(
+      "favoriteCount"
+    );
+
+
+  count.textContent =
+    `${favorites.length} sản phẩm yêu thích`;
+
+
+  if (!favorites.length) {
+
+    container.innerHTML = "";
+
+    empty.classList.remove(
+      "hidden"
+    );
+
+    return;
+  }
+
+
+  empty.classList.add(
+    "hidden"
+  );
+
+
+  container.innerHTML =
+    favorites.map(product => `
+
+      <div
+        class="
+          bg-[#fffdf8]
+          border
+          relative
+        "
+        style="border-color:#e8d5a3"
+      >
+
+        <button
+          onclick="
+            removeFavorite(
+              ${product.id}
+            )
+          "
+          class="
+            absolute
+            top-3
+            right-3
+            z-20
+            w-10
+            h-10
+            bg-white
+            rounded-full
+            shadow
+            text-xl
+            font-bold
+          "
+          style="color:#8b1e1e"
+          title="Bỏ yêu thích"
+        >
+          ♥
+        </button>
+
+
+        <a
+          href="/#detail-${product.id}"
+          class="block"
+        >
+
+          <div
+            class="
+              aspect-[4/5]
+              bg-[#efe4d2]
+              overflow-hidden
+            "
+          >
+
+            <img
+              src="${product.image || ""}"
+              alt="${escapeHTML(
+                product.name
+              )}"
+              class="
+                w-full
+                h-full
+                object-cover
+                transition
+                duration-300
+                hover:scale-105
+              "
+            >
+
+          </div>
+
+
+          <div class="p-5">
+
+            <div
+              class="
+                text-[10px]
+                font-bold
+                tracking-[3px]
+              "
+              style="color:#70452d"
+            >
+              ${escapeHTML(
+                product.brand || ""
+              )}
+            </div>
+
+
+            <h2
+              class="
+                luxury-font
+                text-lg
+                mt-3
+                min-h-[52px]
+              "
+            >
+              ${escapeHTML(
+                product.name || ""
+              )}
+            </h2>
+
+
+            <div
+              class="
+                font-bold
+                mt-4
+              "
+              style="color:#3b2416"
+            >
+              ${money(
+                product.price
+              )}
+            </div>
+
+
+            ${
+              product.originalPrice &&
+              Number(
+                product.originalPrice
+              ) >
+              Number(product.price)
+
+                ? `
+                  <div
+                    class="
+                      text-sm
+                      text-gray-400
+                      line-through
+                      mt-1
+                    "
+                  >
+                    ${money(
+                      product.originalPrice
+                    )}
+                  </div>
+                `
+
+                : ""
+            }
+
+          </div>
+
+        </a>
+
+      </div>
+
+    `).join("");
+
+}
+
+
+function removeFavorite(id) {
+
+  favorites =
+    favorites.filter(
+      product =>
+        Number(product.id) !==
+        Number(id)
+    );
+
+
+  localStorage.setItem(
+    "shoplux_favorites",
+    JSON.stringify(favorites)
+  );
+
+
+  renderFavorites();
+
+}
+
+
+renderFavorites();
+
+</script>
+
+</body>
+</html>

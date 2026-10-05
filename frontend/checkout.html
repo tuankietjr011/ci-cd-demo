@@ -1,0 +1,2122 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>Thanh toán | ShopLux</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    body {
+      background: #f7f1e7;
+      color: #1f120c;
+        font-family: Arial, sans-serif;
+
+    }
+
+    .luxury-font {
+  font-family: Arial, sans-serif;
+  font-weight: 700;
+}
+  </style>
+</head>
+
+
+<body>
+
+  <!-- HEADER -->
+
+  <header
+    class="border-b bg-[#fffdf8]"
+    style="border-color:#e8d5a3"
+  >
+    <div
+      class="
+        max-w-7xl
+        mx-auto
+        px-4
+        py-6
+        flex
+        items-center
+        justify-between
+      "
+    >
+
+      <a href="/">
+        <div
+          class="
+            luxury-font
+            text-3xl
+            font-bold
+            tracking-[4px]
+          "
+          style="color:#3b2416"
+        >
+          SHOPLUX
+        </div>
+
+        <div
+          class="
+            text-[9px]
+            tracking-[4px]
+            text-center
+            mt-1
+          "
+          style="color:#70452d"
+        >
+          MAISON • LUXURY FASHION
+        </div>
+      </a>
+
+
+      <a
+        href="/"
+        class="
+          text-sm
+          font-bold
+          hover:underline
+        "
+      >
+        TIẾP TỤC MUA SẮM
+      </a>
+
+    </div>
+  </header>
+
+
+  <!-- MAIN -->
+
+  <main
+    class="
+      max-w-7xl
+      mx-auto
+      px-4
+      py-12
+    "
+  >
+
+    <div class="text-center mb-10">
+
+      <div
+        class="
+          text-[10px]
+          tracking-[5px]
+        "
+        style="color:#70452d"
+      >
+        SHOPLUX MAISON
+      </div>
+
+      <h1
+        class="
+          luxury-font
+          text-3xl
+          md:text-4xl
+          mt-3
+        "
+      >
+        THANH TOÁN
+      </h1>
+
+    </div>
+
+
+    <div
+      class="
+        grid
+        lg:grid-cols-[1fr_420px]
+        gap-8
+      "
+    >
+
+      <!-- SHIPPING -->
+
+      <section
+        class="
+          bg-[#fffdf8]
+          border
+          p-6
+          md:p-8
+        "
+        style="border-color:#e8d5a3"
+      >
+
+        <h2
+          class="
+            luxury-font
+            text-2xl
+            mb-7
+          "
+        >
+          Thông tin giao hàng
+        </h2>
+
+
+        <form id="checkoutForm">
+
+          
+
+            <!-- ============================================== -->
+<!-- SAVED DELIVERY ADDRESS -->
+<!-- ============================================== -->
+
+<div
+  id="savedAddressSection"
+>
+
+  <div
+    class="
+      flex
+      flex-wrap
+      justify-between
+      items-center
+      gap-3
+      mb-4
+    "
+  >
+
+    <div>
+
+      <div
+        class="
+          text-xs
+          font-bold
+          tracking-[1px]
+        "
+      >
+        ĐỊA CHỈ NHẬN HÀNG
+      </div>
+
+      <div
+        class="
+          text-xs
+          text-gray-400
+          mt-1
+        "
+      >
+        Chọn địa chỉ đã lưu trong tài khoản
+      </div>
+
+    </div>
+
+
+    <div
+      class="
+        flex
+        flex-wrap
+        gap-2
+      "
+    >
+
+      <button
+        id="editShippingAddress"
+        type="button"
+        onclick="editSelectedAddress()"
+        class="
+          border
+          px-4
+          py-2
+          text-xs
+          font-bold
+        "
+        style="
+          border-color:#3b2416;
+          color:#3b2416;
+        "
+      >
+        <i class="fa-solid fa-pen mr-1"></i>
+        SỬA
+      </button>
+
+
+      <button
+        type="button"
+        onclick="useOtherAddress()"
+        class="
+          border
+          px-4
+          py-2
+          text-xs
+          font-bold
+        "
+        style="
+          border-color:#c9a227;
+          color:#70452d;
+        "
+      >
+        <i class="fa-solid fa-location-dot mr-1"></i>
+        ĐỊA CHỈ KHÁC
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <div
+    id="savedAddressList"
+    class="space-y-3"
+  >
+
+    <div
+      class="
+        border
+        p-5
+        text-sm
+        text-gray-400
+      "
+      style="border-color:#e8d5a3"
+    >
+      Đang tải địa chỉ giao hàng...
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- ============================================== -->
+<!-- OTHER ADDRESS - KHÔNG LƯU -->
+<!-- ============================================== -->
+
+<div
+  id="otherAddressSection"
+  class="
+    hidden
+    border
+    p-5
+    mt-5
+  "
+  style="border-color:#e8d5a3"
+>
+
+  <div
+    class="
+      flex
+      justify-between
+      items-center
+      gap-3
+      mb-5
+    "
+  >
+
+    <div>
+
+      <div class="font-bold">
+        ĐỊA CHỈ KHÁC
+      </div>
+
+      <div
+        class="
+          text-xs
+          text-gray-400
+          mt-1
+        "
+      >
+        Chỉ sử dụng cho đơn hàng này, không lưu vào tài khoản
+      </div>
+
+    </div>
+
+
+    <button
+      type="button"
+      onclick="cancelOtherAddress()"
+      class="
+        text-xs
+        font-bold
+        underline
+      "
+    >
+      HỦY
+    </button>
+
+  </div>
+
+
+  <div
+    class="
+      grid
+      md:grid-cols-2
+      gap-5
+    "
+  >
+
+    <div>
+
+      <label
+        class="
+          block
+          text-xs
+          font-bold
+          mb-2
+        "
+      >
+        HỌ VÀ TÊN
+      </label>
+
+      <input
+        id="fullname"
+        class="
+          w-full
+          border
+          p-3
+          outline-none
+          bg-white
+        "
+        style="border-color:#e8d5a3"
+      >
+
+    </div>
+
+
+    <div>
+
+      <label
+        class="
+          block
+          text-xs
+          font-bold
+          mb-2
+        "
+      >
+        SỐ ĐIỆN THOẠI
+      </label>
+
+      <input
+        id="phone"
+        type="tel"
+        class="
+          w-full
+          border
+          p-3
+          outline-none
+          bg-white
+        "
+        style="border-color:#e8d5a3"
+      >
+
+    </div>
+
+  </div>
+
+
+  <div class="mt-5">
+
+    <label
+      class="
+        block
+        text-xs
+        font-bold
+        mb-2
+      "
+    >
+      ĐỊA CHỈ
+    </label>
+
+    <input
+      id="address"
+      placeholder="Số nhà, tên đường, phường/xã..."
+      class="
+        w-full
+        border
+        p-3
+        outline-none
+        bg-white
+      "
+      style="border-color:#e8d5a3"
+    >
+
+  </div>
+
+
+  <div class="mt-5">
+
+    <label
+      class="
+        block
+        text-xs
+        font-bold
+        mb-2
+      "
+    >
+      TỈNH / THÀNH PHỐ
+    </label>
+
+    <input
+      id="city"
+      placeholder="Ví dụ: Đà Nẵng"
+      class="
+        w-full
+        border
+        p-3
+        outline-none
+        bg-white
+      "
+      style="border-color:#e8d5a3"
+    >
+
+  </div>
+
+</div>
+
+
+
+
+          <!-- PAYMENT -->
+
+          <div
+            class="
+              mt-9
+              pt-7
+              border-t
+            "
+            style="border-color:#e8d5a3"
+          >
+
+            <h2
+              class="
+                luxury-font
+                text-2xl
+                mb-5
+              "
+            >
+              Phương thức thanh toán
+            </h2>
+
+
+            <label
+              class="
+                flex
+                items-center
+                gap-3
+                border
+                p-4
+                cursor-pointer
+              "
+              style="border-color:#e8d5a3"
+            >
+
+              <input
+                type="radio"
+                name="payment"
+                value="cod"
+                checked
+              >
+
+              <div>
+                <div class="font-bold">
+                  Thanh toán khi nhận hàng
+                </div>
+
+                <div
+                  class="
+                    text-sm
+                    text-gray-500
+                    mt-1
+                  "
+                >
+                  Thanh toán tiền mặt khi nhận hàng.
+                </div>
+              </div>
+
+            </label>
+
+
+            <label
+              class="
+                flex
+                items-center
+                gap-3
+                border
+                p-4
+                mt-3
+                cursor-pointer
+              "
+              style="border-color:#e8d5a3"
+            >
+
+              <input
+                type="radio"
+                name="payment"
+                value="bank"
+              >
+
+              <div>
+                <div class="font-bold">
+                  Chuyển khoản ngân hàng
+                </div>
+
+                <div
+                  class="
+                    text-sm
+                    text-gray-500
+                    mt-1
+                  "
+                >
+                  Đơn hàng sẽ ghi nhận phương thức chuyển khoản.
+                </div>
+              </div>
+
+            </label>
+
+
+
+          <div class="mt-8 flex justify-end">
+
+  <button
+    id="submitOrder"
+    type="submit"
+    class="
+      min-w-[220px]
+      px-10
+      py-4
+      font-bold
+      tracking-[2px]
+    "
+    style="
+      background:#3b2416;
+      color:#e8d5a3;
+    "
+  >
+    ĐẶT HÀNG
+  </button>
+
+</div>
+
+        </form>
+
+      </section>
+
+
+      <!-- ORDER SUMMARY -->
+
+      <aside
+        class="
+          bg-[#fffdf8]
+          border
+          p-6
+          h-fit
+          lg:sticky
+          lg:top-6
+        "
+        style="border-color:#e8d5a3"
+      >
+
+        <h2
+          class="
+            luxury-font
+            text-2xl
+          "
+        >
+          Đơn hàng
+        </h2>
+
+
+        <div
+          id="orderItems"
+          class="
+            mt-6
+            space-y-5
+          "
+        ></div>
+
+        <!-- ============================================== -->
+<!-- ORDER NOTE -->
+<!-- ============================================== -->
+
+<div
+  class="
+    mt-7
+    pt-7
+    border-t
+  "
+  style="border-color:#e8d5a3"
+>
+
+  <label
+    class="
+      block
+      text-xs
+      font-bold
+      tracking-[1px]
+      mb-2
+    "
+  >
+    GHI CHÚ ĐƠN HÀNG
+  </label>
+
+
+  <textarea
+    id="orderNote"
+    rows="4"
+    maxlength="1000"
+    placeholder="Ví dụ: Gọi trước khi giao, giao giờ hành chính, để hàng tại bảo vệ..."
+    class="
+      w-full
+      border
+      p-3
+      outline-none
+      bg-white
+      resize-y
+    "
+    style="border-color:#e8d5a3"
+  ></textarea>
+
+
+  <div
+    class="
+      text-[11px]
+      text-gray-400
+      mt-1
+    "
+  >
+    Ghi chú này chỉ áp dụng cho đơn hàng hiện tại.
+  </div>
+
+</div>
+
+<!-- COUPON -->
+
+<div
+  class="mt-6 pt-5 border-t"
+  style="border-color:#e8d5a3"
+>
+  <label
+    class="block text-xs font-bold mb-2"
+  >
+    MÃ GIẢM GIÁ
+  </label>
+
+  <div class="flex gap-2">
+
+    <input
+      id="couponCode"
+      type="text"
+      placeholder="Ví dụ: SHOPLUX10"
+      class="
+        flex-1
+        min-w-0
+        border
+        p-3
+        outline-none
+        uppercase
+        bg-white
+      "
+      style="border-color:#e8d5a3"
+    >
+
+    <button
+      id="applyCoupon"
+      type="button"
+      class="
+        px-4
+        font-bold
+        text-sm
+      "
+      style="
+        background:#3b2416;
+        color:#e8d5a3;
+      "
+    >
+      ÁP DỤNG
+    </button>
+
+  </div>
+
+  <div
+    id="couponMessage"
+    class="text-sm mt-2"
+  ></div>
+
+</div>
+
+        <div
+          class="
+            mt-7
+            pt-5
+            border-t
+            space-y-3
+          "
+          style="border-color:#e8d5a3"
+        >
+
+          <div
+            class="
+              flex
+              justify-between
+              text-sm
+            "
+          >
+            <span>Tạm tính</span>
+
+            <span id="subtotal">
+              0 ₫
+            </span>
+          </div>
+
+
+          <div
+            class="
+              flex
+              justify-between
+              text-sm
+            "
+          >
+            <span>Phí vận chuyển</span>
+
+            <span id="shippingFee">
+              0 ₫
+            </span>
+          </div>
+<div
+  id="discountRow"
+  class="
+    hidden
+    flex
+    justify-between
+    text-sm
+  "
+>
+  <span>Giảm giá</span>
+
+  <span
+    id="discountAmount"
+    style="color:#8b1e1e"
+  >
+    -0 ₫
+  </span>
+</div>
+
+          <div
+            class="
+              flex
+              justify-between
+              pt-4
+              border-t
+              font-bold
+              text-lg
+            "
+            style="border-color:#e8d5a3"
+          >
+            <span>TỔNG CỘNG</span>
+
+            <span
+              id="total"
+              style="color:#70452d"
+            >
+              0 ₫
+            </span>
+          </div>
+
+        </div>
+
+      </aside>
+
+    </div>
+
+  </main>
+
+
+<script>
+const API = "/api";
+
+const token =
+  localStorage.getItem("shoplux_token");
+
+let checkoutItems =
+  JSON.parse(
+    localStorage.getItem(
+      "shoplux_checkout"
+    ) || "[]"
+  );
+
+const checkoutSource =
+  localStorage.getItem(
+    "shoplux_checkout_source"
+  ) || "";
+
+
+function money(value) {
+  return Number(value || 0)
+    .toLocaleString("vi-VN") + " ₫";
+}
+
+
+function escapeHTML(value = "") {
+  return String(value)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+// =====================================================
+// DELIVERY ADDRESS
+// =====================================================
+
+let deliveryAddresses = [];
+let selectedAddressId = null;
+let usingOtherAddress = false;
+
+
+async function loadDeliveryAddresses() {
+
+  try {
+
+    const response =
+      await fetch(
+        API + "/delivery-addresses",
+        {
+          headers: {
+            Authorization:
+              "Bearer " + token
+          }
+        }
+      );
+
+
+    const json =
+      await response.json();
+
+
+    if (
+      !response.ok ||
+      !json.success
+    ) {
+
+      throw new Error(
+        json.message ||
+        "Không thể tải địa chỉ giao hàng."
+      );
+
+    }
+
+
+    deliveryAddresses =
+      Array.isArray(json.addresses)
+        ? json.addresses
+        : [];
+
+
+    const defaultAddress =
+      deliveryAddresses.find(
+        item =>
+          item.is_default === true
+      ) ||
+      deliveryAddresses[0];
+
+
+    selectedAddressId =
+      defaultAddress
+        ? Number(defaultAddress.id)
+        : null;
+
+
+    renderDeliveryAddresses();
+
+
+    // Chưa có địa chỉ lưu
+    // -> tự mở địa chỉ khác
+    if (!deliveryAddresses.length) {
+      useOtherAddress();
+    }
+
+
+  } catch (error) {
+
+    console.error(
+      "LOAD DELIVERY ADDRESS ERROR:",
+      error
+    );
+
+
+    document.getElementById(
+      "savedAddressList"
+    ).innerHTML = `
+      <div
+        class="
+          border
+          p-5
+          text-sm
+          text-red-700
+        "
+        style="border-color:#e8d5a3"
+      >
+        ${escapeHTML(error.message)}
+      </div>
+    `;
+
+  }
+
+}
+
+
+function renderDeliveryAddresses() {
+
+  const container =
+    document.getElementById(
+      "savedAddressList"
+    );
+
+
+  if (!deliveryAddresses.length) {
+
+    container.innerHTML = `
+      <div
+        class="
+          border
+          p-5
+          text-sm
+          text-gray-500
+        "
+        style="border-color:#e8d5a3"
+      >
+        Bạn chưa lưu địa chỉ giao hàng.
+        Hãy nhập ĐỊA CHỈ KHÁC để tiếp tục đặt hàng.
+      </div>
+    `;
+
+    return;
+  }
+
+
+  container.innerHTML =
+    deliveryAddresses
+      .map(item => {
+
+        const checked =
+          Number(item.id) ===
+          Number(selectedAddressId);
+
+
+        return `
+          <label
+            class="
+              block
+              border
+              p-5
+              cursor-pointer
+              ${checked
+                ? "bg-[#f7f1e7]"
+                : "bg-white"}
+            "
+            style="
+              border-color:
+                ${checked
+                  ? "#c9a227"
+                  : "#e8d5a3"};
+            "
+          >
+
+            <div
+              class="
+                flex
+                items-start
+                gap-4
+              "
+            >
+
+              <input
+                type="radio"
+                name="savedDeliveryAddress"
+                value="${Number(item.id)}"
+                ${checked ? "checked" : ""}
+                onchange="selectDeliveryAddress(${Number(
+                  item.id
+                )})"
+                class="
+                  mt-1
+                  w-4
+                  h-4
+                  accent-[#3b2416]
+                "
+              >
+
+
+              <div class="flex-1">
+
+                <div
+                  class="
+                    flex
+                    flex-wrap
+                    items-center
+                    gap-2
+                  "
+                >
+
+                  <span class="font-bold">
+                    ${escapeHTML(
+                      item.label ||
+                      "Địa chỉ giao hàng"
+                    )}
+                  </span>
+
+
+                  ${
+                    item.is_default
+                      ? `
+                        <span
+                          class="
+                            text-[10px]
+                            font-bold
+                            border
+                            px-2
+                            py-1
+                          "
+                          style="
+                            color:#8b6b00;
+                            border-color:#c9a227;
+                          "
+                        >
+                          MẶC ĐỊNH
+                        </span>
+                      `
+                      : ""
+                  }
+
+                </div>
+
+
+                <div class="mt-2 font-bold">
+                  ${escapeHTML(
+                    item.recipient_name || ""
+                  )}
+                </div>
+
+
+                <div
+                  class="
+                    text-sm
+                    text-gray-600
+                    mt-1
+                  "
+                >
+                  ${escapeHTML(
+                    item.phone || ""
+                  )}
+                </div>
+
+
+                <div
+                  class="
+                    text-sm
+                    text-gray-600
+                    mt-1
+                  "
+                >
+                  ${escapeHTML(
+                    item.address || ""
+                  )},
+                  ${escapeHTML(
+                    item.city || ""
+                  )}
+                </div>
+
+              </div>
+
+            </div>
+
+          </label>
+        `;
+
+      })
+      .join("");
+
+}
+
+
+function selectDeliveryAddress(id) {
+
+  selectedAddressId =
+    Number(id);
+
+  usingOtherAddress = false;
+
+
+  document.getElementById(
+    "otherAddressSection"
+  ).classList.add(
+    "hidden"
+  );
+
+
+  renderDeliveryAddresses();
+
+}
+
+
+function getSelectedDeliveryAddress() {
+
+  return deliveryAddresses.find(
+    item =>
+      Number(item.id) ===
+      Number(selectedAddressId)
+  ) || null;
+
+}
+
+
+// =====================================================
+// OTHER ADDRESS
+// =====================================================
+
+function useOtherAddress() {
+
+  usingOtherAddress = true;
+
+
+  document.getElementById(
+    "otherAddressSection"
+  ).classList.remove(
+    "hidden"
+  );
+
+
+  const user =
+    JSON.parse(
+      localStorage.getItem(
+        "shoplux_user"
+      ) || "null"
+    );
+
+
+  document.getElementById(
+    "fullname"
+  ).value =
+    user?.fullname || "";
+
+
+  document.getElementById(
+    "phone"
+  ).value =
+    user?.phone || "";
+
+
+  document.getElementById(
+    "address"
+  ).value = "";
+
+
+  document.getElementById(
+    "city"
+  ).value = "";
+
+
+  document.getElementById(
+    "otherAddressSection"
+  ).scrollIntoView({
+    behavior: "smooth",
+    block: "center"
+  });
+
+}
+
+
+function cancelOtherAddress() {
+
+  // Không có địa chỉ đã lưu
+  // thì không thể đóng form
+  if (!deliveryAddresses.length) {
+
+    alert(
+      "Bạn chưa có địa chỉ đã lưu. Vui lòng nhập địa chỉ giao hàng."
+    );
+
+    return;
+  }
+
+
+  usingOtherAddress = false;
+
+
+  document.getElementById(
+    "otherAddressSection"
+  ).classList.add(
+    "hidden"
+  );
+
+}
+
+
+// =====================================================
+// EDIT SAVED ADDRESS
+// =====================================================
+
+function editSelectedAddress() {
+
+  const item =
+    getSelectedDeliveryAddress();
+
+
+  if (!item) {
+
+    alert(
+      "Vui lòng chọn một địa chỉ đã lưu."
+    );
+
+    return;
+  }
+
+
+  const url =
+    "/profile.html?editAddress=" +
+    encodeURIComponent(item.id);
+
+
+  window.location.href =
+    url;
+
+}
+
+let appliedCoupon = null;
+
+let shopSettings = {
+  shipping_fee: 30000,
+  free_shipping_threshold: 1000000
+};
+
+
+async function loadShopSettings() {
+  try {
+    const response =
+      await fetch(API + "/settings");
+
+    const json =
+      await response.json();
+
+    if (!response.ok || !json.success) {
+      throw new Error(
+        json.message ||
+        "Không thể tải cài đặt cửa hàng."
+      );
+    }
+
+    shopSettings = {
+      shipping_fee:
+        Math.max(
+          0,
+          Number(
+            json.settings?.shipping_fee ?? 30000
+          )
+        ),
+
+      free_shipping_threshold:
+        Math.max(
+          0,
+          Number(
+            json.settings
+              ?.free_shipping_threshold ??
+            1000000
+          )
+        )
+    };
+
+    renderOrder();
+
+  } catch (error) {
+    console.error(
+      "LOAD SHOP SETTINGS ERROR:",
+      error
+    );
+
+    renderOrder();
+  }
+}
+
+
+function calculateSummary() {
+
+  const subtotal =
+    checkoutItems.reduce(
+      (sum, item) =>
+        sum +
+        Number(item.price || 0) *
+        Number(item.qty || 1),
+      0
+    );
+
+
+  const configuredShippingFee =
+    Math.max(
+      0,
+      Number(
+        shopSettings.shipping_fee || 0
+      )
+    );
+
+  const freeShippingThreshold =
+    Math.max(
+      0,
+      Number(
+        shopSettings
+          .free_shipping_threshold || 0
+      )
+    );
+
+  let shippingFee =
+    subtotal >= freeShippingThreshold
+      ? 0
+      : configuredShippingFee;
+
+
+  let discount = 0;
+
+
+  if (appliedCoupon) {
+
+    discount =
+      Number(
+        appliedCoupon.discount || 0
+      );
+
+
+    if (
+      appliedCoupon.shippingDiscount
+    ) {
+      shippingFee = 0;
+    }
+
+  }
+
+
+  const total =
+    Math.max(
+      0,
+      subtotal -
+      discount +
+      shippingFee
+    );
+
+
+  return {
+    subtotal,
+    discount,
+    shippingFee,
+    total
+  };
+}
+
+function renderOrder() {
+
+  const container =
+    document.getElementById(
+      "orderItems"
+    );
+
+
+  if (!checkoutItems.length) {
+
+    container.innerHTML = `
+      <div
+        class="
+          text-center
+          py-10
+          text-gray-500
+        "
+      >
+        Không có sản phẩm để thanh toán.
+      </div>
+    `;
+
+    document.getElementById(
+      "submitOrder"
+    ).disabled = true;
+
+    return;
+  }
+
+
+  container.innerHTML =
+    checkoutItems.map(
+      item => `
+        <div
+          class="
+            flex
+            gap-4
+            pb-5
+            border-b
+          "
+          style="border-color:#e8d5a3"
+        >
+
+          <div
+            class="
+              w-20
+              h-24
+              bg-[#efe4d2]
+              shrink-0
+            "
+          >
+            <img
+              src="${item.image || ""}"
+              class="
+                w-full
+                h-full
+                object-cover
+              "
+            >
+          </div>
+
+
+          <div class="flex-1">
+
+            <div
+              class="
+                font-bold
+                text-sm
+              "
+            >
+              ${escapeHTML(item.name)}
+            </div>
+
+
+            ${
+              item.size
+                ? `
+                  <div
+                    class="
+                      text-xs
+                      text-gray-500
+                      mt-2
+                    "
+                  >
+                    Size:
+                    ${escapeHTML(item.size)}
+                  </div>
+                `
+                : ""
+            }
+
+            ${
+  item.color
+    ? `
+      <div
+        class="
+          text-xs
+          text-gray-500
+          mt-1
+        "
+      >
+        Màu:
+        ${escapeHTML(item.color)}
+      </div>
+    `
+    : ""
+}
+
+
+            <div
+              class="
+                text-xs
+                text-gray-500
+                mt-1
+              "
+            >
+              Số lượng:
+              ${Number(item.qty || 1)}
+            </div>
+
+
+            <div
+              class="
+                font-bold
+                mt-2
+              "
+              style="color:#70452d"
+            >
+              ${money(
+                Number(item.price) *
+                Number(item.qty || 1)
+              )}
+            </div>
+
+          </div>
+
+        </div>
+      `
+    ).join("");
+
+
+  const summary =
+    calculateSummary();
+
+
+  document.getElementById(
+    "subtotal"
+  ).textContent =
+    money(summary.subtotal);
+
+
+  document.getElementById(
+    "shippingFee"
+  ).textContent =
+    summary.shippingFee === 0
+      ? "Miễn phí"
+      : money(summary.shippingFee);
+
+    const discountRow =
+  document.getElementById(
+    "discountRow"
+  );
+
+
+if (summary.discount > 0) {
+
+  discountRow.classList.remove(
+    "hidden"
+  );
+
+  document.getElementById(
+    "discountAmount"
+  ).textContent =
+    "-" + money(summary.discount);
+
+} else {
+
+  discountRow.classList.add(
+    "hidden"
+  );
+
+}
+  document.getElementById(
+    "total"
+  ).textContent =
+    money(summary.total);
+}
+
+
+async function loadUser() {
+
+  if (!token) {
+    location.href =
+      "/login.html";
+
+    return;
+  }
+
+
+  try {
+
+    const response =
+      await fetch(
+        API + "/auth/me",
+        {
+          headers: {
+            Authorization:
+              "Bearer " + token
+          }
+        }
+      );
+
+
+    const json =
+      await response.json();
+
+
+    if (
+      !response.ok ||
+      !json.success
+    ) {
+
+      localStorage.removeItem(
+        "shoplux_token"
+      );
+
+      localStorage.removeItem(
+        "shoplux_user"
+      );
+
+      location.href =
+        "/login.html";
+
+      return;
+    }
+
+
+    const user =
+      json.user || json.data;
+
+
+    if (user) {
+
+  localStorage.setItem(
+    "shoplux_user",
+    JSON.stringify(user)
+  );
+
+}
+
+  } catch (error) {
+
+    console.error(error);
+
+    alert(
+      "Không thể tải thông tin tài khoản."
+    );
+
+  }
+}
+document
+  .getElementById("applyCoupon")
+  .addEventListener(
+    "click",
+    async () => {
+
+      const input =
+        document.getElementById(
+          "couponCode"
+        );
+
+      const message =
+        document.getElementById(
+          "couponMessage"
+        );
+
+      const code =
+        input.value
+          .trim()
+          .toUpperCase();
+
+
+      if (!code) {
+
+        message.style.color =
+          "#8b1e1e";
+
+        message.textContent =
+          "Vui lòng nhập mã giảm giá.";
+
+        return;
+      }
+
+
+      try {
+
+        const summary =
+          calculateSummary();
+
+
+        const response =
+          await fetch(
+            API + "/coupons/validate",
+            {
+              method: "POST",
+
+              headers: {
+                "Content-Type":
+                  "application/json",
+
+                Authorization:
+                  "Bearer " + token
+              },
+
+              body: JSON.stringify({
+                code,
+                subtotal:
+                  summary.subtotal
+              })
+            }
+          );
+
+
+        const json =
+          await response.json();
+
+
+        if (
+          !response.ok ||
+          !json.success
+        ) {
+
+          appliedCoupon = null;
+
+          renderOrder();
+
+          throw new Error(
+            json.message ||
+            "Mã giảm giá không hợp lệ."
+          );
+        }
+
+
+        appliedCoupon =
+          json.coupon;
+
+
+        input.value =
+          appliedCoupon.code;
+
+
+        message.style.color =
+          "#2f6b3b";
+
+        message.textContent =
+          "Áp dụng mã " +
+          appliedCoupon.code +
+          " thành công.";
+
+
+        renderOrder();
+
+
+      } catch (error) {
+
+        message.style.color =
+          "#8b1e1e";
+
+        message.textContent =
+          error.message;
+
+      }
+
+    }
+  );
+
+document
+  .getElementById(
+    "checkoutForm"
+  )
+  .addEventListener(
+    "submit",
+    async event => {
+
+      event.preventDefault();
+
+
+      if (!checkoutItems.length) {
+        alert(
+          "Không có sản phẩm để đặt hàng."
+        );
+
+        return;
+      }
+
+
+      let fullname = "";
+let phone = "";
+let address = "";
+let city = "";
+
+
+// ĐỊA CHỈ KHÁC
+if (usingOtherAddress) {
+
+  fullname =
+    document.getElementById(
+      "fullname"
+    ).value.trim();
+
+
+  phone =
+    document.getElementById(
+      "phone"
+    ).value.trim();
+
+
+  address =
+    document.getElementById(
+      "address"
+    ).value.trim();
+
+
+  city =
+    document.getElementById(
+      "city"
+    ).value.trim();
+
+
+// ĐỊA CHỈ ĐÃ LƯU
+} else {
+
+  const selectedAddress =
+    getSelectedDeliveryAddress();
+
+
+  if (!selectedAddress) {
+
+    alert(
+      "Vui lòng chọn địa chỉ giao hàng."
+    );
+
+    return;
+  }
+
+
+  fullname =
+    String(
+      selectedAddress.recipient_name || ""
+    ).trim();
+
+
+  phone =
+    String(
+      selectedAddress.phone || ""
+    ).trim();
+
+
+  address =
+    String(
+      selectedAddress.address || ""
+    ).trim();
+
+
+  city =
+    String(
+      selectedAddress.city || ""
+    ).trim();
+
+}
+
+
+// GHI CHÚ ĐƠN HÀNG
+const note =
+  document.getElementById(
+    "orderNote"
+  ).value.trim();
+
+
+      const paymentMethod =
+        document.querySelector(
+          'input[name="payment"]:checked'
+        )?.value || "cod";
+
+
+      if (
+        !fullname ||
+        !phone ||
+        !address ||
+        !city
+      ) {
+
+        alert(
+          "Vui lòng nhập đầy đủ thông tin giao hàng."
+        );
+
+        return;
+      }
+
+
+      const button =
+        document.getElementById(
+          "submitOrder"
+        );
+
+
+      button.disabled = true;
+
+      button.textContent =
+        "ĐANG XỬ LÝ...";
+
+
+      try {
+
+        const response =
+          await fetch(
+            API + "/orders",
+            {
+              method: "POST",
+
+              headers: {
+                "Content-Type":
+                  "application/json",
+
+                Authorization:
+                  "Bearer " + token
+              },
+
+              body: JSON.stringify({
+                fullname,
+                phone,
+                address,
+                city,
+                note,
+                paymentMethod,
+                couponCode:
+                
+                appliedCoupon
+                ? appliedCoupon.code
+                : "",
+
+                items:
+  checkoutItems.map(
+    item => ({
+      id: item.id,
+
+      size:
+        item.size || "",
+
+      color:
+        item.color || "",
+
+      qty:
+        Number(
+          item.qty || 1
+        )
+    })
+  )
+              })
+            }
+          );
+
+
+        const json =
+          await response.json();
+
+
+        if (
+          !response.ok ||
+          !json.success
+        ) {
+
+          throw new Error(
+            json.message ||
+            "Không thể đặt hàng"
+          );
+
+        }
+
+
+        /*
+  Nếu checkout từ giỏ hàng:
+  chỉ xóa những sản phẩm
+  vừa được chọn để thanh toán.
+
+  Những sản phẩm không chọn
+  vẫn được giữ lại trong giỏ.
+*/
+
+if (
+  checkoutSource === "cart"
+) {
+
+  let currentUser = null;
+
+  try {
+    currentUser =
+      JSON.parse(
+        localStorage.getItem(
+          "shoplux_user"
+        ) || "null"
+      );
+  } catch (error) {
+    currentUser = null;
+  }
+
+
+  const cartKey =
+    currentUser?.id
+      ? `shoplux_cart_user_${currentUser.id}`
+      : null;
+
+
+  const checkoutKeys =
+    JSON.parse(
+      localStorage.getItem(
+        "shoplux_checkout_keys"
+      ) || "[]"
+    );
+
+
+  if (cartKey) {
+
+    const currentCart =
+      JSON.parse(
+        localStorage.getItem(
+          cartKey
+        ) || "[]"
+      );
+
+
+    const remainingCart =
+      currentCart.filter(
+        item =>
+          !checkoutKeys.includes(
+            item.key
+          )
+      );
+
+
+    localStorage.setItem(
+      cartKey,
+      JSON.stringify(
+        remainingCart
+      )
+    );
+  }
+}
+
+
+        localStorage.removeItem(
+          "shoplux_checkout"
+        );
+
+        localStorage.removeItem(
+  "shoplux_checkout_keys"
+);
+
+        localStorage.removeItem(
+          "shoplux_checkout_source"
+        );
+
+
+        const order =
+          json.order;
+
+
+        alert(
+          "Đặt hàng thành công!\nMã đơn: " +
+          order.code
+        );
+
+
+        location.href =
+          "/?order=" +
+          encodeURIComponent(
+            order.code
+          );
+
+
+      } catch (error) {
+
+        console.error(error);
+
+        alert(
+          error.message ||
+          "Có lỗi xảy ra khi đặt hàng."
+        );
+
+
+        button.disabled = false;
+
+        button.textContent =
+          "ĐẶT HÀNG";
+
+      }
+
+    }
+  );
+
+
+async function startCheckout() {
+
+  await loadShopSettings();
+
+  await loadUser();
+
+  await loadDeliveryAddresses();
+
+}
+startCheckout();
+</script>
+
+</body>
+</html>

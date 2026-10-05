@@ -1,0 +1,2845 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>Thông Tin Cá Nhân | ShopLux</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+  >
+</head>
+
+
+<body class="bg-[#f7f1e7] text-[#1f120c] min-h-screen">
+
+  <!-- HEADER -->
+
+  <header class="bg-[#3b2416] text-[#fffdf8]">
+
+    <div
+      class="
+        max-w-7xl
+        mx-auto
+        px-5
+        py-6
+        flex
+        items-center
+        justify-between
+        gap-5
+      "
+    >
+
+      <a
+        href="/"
+        class="shrink-0"
+      >
+
+        <div
+          class="
+            font-serif
+            text-3xl
+            tracking-[5px]
+          "
+          style="color:#e8d5a3"
+        >
+          SHOPLUX
+        </div>
+
+        <div
+          class="
+            text-[9px]
+            tracking-[4px]
+            mt-1
+          "
+        >
+          MAISON • LUXURY FASHION
+        </div>
+
+      </a>
+
+
+      <a
+        href="/"
+        class="
+          border
+          px-5
+          py-3
+          text-sm
+          font-bold
+          tracking-[1px]
+        "
+        style="
+          border-color:#c9a227;
+          color:#e8d5a3;
+        "
+      >
+        <i class="fa-solid fa-arrow-left mr-2"></i>
+        VỀ CỬA HÀNG
+      </a>
+
+    </div>
+
+  </header>
+
+
+  <!-- CONTENT -->
+
+  <main
+    class="
+      max-w-6xl
+      mx-auto
+      px-5
+      py-10
+    "
+  >
+
+    <div class="mb-8">
+
+      <p
+        class="
+          text-xs
+          font-bold
+          tracking-[3px]
+          mb-2
+        "
+        style="color:#c9a227"
+      >
+        SHOPLUX MEMBER
+      </p>
+
+      <h1
+        class="
+          font-serif
+          text-3xl
+          md:text-4xl
+        "
+      >
+        THÔNG TIN CÁ NHÂN
+      </h1>
+
+    </div>
+
+
+    <div
+      class="
+        grid
+        lg:grid-cols-[300px_1fr]
+        gap-6
+      "
+    >
+
+      <!-- AVATAR -->
+
+      <section
+        class="
+          bg-[#fffdf8]
+          border
+          p-7
+          text-center
+        "
+        style="border-color:#e8d5a3"
+      >
+
+        <div
+          class="
+            relative
+            w-40
+            h-40
+            mx-auto
+            mb-5
+          "
+        >
+
+          <div
+            id="avatarFallback"
+            class="
+              w-full
+              h-full
+              rounded-full
+              flex
+              items-center
+              justify-center
+              text-5xl
+            "
+            style="
+              background:#3b2416;
+              color:#e8d5a3;
+            "
+          >
+            <i class="fa-regular fa-user"></i>
+          </div>
+
+
+          <img
+            id="avatarImage"
+            alt="Avatar"
+            class="
+              hidden
+              w-full
+              h-full
+              rounded-full
+              object-cover
+              border-4
+            "
+            style="border-color:#e8d5a3"
+          >
+
+
+          <label
+            id="avatarEditButton"
+            class="
+              hidden
+              absolute
+              right-1
+              bottom-1
+              w-11
+              h-11
+              rounded-full
+              items-center
+              justify-center
+              cursor-pointer
+              shadow-lg
+            "
+            style="
+              background:#c9a227;
+              color:#1f120c;
+            "
+            title="Đổi ảnh đại diện"
+          >
+
+            <i class="fa-solid fa-camera"></i>
+
+            <input
+              id="avatarInput"
+              type="file"
+              accept="image/*"
+              class="hidden"
+              onchange="readAvatar(event)"
+            >
+
+          </label>
+
+        </div>
+
+
+        <h2
+          id="profileName"
+          class="
+            font-serif
+            text-2xl
+            mb-1
+          "
+        >
+          ShopLux Member
+        </h2>
+
+
+        <p
+          id="profileEmail"
+          class="
+            text-sm
+            text-gray-500
+            break-all
+          "
+        ></p>
+
+
+        <div
+          class="
+            h-px
+            my-6
+          "
+          style="background:#e8d5a3"
+        ></div>
+
+
+        <button
+          id="editButton"
+          onclick="enableEdit()"
+          class="
+            w-full
+            py-3
+            font-bold
+            tracking-[1px]
+          "
+          style="
+            background:#3b2416;
+            color:#e8d5a3;
+          "
+        >
+          <i class="fa-solid fa-pen mr-2"></i>
+          SỬA THÔNG TIN
+        </button>
+
+      </section>
+
+
+      <!-- PROFILE FORM -->
+
+      <section
+        class="
+          bg-[#fffdf8]
+          border
+          p-6
+          md:p-8
+        "
+        style="border-color:#e8d5a3"
+      >
+
+        <div
+          class="
+            flex
+            justify-between
+            items-center
+            gap-4
+            mb-7
+          "
+        >
+
+          <h2
+            class="
+              font-serif
+              text-2xl
+            "
+          >
+            HỒ SƠ CỦA TÔI
+          </h2>
+
+          <span
+            id="profileStatus"
+            class="
+              text-xs
+              text-gray-400
+            "
+          >
+            Thông tin thành viên
+          </span>
+
+        </div>
+
+
+        <div
+          class="
+            grid
+            md:grid-cols-2
+            gap-5
+          "
+        >
+
+          <!-- FULLNAME -->
+
+          <div>
+
+            <label
+              class="
+                block
+                text-xs
+                font-bold
+                tracking-[1px]
+                mb-2
+              "
+            >
+              HỌ VÀ TÊN
+            </label>
+
+            <input
+              id="fullname"
+              disabled
+              class="
+                w-full
+                border
+                p-3
+                bg-[#f7f1e7]
+                disabled:opacity-100
+              "
+              style="border-color:#e8d5a3"
+            >
+
+          </div>
+
+
+          <!-- GENDER -->
+
+          <div>
+
+            <label
+              class="
+                block
+                text-xs
+                font-bold
+                tracking-[1px]
+                mb-2
+              "
+            >
+              GIỚI TÍNH
+            </label>
+
+            <select
+              id="gender"
+              disabled
+              class="
+                w-full
+                border
+                p-3
+                bg-[#f7f1e7]
+                disabled:opacity-100
+              "
+              style="border-color:#e8d5a3"
+            >
+
+              <option value="">
+                Chưa cập nhật
+              </option>
+
+              <option value="nam">
+                Nam
+              </option>
+
+              <option value="nu">
+                Nữ
+              </option>
+
+              <option value="khac">
+                Khác
+              </option>
+
+            </select>
+
+          </div>
+
+
+          <!-- BIRTHDAY -->
+
+          <div>
+
+            <label
+              class="
+                block
+                text-xs
+                font-bold
+                tracking-[1px]
+                mb-2
+              "
+            >
+              NGÀY SINH
+            </label>
+
+            <input
+              id="birthday"
+              type="date"
+              disabled
+              class="
+                w-full
+                border
+                p-3
+                bg-[#f7f1e7]
+                disabled:opacity-100
+              "
+              style="border-color:#e8d5a3"
+            >
+
+          </div>
+
+
+          <!-- PHONE -->
+
+          <div>
+
+            <label
+              class="
+                block
+                text-xs
+                font-bold
+                tracking-[1px]
+                mb-2
+              "
+            >
+              SỐ ĐIỆN THOẠI
+            </label>
+
+            <input
+              id="phone"
+              type="tel"
+              disabled
+              class="
+                w-full
+                border
+                p-3
+                bg-[#f7f1e7]
+                disabled:opacity-100
+              "
+              style="border-color:#e8d5a3"
+            >
+
+          </div>
+
+
+          <!-- EMAIL -->
+
+          <div class="md:col-span-2">
+
+            <label
+              class="
+                block
+                text-xs
+                font-bold
+                tracking-[1px]
+                mb-2
+              "
+            >
+              EMAIL
+            </label>
+
+            <input
+              id="email"
+              disabled
+              class="
+                w-full
+                border
+                p-3
+                bg-gray-100
+                text-gray-500
+              "
+              style="border-color:#e8d5a3"
+            >
+
+            <p
+              class="
+                text-[11px]
+                text-gray-400
+                mt-2
+              "
+            >
+              Email đăng nhập không thay đổi tại trang hồ sơ.
+            </p>
+
+          </div>
+
+        </div>
+
+        <!-- ================================================= -->
+<!-- DELIVERY ADDRESSES -->
+<!-- ================================================= -->
+
+<div
+  class="
+    mt-8
+    pt-7
+    border-t
+  "
+  style="border-color:#e8d5a3"
+>
+
+  <div
+    class="
+      flex
+      flex-wrap
+      justify-between
+      items-center
+      gap-4
+      mb-4
+    "
+  >
+
+    <div>
+
+      <h3 class="font-bold">
+        ĐỊA CHỈ GIAO HÀNG
+      </h3>
+
+      <p
+        class="
+          text-xs
+          text-gray-400
+          mt-1
+        "
+      >
+        Lưu nhiều địa chỉ để sử dụng khi thanh toán
+      </p>
+
+    </div>
+
+
+    <button
+      type="button"
+      onclick="openAddressForm()"
+      class="
+        border
+        px-4
+        py-2
+        text-xs
+        font-bold
+      "
+      style="
+        border-color:#c9a227;
+        color:#3b2416;
+      "
+    >
+      <i class="fa-solid fa-plus mr-1"></i>
+      THÊM ĐỊA CHỈ
+    </button>
+
+  </div>
+
+
+  <!-- FORM THÊM / SỬA -->
+
+  <div
+    id="deliveryAddressForm"
+    class="
+      hidden
+      border
+      p-5
+      mb-5
+      bg-[#f7f1e7]
+    "
+    style="border-color:#e8d5a3"
+  >
+
+    <input
+      id="deliveryAddressId"
+      type="hidden"
+    >
+
+
+    <div
+      class="
+        grid
+        md:grid-cols-2
+        gap-4
+      "
+    >
+
+      <div>
+
+        <label
+          class="
+            block
+            text-xs
+            font-bold
+            mb-2
+          "
+        >
+          TÊN ĐỊA CHỈ
+        </label>
+
+        <input
+          id="deliveryLabel"
+          placeholder="Ví dụ: Nhà riêng, Công ty"
+          class="
+            w-full
+            border
+            p-3
+            bg-white
+            outline-none
+          "
+          style="border-color:#e8d5a3"
+        >
+
+      </div>
+
+
+      <div>
+
+        <label
+          class="
+            block
+            text-xs
+            font-bold
+            mb-2
+          "
+        >
+          TÊN NGƯỜI NHẬN
+        </label>
+
+        <input
+          id="deliveryRecipient"
+          placeholder="Nguyễn Hoàng"
+          class="
+            w-full
+            border
+            p-3
+            bg-white
+            outline-none
+          "
+          style="border-color:#e8d5a3"
+        >
+
+      </div>
+
+
+      <div>
+
+        <label
+          class="
+            block
+            text-xs
+            font-bold
+            mb-2
+          "
+        >
+          SỐ ĐIỆN THOẠI GIAO HÀNG
+        </label>
+
+        <input
+          id="deliveryPhone"
+          type="tel"
+          placeholder="Ví dụ: 0382786544"
+          class="
+            w-full
+            border
+            p-3
+            bg-white
+            outline-none
+          "
+          style="border-color:#e8d5a3"
+        >
+
+      </div>
+
+
+      <div>
+
+        <label
+          class="
+            block
+            text-xs
+            font-bold
+            mb-2
+          "
+        >
+          TỈNH / THÀNH PHỐ
+        </label>
+
+        <input
+          id="deliveryCity"
+          placeholder="Ví dụ: Đà Nẵng"
+          class="
+            w-full
+            border
+            p-3
+            bg-white
+            outline-none
+          "
+          style="border-color:#e8d5a3"
+        >
+
+      </div>
+
+
+      <div class="md:col-span-2">
+
+        <label
+          class="
+            block
+            text-xs
+            font-bold
+            mb-2
+          "
+        >
+          ĐỊA CHỈ CHI TIẾT
+        </label>
+
+        <input
+          id="deliveryAddress"
+          placeholder="Số nhà, tên đường, phường/xã..."
+          class="
+            w-full
+            border
+            p-3
+            bg-white
+            outline-none
+          "
+          style="border-color:#e8d5a3"
+        >
+
+      </div>
+
+    </div>
+
+
+    <label
+      class="
+        flex
+        items-center
+        gap-2
+        mt-4
+        text-sm
+        cursor-pointer
+      "
+    >
+
+      <input
+        id="deliveryDefault"
+        type="checkbox"
+        class="
+          w-4
+          h-4
+          accent-[#3b2416]
+        "
+      >
+
+      Đặt làm địa chỉ mặc định
+
+    </label>
+
+
+    <div
+      class="
+        flex
+        justify-end
+        gap-3
+        mt-5
+      "
+    >
+
+    <button
+  id="backToCheckoutBtn"
+  type="button"
+  onclick="backToCheckout()"
+  class="
+    hidden
+    border
+    px-5
+    py-3
+    text-sm
+    font-bold
+  "
+  style="
+    border-color:#c9a227;
+    color:#70452d;
+  "
+>
+  <i class="fa-solid fa-arrow-left mr-1"></i>
+  QUAY LẠI THANH TOÁN
+</button>
+
+      <button
+        type="button"
+        onclick="closeAddressForm()"
+        class="
+          border
+          px-5
+          py-3
+          text-sm
+          font-bold
+        "
+        style="
+          border-color:#3b2416;
+          color:#3b2416;
+        "
+      >
+        HỦY
+      </button>
+
+
+      <button
+        type="button"
+        onclick="saveDeliveryAddress()"
+        class="
+          px-5
+          py-3
+          text-sm
+          font-bold
+        "
+        style="
+          background:#3b2416;
+          color:#e8d5a3;
+        "
+      >
+        LƯU ĐỊA CHỈ
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <!-- DANH SÁCH ĐỊA CHỈ -->
+
+  <div
+    id="deliveryAddresses"
+    class="space-y-3"
+  >
+
+    <div
+      class="
+        border
+        p-4
+        text-sm
+        text-gray-400
+      "
+      style="border-color:#e8d5a3"
+    >
+      Đang tải địa chỉ giao hàng...
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+// =====================================================
+// DELIVERY ADDRESSES
+// =====================================================
+
+let deliveryAddresses = [];
+
+
+// =====================================================
+// LOAD ADDRESSES
+// =====================================================
+
+async function loadDeliveryAddresses() {
+
+  const container =
+    document.getElementById(
+      "deliveryAddresses"
+    );
+
+  try {
+
+    const response =
+      await fetch(
+        "/api/delivery-addresses",
+        {
+          headers: {
+            Authorization:
+              "Bearer " + token
+          }
+        }
+      );
+
+
+    const data =
+      await response.json();
+
+
+    if (
+      !response.ok ||
+      !data.success
+    ) {
+
+      throw new Error(
+        data.message ||
+        "Không thể tải địa chỉ."
+      );
+
+    }
+
+
+    deliveryAddresses =
+      Array.isArray(data.addresses)
+        ? data.addresses
+        : [];
+
+
+    renderDeliveryAddresses();
+
+
+  } catch (error) {
+
+    console.error(
+      "LOAD DELIVERY ADDRESSES ERROR:",
+      error
+    );
+
+
+    container.innerHTML = `
+      <div
+        class="
+          border
+          p-4
+          text-sm
+          text-red-700
+        "
+        style="border-color:#e8d5a3"
+      >
+        ${escapeHTML(
+          error.message
+        )}
+      </div>
+    `;
+
+  }
+
+}
+
+
+// =====================================================
+// RENDER ADDRESSES
+// =====================================================
+
+function renderDeliveryAddresses() {
+
+  const container =
+    document.getElementById(
+      "deliveryAddresses"
+    );
+
+
+  if (!deliveryAddresses.length) {
+
+    container.innerHTML = `
+      <div
+        class="
+          border
+          p-5
+          text-sm
+          text-gray-400
+        "
+        style="border-color:#e8d5a3"
+      >
+        Bạn chưa lưu địa chỉ giao hàng nào.
+      </div>
+    `;
+
+    return;
+  }
+
+
+  container.innerHTML =
+    deliveryAddresses
+      .map(item => `
+
+        <div
+          class="
+            border
+            p-5
+            bg-white
+          "
+          style="border-color:#e8d5a3"
+        >
+
+          <div
+            class="
+              flex
+              flex-wrap
+              justify-between
+              items-start
+              gap-4
+            "
+          >
+
+            <div class="flex-1">
+
+              <div
+                class="
+                  flex
+                  flex-wrap
+                  items-center
+                  gap-2
+                  mb-2
+                "
+              >
+
+                <span
+                  class="
+                    font-bold
+                    text-sm
+                  "
+                >
+                  ${escapeHTML(
+                    item.label ||
+                    "Địa chỉ giao hàng"
+                  )}
+                </span>
+
+
+                ${
+                  item.is_default
+                    ? `
+                      <span
+                        class="
+                          text-[10px]
+                          font-bold
+                          px-2
+                          py-1
+                          border
+                        "
+                        style="
+                          color:#8b6b00;
+                          border-color:#c9a227;
+                        "
+                      >
+                        MẶC ĐỊNH
+                      </span>
+                    `
+                    : ""
+                }
+
+              </div>
+
+
+              <div class="font-bold">
+                ${escapeHTML(
+                  item.recipient_name || ""
+                )}
+              </div>
+
+
+              <div
+                class="
+                  text-sm
+                  text-gray-600
+                  mt-1
+                "
+              >
+                <i
+                  class="
+                    fa-solid
+                    fa-phone
+                    mr-2
+                  "
+                ></i>
+
+                ${escapeHTML(
+                  item.phone || ""
+                )}
+              </div>
+
+
+              <div
+                class="
+                  text-sm
+                  text-gray-600
+                  mt-1
+                "
+              >
+                <i
+                  class="
+                    fa-solid
+                    fa-location-dot
+                    mr-2
+                  "
+                ></i>
+
+                ${escapeHTML(
+                  item.address || ""
+                )},
+
+                ${escapeHTML(
+                  item.city || ""
+                )}
+              </div>
+
+            </div>
+
+
+            <div
+              class="
+                flex
+                flex-wrap
+                gap-2
+              "
+            >
+
+              <button
+                type="button"
+                onclick="editDeliveryAddress(${Number(
+                  item.id
+                )})"
+                class="
+                  border
+                  px-3
+                  py-2
+                  text-xs
+                  font-bold
+                "
+                style="
+                  border-color:#3b2416;
+                  color:#3b2416;
+                "
+              >
+                SỬA
+              </button>
+
+
+              ${
+                !item.is_default
+                  ? `
+                    <button
+                      type="button"
+                      onclick="setDefaultDeliveryAddress(${Number(
+                        item.id
+                      )})"
+                      class="
+                        border
+                        px-3
+                        py-2
+                        text-xs
+                        font-bold
+                      "
+                      style="
+                        border-color:#c9a227;
+                        color:#8b6b00;
+                      "
+                    >
+                      ĐẶT MẶC ĐỊNH
+                    </button>
+                  `
+                  : ""
+              }
+
+
+              <button
+                type="button"
+                onclick="deleteDeliveryAddress(${Number(
+                  item.id
+                )})"
+                class="
+                  border
+                  px-3
+                  py-2
+                  text-xs
+                  font-bold
+                  text-red-700
+                "
+                style="
+                  border-color:#b91c1c;
+                "
+              >
+                XÓA
+              </button>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      `)
+      .join("");
+
+}
+
+
+// =====================================================
+// OPEN ADD FORM
+// =====================================================
+
+function openAddressForm() {
+
+  document.getElementById(
+    "deliveryAddressId"
+  ).value = "";
+
+
+  document.getElementById(
+    "deliveryLabel"
+  ).value = "Nhà riêng";
+
+
+  document.getElementById(
+    "deliveryRecipient"
+  ).value =
+    currentUser?.fullname || "";
+
+
+  document.getElementById(
+    "deliveryPhone"
+  ).value =
+    currentUser?.phone || "";
+
+
+  document.getElementById(
+    "deliveryAddress"
+  ).value = "";
+
+
+  document.getElementById(
+    "deliveryCity"
+  ).value = "";
+
+
+  document.getElementById(
+    "deliveryDefault"
+  ).checked =
+    deliveryAddresses.length === 0;
+
+
+  document.getElementById(
+    "deliveryAddressForm"
+  ).classList.remove(
+    "hidden"
+  );
+
+
+  document.getElementById(
+    "deliveryAddressForm"
+  ).scrollIntoView({
+    behavior: "smooth",
+    block: "center"
+  });
+
+}
+
+
+// =====================================================
+// CLOSE FORM
+// =====================================================
+
+function closeAddressForm() {
+
+  document.getElementById(
+    "deliveryAddressForm"
+  ).classList.add(
+    "hidden"
+  );
+
+}
+
+
+// =====================================================
+// EDIT ADDRESS
+// =====================================================
+
+function editDeliveryAddress(id) {
+
+  const item =
+    deliveryAddresses.find(
+      address =>
+        Number(address.id) ===
+        Number(id)
+    );
+
+
+  if (!item) {
+    return;
+  }
+
+
+  document.getElementById(
+    "deliveryAddressId"
+  ).value =
+    item.id;
+
+
+  document.getElementById(
+    "deliveryLabel"
+  ).value =
+    item.label || "";
+
+
+  document.getElementById(
+    "deliveryRecipient"
+  ).value =
+    item.recipient_name || "";
+
+
+  document.getElementById(
+    "deliveryPhone"
+  ).value =
+    item.phone || "";
+
+
+  document.getElementById(
+    "deliveryAddress"
+  ).value =
+    item.address || "";
+
+
+  document.getElementById(
+    "deliveryCity"
+  ).value =
+    item.city || "";
+
+
+  document.getElementById(
+    "deliveryDefault"
+  ).checked =
+    item.is_default === true;
+
+
+  const form =
+    document.getElementById(
+      "deliveryAddressForm"
+    );
+
+
+  form.classList.remove(
+    "hidden"
+  );
+
+
+  form.scrollIntoView({
+    behavior: "smooth",
+    block: "center"
+  });
+
+}
+
+
+// =====================================================
+// SAVE ADDRESS
+// =====================================================
+
+async function saveDeliveryAddress() {
+
+  const id =
+    document.getElementById(
+      "deliveryAddressId"
+    ).value;
+
+
+  const label =
+    document.getElementById(
+      "deliveryLabel"
+    ).value.trim();
+
+
+  const recipientName =
+    document.getElementById(
+      "deliveryRecipient"
+    ).value.trim();
+
+
+  const phone =
+    document.getElementById(
+      "deliveryPhone"
+    ).value.trim();
+
+
+  const address =
+    document.getElementById(
+      "deliveryAddress"
+    ).value.trim();
+
+
+  const city =
+    document.getElementById(
+      "deliveryCity"
+    ).value.trim();
+
+
+  const isDefault =
+    document.getElementById(
+      "deliveryDefault"
+    ).checked;
+
+
+  if (
+    !recipientName ||
+    !phone ||
+    !address ||
+    !city
+  ) {
+
+    alert(
+      "Vui lòng nhập đầy đủ tên người nhận, số điện thoại và địa chỉ."
+    );
+
+    return;
+  }
+
+
+  try {
+
+    const response =
+      await fetch(
+        id
+          ? `/api/delivery-addresses/${id}`
+          : "/api/delivery-addresses",
+        {
+          method:
+            id
+              ? "PUT"
+              : "POST",
+
+          headers: {
+            "Content-Type":
+              "application/json",
+
+            Authorization:
+              "Bearer " + token
+          },
+
+          body: JSON.stringify({
+            label,
+            recipientName,
+            phone,
+            address,
+            city,
+            isDefault
+          })
+        }
+      );
+
+
+    const data =
+      await response.json();
+
+
+    if (
+      !response.ok ||
+      !data.success
+    ) {
+
+      throw new Error(
+        data.message ||
+        "Không thể lưu địa chỉ."
+      );
+
+    }
+
+
+    closeAddressForm();
+
+    await loadDeliveryAddresses();
+
+    openAddressFromCheckout();
+
+
+  } catch (error) {
+
+    console.error(
+      "SAVE DELIVERY ADDRESS ERROR:",
+      error
+    );
+
+    alert(
+      error.message
+    );
+
+  }
+
+}
+
+function backToCheckout() {
+
+  window.location.href =
+    "/checkout.html";
+
+}
+
+// =====================================================
+// SET DEFAULT
+// =====================================================
+
+async function setDefaultDeliveryAddress(
+  id
+) {
+
+  try {
+
+    const response =
+      await fetch(
+        `/api/delivery-addresses/${id}/default`,
+        {
+          method: "PATCH",
+
+          headers: {
+            Authorization:
+              "Bearer " + token
+          }
+        }
+      );
+
+
+    const data =
+      await response.json();
+
+
+    if (
+      !response.ok ||
+      !data.success
+    ) {
+
+      throw new Error(
+        data.message ||
+        "Không thể đặt địa chỉ mặc định."
+      );
+
+    }
+
+
+    await loadDeliveryAddresses();
+
+
+  } catch (error) {
+
+    alert(
+      error.message
+    );
+
+  }
+
+}
+
+
+// =====================================================
+// DELETE ADDRESS
+// =====================================================
+
+async function deleteDeliveryAddress(
+  id
+) {
+
+  const confirmed =
+    confirm(
+      "Bạn có chắc muốn xóa địa chỉ giao hàng này?"
+    );
+
+
+  if (!confirmed) {
+    return;
+  }
+
+
+  try {
+
+    const response =
+      await fetch(
+        `/api/delivery-addresses/${id}`,
+        {
+          method: "DELETE",
+
+          headers: {
+            Authorization:
+              "Bearer " + token
+          }
+        }
+      );
+
+
+    const data =
+      await response.json();
+
+
+    if (
+      !response.ok ||
+      !data.success
+    ) {
+
+      throw new Error(
+        data.message ||
+        "Không thể xóa địa chỉ."
+      );
+
+    }
+
+
+    closeAddressForm();
+
+    await loadDeliveryAddresses();
+
+
+  } catch (error) {
+
+    alert(
+      error.message
+    );
+
+  }
+
+}
+
+</script>
+        <!-- LINKED ACCOUNTS -->
+
+        <div
+          class="
+            mt-8
+            pt-7
+            border-t
+          "
+          style="border-color:#e8d5a3"
+        >
+
+          <div
+            class="
+              flex
+              justify-between
+              items-center
+              gap-4
+              mb-4
+            "
+          >
+
+            <div>
+
+              <h3 class="font-bold">
+                TÀI KHOẢN LIÊN KẾT
+              </h3>
+
+              <p
+                class="
+                  text-xs
+                  text-gray-400
+                  mt-1
+                "
+              >
+                Google, Facebook hoặc tài khoản khác
+              </p>
+
+            </div>
+
+
+            <button
+              id="addLinkedButton"
+              onclick="addLinkedAccount()"
+              class="
+                hidden
+                border
+                px-4
+                py-2
+                text-xs
+                font-bold
+              "
+              style="
+                border-color:#c9a227;
+                color:#3b2416;
+              "
+            >
+              + THÊM
+            </button>
+
+          </div>
+
+
+          <div
+            id="linkedAccounts"
+            class="space-y-3"
+          ></div>
+
+        </div>
+
+
+        <!-- SAVE -->
+
+        <div
+          id="editActions"
+          class="
+            hidden
+            flex
+            flex-wrap
+            justify-end
+            gap-3
+            mt-8
+          "
+        >
+
+          <button
+            onclick="cancelEdit()"
+            class="
+              border
+              px-7
+              py-3
+              font-bold
+            "
+            style="
+              border-color:#3b2416;
+              color:#3b2416;
+            "
+          >
+            HỦY
+          </button>
+
+
+          <button
+            id="saveButton"
+            onclick="saveProfile()"
+            class="
+              px-7
+              py-3
+              font-bold
+            "
+            style="
+              background:#3b2416;
+              color:#e8d5a3;
+            "
+          >
+            <i class="fa-solid fa-floppy-disk mr-2"></i>
+            LƯU THÔNG TIN
+          </button>
+
+        </div>
+
+
+        <p
+          id="message"
+          class="
+            text-sm
+            mt-5
+            text-right
+          "
+        ></p>
+
+      </section>
+
+    </div>
+
+  </main>
+
+
+<script>
+
+const token =
+  localStorage.getItem(
+    "shoplux_token"
+  );
+
+
+let currentUser = null;
+
+let avatarData = "";
+
+let editing = false;
+
+
+// =====================================================
+// AUTH
+// =====================================================
+
+if (!token) {
+
+  window.location.href =
+    "/login.html";
+
+}
+
+
+// =====================================================
+// ESCAPE
+// =====================================================
+
+function escapeHTML(value = "") {
+
+  return String(value)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+
+}
+
+
+// =====================================================
+// LOAD PROFILE
+// =====================================================
+
+async function loadProfile() {
+
+  try {
+
+    const response =
+      await fetch(
+        "/api/profile",
+        {
+          headers: {
+            Authorization:
+              "Bearer " + token
+          }
+        }
+      );
+
+
+    const data =
+      await response.json();
+
+
+    if (
+      response.status === 401 ||
+      response.status === 403
+    ) {
+
+      localStorage.removeItem(
+        "shoplux_token"
+      );
+
+      localStorage.removeItem(
+        "shoplux_user"
+      );
+
+      window.location.href =
+        "/login.html";
+
+      return;
+    }
+
+
+    if (
+      !response.ok ||
+      !data.success
+    ) {
+
+      throw new Error(
+        data.message ||
+        "Không thể tải hồ sơ."
+      );
+
+    }
+
+
+    currentUser =
+      data.user;
+
+
+    avatarData =
+      currentUser.avatar || "";
+
+
+    localStorage.setItem(
+      "shoplux_user",
+      JSON.stringify(currentUser)
+    );
+
+
+    renderProfile();
+
+    await loadDeliveryAddresses();
+
+
+  } catch (error) {
+
+    document.getElementById(
+      "message"
+    ).textContent =
+      error.message;
+
+  }
+
+}
+
+
+// =====================================================
+// RENDER
+// =====================================================
+
+function renderProfile() {
+
+  if (!currentUser) {
+    return;
+  }
+
+
+  document.getElementById(
+    "fullname"
+  ).value =
+    currentUser.fullname || "";
+
+
+  document.getElementById(
+    "gender"
+  ).value =
+    currentUser.gender || "";
+
+
+  let birthday = "";
+
+  if (currentUser.birthday) {
+
+    birthday =
+      String(
+        currentUser.birthday
+      ).slice(0, 10);
+
+  }
+
+
+  document.getElementById(
+    "birthday"
+  ).value =
+    birthday;
+
+
+  document.getElementById(
+    "phone"
+  ).value =
+    currentUser.phone || "";
+
+
+  document.getElementById(
+    "email"
+  ).value =
+    currentUser.email || "";
+
+
+  document.getElementById(
+    "profileName"
+  ).textContent =
+    currentUser.fullname ||
+    "ShopLux Member";
+
+
+  document.getElementById(
+    "profileEmail"
+  ).textContent =
+    currentUser.email || "";
+
+
+  renderAvatar();
+
+  renderLinkedAccounts();
+
+}
+
+
+// =====================================================
+// AVATAR
+// =====================================================
+
+function renderAvatar() {
+
+  const image =
+    document.getElementById(
+      "avatarImage"
+    );
+
+  const fallback =
+    document.getElementById(
+      "avatarFallback"
+    );
+
+
+  if (avatarData) {
+
+    image.src =
+      avatarData;
+
+    image.classList.remove(
+      "hidden"
+    );
+
+    fallback.classList.add(
+      "hidden"
+    );
+
+  } else {
+
+    image.removeAttribute(
+      "src"
+    );
+
+    image.classList.add(
+      "hidden"
+    );
+
+    fallback.classList.remove(
+      "hidden"
+    );
+
+  }
+
+}
+
+
+function readAvatar(event) {
+
+  const file =
+    event.target.files?.[0];
+
+
+  if (!file) {
+    return;
+  }
+
+
+  if (
+    !file.type.startsWith(
+      "image/"
+    )
+  ) {
+
+    alert(
+      "Vui lòng chọn file ảnh."
+    );
+
+    return;
+  }
+
+
+  // Giới hạn 2MB
+  if (
+    file.size >
+    2 * 1024 * 1024
+  ) {
+
+    alert(
+      "Ảnh đại diện tối đa 2MB."
+    );
+
+    event.target.value = "";
+
+    return;
+  }
+
+
+  const reader =
+    new FileReader();
+
+
+  reader.onload = () => {
+
+    avatarData =
+      reader.result;
+
+    renderAvatar();
+
+  };
+
+
+  reader.readAsDataURL(file);
+
+}
+
+
+// =====================================================
+// LINKED ACCOUNTS
+// =====================================================
+
+function renderLinkedAccounts() {
+
+  const container =
+    document.getElementById(
+      "linkedAccounts"
+    );
+
+
+  const accounts =
+    Array.isArray(
+      currentUser?.linkedAccounts
+    )
+      ? currentUser.linkedAccounts
+      : [];
+
+
+  if (
+    !editing &&
+    accounts.length === 0
+  ) {
+
+    container.innerHTML = `
+      <div
+        class="
+          border
+          p-4
+          text-sm
+          text-gray-400
+        "
+        style="border-color:#e8d5a3"
+      >
+        Chưa liên kết tài khoản nào.
+      </div>
+    `;
+
+    return;
+  }
+
+
+  container.innerHTML =
+    accounts
+      .map(
+        (item, index) => {
+
+          if (!editing) {
+
+            return `
+              <div
+                class="
+                  border
+                  p-4
+                  flex
+                  justify-between
+                  gap-4
+                "
+                style="
+                  border-color:#e8d5a3
+                "
+              >
+
+                <div>
+
+                  <div
+                    class="
+                      text-xs
+                      font-bold
+                      uppercase
+                    "
+                  >
+                    ${escapeHTML(
+                      item.provider ||
+                      "Tài khoản"
+                    )}
+                  </div>
+
+                  <div
+                    class="
+                      text-sm
+                      text-gray-500
+                      mt-1
+                    "
+                  >
+                    ${escapeHTML(
+                      item.account || ""
+                    )}
+                  </div>
+
+                </div>
+
+                <i
+                  class="
+                    fa-solid
+                    fa-link
+                  "
+                  style="
+                    color:#c9a227
+                  "
+                ></i>
+
+              </div>
+            `;
+
+          }
+
+
+          return `
+            <div
+              class="
+                linked-row
+                grid
+                md:grid-cols-[180px_1fr_auto]
+                gap-3
+              "
+            >
+
+              <select
+                class="
+                  linked-provider
+                  border
+                  p-3
+                  bg-white
+                "
+                style="
+                  border-color:#e8d5a3
+                "
+              >
+
+                <option
+                  value="Google"
+                  ${
+                    item.provider ===
+                    "Google"
+                      ? "selected"
+                      : ""
+                  }
+                >
+                  Google
+                </option>
+
+                <option
+                  value="Facebook"
+                  ${
+                    item.provider ===
+                    "Facebook"
+                      ? "selected"
+                      : ""
+                  }
+                >
+                  Facebook
+                </option>
+
+                <option
+                  value="Apple"
+                  ${
+                    item.provider ===
+                    "Apple"
+                      ? "selected"
+                      : ""
+                  }
+                >
+                  Apple
+                </option>
+
+                <option
+                  value="Khác"
+                  ${
+                    ![
+                      "Google",
+                      "Facebook",
+                      "Apple"
+                    ].includes(
+                      item.provider
+                    )
+                      ? "selected"
+                      : ""
+                  }
+                >
+                  Khác
+                </option>
+
+              </select>
+
+
+              <input
+                class="
+                  linked-account
+                  border
+                  p-3
+                "
+                style="
+                  border-color:#e8d5a3
+                "
+                value="${escapeHTML(
+                  item.account || ""
+                )}"
+                placeholder="Email hoặc tên tài khoản"
+              >
+
+
+              <button
+                onclick="
+                  removeLinkedAccount(
+                    ${index}
+                  )
+                "
+                class="
+                  border
+                  px-4
+                  font-bold
+                "
+                style="
+                  border-color:#b91c1c;
+                  color:#b91c1c;
+                "
+              >
+                <i
+                  class="
+                    fa-solid
+                    fa-trash
+                  "
+                ></i>
+              </button>
+
+            </div>
+          `;
+
+        }
+      )
+      .join("");
+
+
+  if (
+    editing &&
+    accounts.length === 0
+  ) {
+
+    container.innerHTML = `
+      <div
+        class="
+          text-sm
+          text-gray-400
+          py-2
+        "
+      >
+        Chưa có tài khoản liên kết.
+      </div>
+    `;
+
+  }
+
+}
+
+
+function collectLinkedAccounts() {
+
+  return Array.from(
+    document.querySelectorAll(
+      ".linked-row"
+    )
+  )
+    .map(row => ({
+
+      provider:
+        row.querySelector(
+          ".linked-provider"
+        )?.value || "",
+
+      account:
+        row.querySelector(
+          ".linked-account"
+        )?.value.trim() || ""
+
+    }))
+    .filter(
+      item =>
+        item.provider ||
+        item.account
+    );
+
+}
+
+
+function syncLinkedAccounts() {
+
+  if (!editing) {
+    return;
+  }
+
+  currentUser.linkedAccounts =
+    collectLinkedAccounts();
+
+}
+
+
+function addLinkedAccount() {
+
+  syncLinkedAccounts();
+
+
+  if (
+    !Array.isArray(
+      currentUser.linkedAccounts
+    )
+  ) {
+
+    currentUser.linkedAccounts = [];
+
+  }
+
+
+  currentUser.linkedAccounts.push({
+    provider: "Google",
+    account: ""
+  });
+
+
+  renderLinkedAccounts();
+
+}
+
+
+function removeLinkedAccount(index) {
+
+  syncLinkedAccounts();
+
+
+  currentUser.linkedAccounts.splice(
+    index,
+    1
+  );
+
+
+  renderLinkedAccounts();
+
+}
+
+
+// =====================================================
+// EDIT MODE
+// =====================================================
+
+function enableEdit() {
+
+  editing = true;
+
+
+  [
+    "fullname",
+    "gender",
+    "birthday",
+    "phone"
+  ].forEach(id => {
+
+    document.getElementById(
+      id
+    ).disabled = false;
+
+  });
+
+
+  document.getElementById(
+    "editButton"
+  ).classList.add(
+    "hidden"
+  );
+
+
+  document.getElementById(
+    "editActions"
+  ).classList.remove(
+    "hidden"
+  );
+
+
+  document.getElementById(
+    "avatarEditButton"
+  ).classList.remove(
+    "hidden"
+  );
+
+  document.getElementById(
+    "avatarEditButton"
+  ).classList.add(
+    "flex"
+  );
+
+
+  document.getElementById(
+    "addLinkedButton"
+  ).classList.remove(
+    "hidden"
+  );
+
+
+  renderLinkedAccounts();
+
+}
+
+
+function cancelEdit() {
+
+  editing = false;
+
+  avatarData =
+    currentUser.avatar || "";
+
+
+  [
+    "fullname",
+    "gender",
+    "birthday",
+    "phone"
+  ].forEach(id => {
+
+    document.getElementById(
+      id
+    ).disabled = true;
+
+  });
+
+
+  document.getElementById(
+    "editButton"
+  ).classList.remove(
+    "hidden"
+  );
+
+
+  document.getElementById(
+    "editActions"
+  ).classList.add(
+    "hidden"
+  );
+
+
+  document.getElementById(
+    "avatarEditButton"
+  ).classList.add(
+    "hidden"
+  );
+
+  document.getElementById(
+    "avatarEditButton"
+  ).classList.remove(
+    "flex"
+  );
+
+
+  document.getElementById(
+    "addLinkedButton"
+  ).classList.add(
+    "hidden"
+  );
+
+
+  renderProfile();
+
+}
+
+
+// =====================================================
+// SAVE
+// =====================================================
+
+async function saveProfile() {
+
+  const button =
+    document.getElementById(
+      "saveButton"
+    );
+
+  const message =
+    document.getElementById(
+      "message"
+    );
+
+
+  syncLinkedAccounts();
+
+
+  const payload = {
+
+    fullname:
+      document.getElementById(
+        "fullname"
+      ).value.trim(),
+
+    gender:
+      document.getElementById(
+        "gender"
+      ).value,
+
+    birthday:
+      document.getElementById(
+        "birthday"
+      ).value || null,
+
+    phone:
+      document.getElementById(
+        "phone"
+      ).value.trim(),
+
+    avatar:
+      avatarData,
+
+    linkedAccounts:
+      currentUser.linkedAccounts || []
+
+  };
+
+
+  if (!payload.fullname) {
+
+    alert(
+      "Vui lòng nhập họ và tên."
+    );
+
+    return;
+
+  }
+
+
+  try {
+
+    button.disabled = true;
+
+    button.textContent =
+      "ĐANG LƯU...";
+
+
+    message.textContent = "";
+
+
+    const response =
+      await fetch(
+        "/api/profile",
+        {
+          method: "PUT",
+
+          headers: {
+            "Content-Type":
+              "application/json",
+
+            Authorization:
+              "Bearer " + token
+          },
+
+          body:
+            JSON.stringify(payload)
+        }
+      );
+
+
+    const data =
+      await response.json();
+
+
+    if (
+      !response.ok ||
+      !data.success
+    ) {
+
+      throw new Error(
+        data.message ||
+        "Không thể lưu thông tin."
+      );
+
+    }
+
+
+    currentUser =
+      data.user;
+
+    avatarData =
+      currentUser.avatar || "";
+
+
+    localStorage.setItem(
+      "shoplux_user",
+      JSON.stringify(currentUser)
+    );
+
+
+    editing = false;
+
+
+    [
+      "fullname",
+      "gender",
+      "birthday",
+      "phone"
+    ].forEach(id => {
+
+      document.getElementById(
+        id
+      ).disabled = true;
+
+    });
+
+
+    document.getElementById(
+      "editButton"
+    ).classList.remove(
+      "hidden"
+    );
+
+
+    document.getElementById(
+      "editActions"
+    ).classList.add(
+      "hidden"
+    );
+
+
+    document.getElementById(
+      "avatarEditButton"
+    ).classList.add(
+      "hidden"
+    );
+
+    document.getElementById(
+      "avatarEditButton"
+    ).classList.remove(
+      "flex"
+    );
+
+
+    document.getElementById(
+      "addLinkedButton"
+    ).classList.add(
+      "hidden"
+    );
+
+
+    renderProfile();
+
+
+    message.textContent =
+      "Đã cập nhật thông tin cá nhân.";
+
+    message.className =
+      "text-sm mt-5 text-right text-green-700";
+
+
+  } catch (error) {
+
+    console.error(
+      "SAVE PROFILE ERROR:",
+      error
+    );
+
+
+    message.textContent =
+      error.message;
+
+    message.className =
+      "text-sm mt-5 text-right text-red-600";
+
+
+  } finally {
+
+    button.disabled = false;
+
+    button.innerHTML = `
+      <i
+        class="
+          fa-solid
+          fa-floppy-disk
+          mr-2
+        "
+      ></i>
+      LƯU THÔNG TIN
+    `;
+
+  }
+
+}
+
+
+// =====================================================
+// START
+// =====================================================
+
+// =====================================================
+// OPEN ADDRESS FROM CHECKOUT
+// =====================================================
+
+function openAddressFromCheckout() {
+
+  const params =
+    new URLSearchParams(
+      window.location.search
+    );
+
+  const editAddressId =
+    params.get("editAddress");
+
+
+  if (!editAddressId) {
+    return;
+  }
+
+
+  const id =
+    Number(editAddressId);
+
+
+  if (!id) {
+    return;
+  }
+
+
+  const item =
+    deliveryAddresses.find(
+      address =>
+        Number(address.id) === id
+    );
+
+
+  if (!item) {
+    return;
+  }
+
+const backButton =
+  document.getElementById(
+    "backToCheckoutBtn"
+  );
+
+if (backButton) {
+  backButton.classList.remove(
+    "hidden"
+  );
+}
+
+  editDeliveryAddress(id);
+
+}
+
+loadProfile();
+
+</script>
+
+</body>
+</html>
