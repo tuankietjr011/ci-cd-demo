@@ -34,6 +34,19 @@ pipeline {
                 sh 'test -f docker-compose.yml'
             }
         }
+                stage('Test SSH EC2') {
+            steps {
+                echo 'Testing SSH connection to AWS EC2...'
+
+                sshagent(credentials: ['shoplux-ec2-key']) {
+                    sh '''
+                        mkdir -p ~/.ssh
+                        ssh-keyscan -H 13.250.52.12 >> ~/.ssh/known_hosts
+                        ssh ubuntu@13.250.52.12 "echo JENKINS_SSH_SUCCESS"
+                    '''
+                }
+            }
+        }
     }
 
     post {
