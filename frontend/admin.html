@@ -1,416 +1,988 @@
 <!DOCTYPE html>
 <html lang="vi">
-
 <head>
-
   <meta charset="UTF-8">
-
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1"
-  >
-
-  <title>ShopLux Maison Admin</title>
-
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ShopLux Admin Dashboard</title>
   <script src="https://cdn.tailwindcss.com"></script>
-
 </head>
 
 <body class="bg-[#f7f1e7] text-[#1f120c]">
 
-<header
-  class="text-[#e8d5a3]"
-  style="background:#3b2416"
->
+<div class="min-h-screen lg:flex">
 
-  <div
+  <!-- SIDEBAR -->
+  <aside
     class="
-      max-w-7xl
-      mx-auto
-      px-5
-      py-5
-      flex
-      justify-between
-      items-center
+      lg:fixed lg:inset-y-0 lg:left-0 lg:w-64
+      bg-[#3b2416] text-[#e8d5a3]
+      p-6 flex flex-col z-20
     "
   >
 
-    <div>
-
-      <h1
-        class="
-          text-2xl
-          font-black
-          tracking-[3px]
-        "
-      >
+    <div class="mb-10">
+      <div class="text-2xl font-black tracking-[3px]">
         SHOPLUX
-      </h1>
+      </div>
 
-      <p
-        class="
-          text-[10px]
-          tracking-[4px]
-        "
-      >
+      <div class="text-[10px] tracking-[4px] mt-1">
         MAISON ADMIN
-      </p>
-
+      </div>
     </div>
+
+    <nav class="space-y-2 flex-1">
+
+      <button
+        class="nav w-full text-left px-4 py-3 font-bold bg-[#5c3824]"
+        data-page="dashboard"
+      >
+        TỔNG QUAN
+      </button>
+
+      <button
+        class="nav w-full text-left px-4 py-3 font-bold hover:bg-[#5c3824]"
+        data-page="products"
+      >
+        QUẢN LÝ SẢN PHẨM
+      </button>
+
+      <button
+        class="nav w-full text-left px-4 py-3 font-bold hover:bg-[#5c3824]"
+        data-page="orders"
+      >
+        QUẢN LÝ ĐƠN HÀNG
+      </button>
+
+      <button
+        class="nav w-full text-left px-4 py-3 font-bold hover:bg-[#5c3824]"
+        data-page="coupons"
+      >
+        MÃ GIẢM GIÁ
+      </button>
+
+      <button
+        class="nav w-full text-left px-4 py-3 font-bold hover:bg-[#5c3824]"
+        data-page="customers"
+      >
+        KHÁCH HÀNG
+      </button>
+
+      <button
+        class="nav w-full text-left px-4 py-3 font-bold hover:bg-[#5c3824]"
+        data-page="settings"
+      >
+        CÀI ĐẶT
+      </button>
+
+    </nav>
 
     <a
       href="/"
       class="
-        border
-        px-5
-        py-2
+        border border-[#c9a227]
+        text-center
+        px-4 py-3
+        font-bold
       "
-      style="border-color:#c9a227"
     >
-      TRANG KHÁCH
+      XEM CỬA HÀNG
     </a>
 
-  </div>
-
-</header>
+  </aside>
 
 
-<main
-  class="
-    max-w-7xl
-    mx-auto
-    p-5
-  "
->
+  <!-- CONTENT -->
+  <main class="flex-1 lg:ml-64 p-5 lg:p-8">
 
-  <div
-    class="
-      grid
-      lg:grid-cols-5
-      gap-5
-    "
-  >
+    <!-- DASHBOARD -->
+    <section id="page-dashboard" class="page">
 
-    <!-- FORM -->
+      <h1 class="text-3xl font-black mb-2">
+        TỔNG QUAN
+      </h1>
 
-    <section
-      class="
-        lg:col-span-2
-        bg-[#fffdf8]
-        border
-        p-6
-      "
-      style="border-color:#e8d5a3"
-    >
-
-      <h2
-        id="formTitle"
-        class="
-          text-xl
-          font-black
-          mb-6
-        "
-      >
-        THÊM SẢN PHẨM
-      </h2>
-
-      <input
-        id="editId"
-        type="hidden"
-      >
-
-
-      <label class="font-bold text-sm">
-        Tên sản phẩm
-      </label>
-
-      <input
-        id="name"
-        class="
-          border
-          p-3
-          w-full
-          mt-2
-          mb-4
-        "
-      >
-
-
-      <label class="font-bold text-sm">
-        Thương hiệu
-      </label>
-
-      <select
-        id="brand"
-        class="
-          border
-          p-3
-          w-full
-          mt-2
-          mb-4
-        "
-      >
-        <option>Nike</option>
-        <option>adidas</option>
-        <option>Louis Vuitton</option>
-        <option>Gucci</option>
-        <option>Dior</option>
-      </select>
-
-
-      <div class="grid grid-cols-2 gap-3">
-
-        <div>
-
-          <label class="font-bold text-sm">
-            Giá bán
-          </label>
-
-          <input
-            id="price"
-            type="number"
-            class="
-              border
-              p-3
-              w-full
-              mt-2
-              mb-4
-            "
-          >
-
-        </div>
-
-        <div>
-
-          <label class="font-bold text-sm">
-            Giá gốc
-          </label>
-
-          <input
-            id="originalPrice"
-            type="number"
-            class="
-              border
-              p-3
-              w-full
-              mt-2
-              mb-4
-            "
-          >
-
-        </div>
-
-      </div>
-
-
-      <label class="font-bold text-sm">
-        Loại sản phẩm
-      </label>
-
-      <select
-        id="type"
-        onchange="updateFields()"
-        class="
-          border
-          p-3
-          w-full
-          mt-2
-          mb-4
-        "
-      >
-        <option value="ao">Áo</option>
-        <option value="quan">Quần</option>
-        <option value="giay-dep">Giày Dép</option>
-        <option value="phu-kien">Phụ Kiện</option>
-        <option value="bong-da">Đồ Bóng Đá</option>
-      </select>
-
-
-      <div id="genderWrap">
-
-        <label class="font-bold text-sm">
-          Giới tính
-        </label>
-
-        <select
-          id="gender"
-          onchange="renderSubcategories()"
-          class="
-            border
-            p-3
-            w-full
-            mt-2
-            mb-4
-          "
-        >
-          <option value="nam">Nam</option>
-          <option value="nu">Nữ</option>
-        </select>
-
-      </div>
-
-
-      <label class="font-bold text-sm">
-        Phân khúc
-      </label>
-
-      <select
-        id="subcategory"
-        class="
-          border
-          p-3
-          w-full
-          mt-2
-          mb-4
-        "
-      ></select>
-
-
-      <label class="font-bold text-sm">
-        Size
-      </label>
+      <p class="text-gray-500 mb-7">
+        Tình hình hoạt động của ShopLux
+      </p>
 
       <div
-        id="sizeList"
-        class="
-          flex
-          flex-wrap
-          gap-3
-          mt-3
-          mb-5
-        "
-      ></div>
-
-
-      <label class="font-bold text-sm">
-        Ảnh sản phẩm (tối đa 4)
-      </label>
-
-      <input
-        id="images"
-        type="file"
-        accept="image/*"
-        multiple
-        onchange="readImages()"
-        class="
-          border
-          p-3
-          w-full
-          mt-2
-        "
-      >
-
-      <div
-        id="preview"
         class="
           grid
-          grid-cols-4
-          gap-2
-          my-4
+          sm:grid-cols-2
+          xl:grid-cols-5
+          gap-4
+          mb-8
         "
-      ></div>
+      >
+
+        <div class="bg-white border border-[#e8d5a3] p-6">
+          <p class="text-xs text-gray-500 font-bold">
+            SẢN PHẨM
+          </p>
+
+          <p
+            id="statProducts"
+            class="text-3xl font-black mt-2"
+          >
+            0
+          </p>
+        </div>
 
 
-      <label class="font-bold text-sm">
-        Mô tả
-      </label>
+        <div class="bg-white border border-[#e8d5a3] p-6">
+          <p class="text-xs text-gray-500 font-bold">
+            ĐƠN HÀNG
+          </p>
 
-      <textarea
-        id="desc"
-        rows="5"
-        class="
-          border
-          p-3
-          w-full
-          mt-2
-          mb-5
-        "
-      ></textarea>
+          <p
+            id="statOrders"
+            class="text-3xl font-black mt-2"
+          >
+            0
+          </p>
+        </div>
 
 
-      <div class="flex gap-3">
+        <div class="bg-white border border-[#e8d5a3] p-6">
+          <p class="text-xs text-gray-500 font-bold">
+            DOANH THU ĐÃ GIAO
+          </p>
 
-        <button
-          id="saveButton"
-          onclick="saveProduct()"
-          class="
-            flex-1
-            py-4
-            font-black
-          "
-          style="
-            background:#3b2416;
-            color:#e8d5a3;
-          "
+          <p
+            id="statRevenue"
+            class="text-2xl font-black mt-2 whitespace-nowrap"
+          >
+            0 ₫
+          </p>
+        </div>
+
+
+        <div class="bg-white border border-[#e8d5a3] p-6">
+          <p class="text-xs text-gray-500 font-bold">
+            MÃ GIẢM GIÁ
+          </p>
+
+          <p id="statCoupons" class="text-3xl font-black mt-2">0</p>
+        </div>
+
+        <div class="bg-white border border-[#e8d5a3] p-6">
+          <p class="text-xs text-gray-500 font-bold">KHÁCH HÀNG</p>
+          <p id="statCustomers" class="text-3xl font-black mt-2">0</p>
+        </div>
+
+      </div>
+
+
+      <div class="bg-white border border-[#e8d5a3] p-6">
+
+        <h2 class="font-black text-xl mb-4">
+          ĐƠN HÀNG GẦN ĐÂY
+        </h2>
+
+        <div
+          id="recentOrders"
+          class="space-y-3 text-sm text-gray-500"
         >
-          ĐĂNG SẢN PHẨM
-        </button>
-
-        <button
-          id="cancelButton"
-          onclick="resetForm()"
-          class="
-            hidden
-            bg-gray-500
-            text-white
-            px-5
-          "
-        >
-          HỦY
-        </button>
+          Đang tải...
+        </div>
 
       </div>
 
     </section>
 
 
-    <!-- LIST -->
+    <!-- PRODUCTS -->
+    <section id="page-products" class="page hidden">
 
-    <section
-      class="
-        lg:col-span-3
-        bg-[#fffdf8]
-        border
-        p-6
-      "
-      style="border-color:#e8d5a3"
+      <h1 class="text-3xl font-black mb-7">
+        QUẢN LÝ SẢN PHẨM
+      </h1>
+
+      <div class="grid xl:grid-cols-5 gap-5">
+
+        <!-- PRODUCT FORM -->
+        <div
+          class="
+            xl:col-span-2
+            bg-white
+            border border-[#e8d5a3]
+            p-6
+          "
+        >
+
+          <h2
+            id="formTitle"
+            class="text-xl font-black mb-5"
+          >
+            THÊM SẢN PHẨM
+          </h2>
+
+          <input id="editId" type="hidden">
+
+
+          <label class="font-bold text-sm">
+            Tên sản phẩm
+          </label>
+
+          <input
+            id="name"
+            class="border p-3 w-full mt-2 mb-4"
+          >
+
+
+          <label class="font-bold text-sm">
+            Thương hiệu
+          </label>
+
+          <select
+            id="brand"
+            class="border p-3 w-full mt-2 mb-4"
+          >
+            <option>Nike</option>
+            <option>adidas</option>
+            <option>Louis Vuitton</option>
+            <option>Gucci</option>
+            <option>Dior</option>
+          </select>
+
+
+          <div class="grid grid-cols-2 gap-3">
+
+            <div>
+
+              <label class="font-bold text-sm">
+                Giá bán
+              </label>
+
+              <input
+                id="price"
+                type="number"
+                class="border p-3 w-full mt-2 mb-4"
+              >
+
+            </div>
+
+            <div>
+
+              <label class="font-bold text-sm">
+                Giá gốc
+              </label>
+
+              <input
+                id="originalPrice"
+                type="number"
+                class="border p-3 w-full mt-2 mb-4"
+              >
+
+            </div>
+
+          </div>
+
+
+          <label class="font-bold text-sm">
+            Loại sản phẩm
+          </label>
+
+          <select
+            id="type"
+            onchange="updateFields()"
+            class="border p-3 w-full mt-2 mb-4"
+          >
+            <option value="ao">Áo</option>
+            <option value="quan">Quần</option>
+            <option value="giay-dep">Giày Dép</option>
+            <option value="phu-kien">Phụ Kiện</option>
+            <option value="bong-da">Đồ Bóng Đá</option>
+          </select>
+
+
+          <div id="genderWrap">
+
+            <label class="font-bold text-sm">
+              Giới tính
+            </label>
+
+            <select
+              id="gender"
+              onchange="renderSubcategories(); renderSizes();"
+              class="border p-3 w-full mt-2 mb-4"
+            >
+              <option value="nam">Nam</option>
+              <option value="nu">Nữ</option>
+            </select>
+
+          </div>
+
+
+          <label class="font-bold text-sm">
+            Phân khúc
+          </label>
+
+          <select
+            id="subcategory"
+            class="border p-3 w-full mt-2 mb-4"
+          ></select>
+          
+          <div class="grid grid-cols-2 gap-3 mb-5">
+
+  <div>
+    <label class="font-bold text-sm">
+      Tên màu
+    </label>
+
+    <input
+      id="colorName"
+      type="text"
+      placeholder="Ví dụ: Nâu"
+      class="border p-3 w-full mt-2"
     >
+  </div>
 
-      <div
-        class="
-          flex
-          justify-between
-          items-center
-          mb-6
-        "
-      >
+  <div>
+    <label class="font-bold text-sm">
+      Nhóm biến thể
+    </label>
 
-        <h2 class="text-xl font-black">
-          DANH SÁCH SẢN PHẨM
-        </h2>
+    <input
+      id="variantGroup"
+      type="text"
+      placeholder="Ví dụ: lv-fluffy-monogram"
+      class="border p-3 w-full mt-2"
+    >
+  </div>
+
+</div>
+
+          <label class="font-bold text-sm">
+            Size
+          </label>
+
+          <div
+            id="sizeList"
+            class="flex flex-wrap gap-2 mt-3 mb-5"
+          ></div>
+
+          <label class="font-bold text-sm">
+            Ảnh sản phẩm (tối đa 10)
+          </label>
+
+          <input
+            id="images"
+            type="file"
+            accept="image/*"
+            multiple
+            onchange="readImages()"
+            class="border p-3 w-full mt-2"
+          >
+
+          <div
+            id="preview"
+            class="grid grid-cols-4 gap-2 my-4"
+          ></div>
+
+
+          <label class="font-bold text-sm">
+            Mô tả
+          </label>
+
+          <textarea
+            id="desc"
+            rows="4"
+            class="border p-3 w-full mt-2 mb-5"
+          ></textarea>
+
+
+          <div class="flex gap-3">
+
+            <button
+              id="saveButton"
+              onclick="saveProduct()"
+              class="
+                flex-1
+                py-4
+                font-black
+                bg-[#3b2416]
+                text-[#e8d5a3]
+              "
+            >
+              ĐĂNG SẢN PHẨM
+            </button>
+
+            <button
+              id="cancelButton"
+              onclick="resetForm()"
+              class="
+                hidden
+                bg-gray-500
+                text-white
+                px-5
+              "
+            >
+              HỦY
+            </button>
+
+          </div>
+
+        </div>
+
+
+        <!-- PRODUCT LIST -->
+        <div
+          class="
+            xl:col-span-3
+            bg-white
+            border border-[#e8d5a3]
+            p-6
+          "
+        >
+
+          <div class="flex justify-between mb-5">
+
+            <h2 class="text-xl font-black">
+              DANH SÁCH SẢN PHẨM
+            </h2>
+
+            <span
+              id="productCount"
+              class="text-sm text-gray-500"
+            ></span>
+
+          </div>
+
+          <div
+            id="productList"
+            class="space-y-3"
+          ></div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- ORDERS -->
+    <section id="page-orders" class="page hidden">
+
+      <div class="flex justify-between items-center mb-7">
+
+        <div>
+
+          <h1 class="text-3xl font-black">
+            QUẢN LÝ ĐƠN HÀNG
+          </h1>
+
+          <p class="text-gray-500 mt-1">
+            Cập nhật trạng thái đơn hàng ShopLux
+          </p>
+
+        </div>
 
         <span
-          id="productCount"
+          id="orderCount"
           class="text-sm text-gray-500"
         ></span>
 
       </div>
 
+
       <div
-        id="productList"
-        class="space-y-3"
-      ></div>
+        id="adminOrderList"
+        class="space-y-4"
+      >
+
+        <div class="text-center py-10">
+          Đang tải...
+        </div>
+
+      </div>
 
     </section>
 
-  </div>
 
-</main>
+    <!-- COUPONS -->
+    <section id="page-coupons" class="page hidden">
+
+      <h1 class="text-3xl font-black mb-7">
+        MÃ GIẢM GIÁ
+      </h1>
+
+
+      <div class="grid xl:grid-cols-5 gap-5">
+
+        <!-- COUPON FORM -->
+        <div
+          class="
+            xl:col-span-2
+            bg-white
+            border border-[#e8d5a3]
+            p-6
+          "
+        >
+
+          <h2
+            id="couponFormTitle"
+            class="text-xl font-black mb-5"
+          >
+            TẠO MÃ GIẢM GIÁ
+          </h2>
+
+          <input
+            id="couponId"
+            type="hidden"
+          >
+
+
+          <label class="font-bold text-sm">
+            Mã giảm giá
+          </label>
+
+          <input
+            id="couponCode"
+            class="
+              border
+              p-3
+              w-full
+              mt-2
+              mb-4
+              uppercase
+            "
+            placeholder="SHOPLUX10"
+          >
+
+
+          <label class="font-bold text-sm">
+            Loại
+          </label>
+
+          <select
+            id="couponType"
+            class="border p-3 w-full mt-2 mb-4"
+          >
+            <option value="percent">
+              Giảm theo %
+            </option>
+
+            <option value="fixed">
+              Giảm số tiền
+            </option>
+
+            <option value="shipping">
+              Miễn phí vận chuyển
+            </option>
+          </select>
+
+
+          <div class="grid grid-cols-2 gap-3">
+
+            <div>
+
+              <label class="font-bold text-sm">
+                Giá trị
+              </label>
+
+              <input
+                id="couponValue"
+                type="number"
+                class="border p-3 w-full mt-2 mb-4"
+              >
+
+            </div>
+
+
+            <div>
+
+              <label class="font-bold text-sm">
+                Đơn tối thiểu
+              </label>
+
+              <input
+                id="couponMinOrder"
+                type="number"
+                value="0"
+                class="border p-3 w-full mt-2 mb-4"
+              >
+
+            </div>
+
+          </div>
+
+
+          <label class="font-bold text-sm">
+            Giảm tối đa
+          </label>
+
+          <input
+            id="couponMaxDiscount"
+            type="number"
+            class="border p-3 w-full mt-2 mb-4"
+            placeholder="Để trống nếu không giới hạn"
+          >
+
+
+          <div class="grid grid-cols-2 gap-3">
+
+            <div>
+
+              <label class="font-bold text-sm">
+                Bắt đầu
+              </label>
+
+              <input
+                id="couponStartAt"
+                type="datetime-local"
+                class="border p-3 w-full mt-2 mb-4"
+              >
+
+            </div>
+
+
+            <div>
+
+              <label class="font-bold text-sm">
+                Hết hạn
+              </label>
+
+              <input
+                id="couponEndAt"
+                type="datetime-local"
+                class="border p-3 w-full mt-2 mb-4"
+              >
+
+            </div>
+
+          </div>
+
+
+          <label class="font-bold text-sm">
+            Số lượt sử dụng tối đa
+          </label>
+
+          <input
+            id="couponUsageLimit"
+            type="number"
+            min="1"
+            class="border p-3 w-full mt-2 mb-4"
+            placeholder="Để trống = không giới hạn"
+          >
+
+
+          <label class="flex items-center gap-2 mb-5">
+
+            <input
+              id="couponActive"
+              type="checkbox"
+              checked
+            >
+
+            <span class="font-bold text-sm">
+              Đang hoạt động
+            </span>
+
+          </label>
+
+
+          <div class="flex gap-3">
+
+            <button
+              onclick="saveCoupon()"
+              class="
+                flex-1
+                py-4
+                font-black
+                bg-[#3b2416]
+                text-[#e8d5a3]
+              "
+            >
+              LƯU MÃ
+            </button>
+
+            <button
+              id="couponCancel"
+              onclick="resetCouponForm()"
+              class="
+                hidden
+                bg-gray-500
+                text-white
+                px-5
+              "
+            >
+              HỦY
+            </button>
+
+          </div>
+
+        </div>
+
+
+        <!-- COUPON LIST -->
+        <div
+          class="
+            xl:col-span-3
+            bg-white
+            border border-[#e8d5a3]
+            p-6
+          "
+        >
+
+          <div class="flex justify-between mb-5">
+
+            <h2 class="text-xl font-black">
+              DANH SÁCH MÃ
+            </h2>
+
+            <span
+              id="couponCount"
+              class="text-sm text-gray-500"
+            ></span>
+
+          </div>
+
+          <div
+            id="couponList"
+            class="space-y-3"
+          >
+            Đang tải...
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- CUSTOMERS -->
+    <section id="page-customers" class="page hidden">
+      <div class="flex flex-wrap justify-between items-center gap-4 mb-7">
+        <div>
+          <h1 class="text-3xl font-black">KHÁCH HÀNG</h1>
+          <p class="text-gray-500 mt-1">Danh sách khách hàng ShopLux</p>
+        </div>
+        <span id="customerCount" class="text-sm text-gray-500">0 khách hàng</span>
+      </div>
+
+      <div class="bg-white border border-[#e8d5a3] overflow-x-auto">
+        <table class="w-full min-w-[1350px] text-sm">
+          <thead class="bg-[#3b2416] text-[#e8d5a3]">
+  <tr>
+
+    <th class="p-4 text-left">
+      KHÁCH HÀNG
+    </th>
+
+    <th class="p-4 text-left">
+      LIÊN HỆ
+    </th>
+
+    <th class="p-4 text-left">
+      TÀI KHOẢN LIÊN KẾT
+    </th>
+
+    <th class="p-4 text-left">
+      NGÀY THAM GIA
+    </th>
+
+    <th class="p-4 text-center">
+      SỐ ĐƠN
+    </th>
+
+    <th class="p-4 text-right">
+      TỔNG CHI TIÊU
+    </th>
+
+    <th class="p-4 text-left">
+      ĐƠN GẦN NHẤT
+    </th>
+
+  </tr>
+</thead>
+          <tbody id="customerList">
+            <tr><td colspan="7" class="p-10 text-center text-gray-400">Đang tải...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+
+    <!-- SETTINGS -->
+    <section id="page-settings" class="page hidden">
+
+      <div class="mb-7">
+        <h1 class="text-3xl font-black">CÀI ĐẶT</h1>
+        <p class="text-gray-500 mt-1">
+          Cấu hình chung cho cửa hàng ShopLux
+        </p>
+      </div>
+
+      <div class="max-w-3xl bg-white border border-[#e8d5a3] p-6 lg:p-8">
+
+        <h2 class="font-black text-xl mb-6">
+          CẤU HÌNH CỬA HÀNG
+        </h2>
+
+        <label class="font-bold text-sm">Tên cửa hàng</label>
+        <input
+          id="settingStoreName"
+          type="text"
+          class="border p-3 w-full mt-2 mb-5"
+          placeholder="ShopLux"
+        >
+
+        <label class="font-bold text-sm">Phí vận chuyển</label>
+        <div class="relative mt-2 mb-5">
+          <input
+            id="settingShippingFee"
+            type="number"
+            min="0"
+            class="border p-3 pr-12 w-full"
+            placeholder="30000"
+          >
+          <span class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 font-bold">
+            ₫
+          </span>
+        </div>
+
+        <label class="font-bold text-sm">
+          Ngưỡng miễn phí vận chuyển
+        </label>
+
+        <div class="relative mt-2 mb-2">
+          <input
+            id="settingFreeShippingThreshold"
+            type="number"
+            min="0"
+            class="border p-3 pr-12 w-full"
+            placeholder="1000000"
+          >
+          <span class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 font-bold">
+            ₫
+          </span>
+        </div>
+
+        <p class="text-xs text-gray-400 mb-6">
+          Đơn hàng đạt từ ngưỡng này trở lên sẽ được miễn phí vận chuyển.
+        </p>
+
+        <button
+          id="saveSettingsButton"
+          onclick="saveSettings()"
+          class="bg-[#3b2416] text-[#e8d5a3] px-7 py-4 font-black"
+        >
+          LƯU CÀI ĐẶT
+        </button>
+
+        <p id="settingsMessage" class="text-sm mt-4"></p>
+
+      </div>
+
+    </section>
+
+  </main>
+
+</div>
 
 
 <script>
 
 const API = "/api";
+const adminToken =
+  localStorage.getItem("shoplux_token");
+
+async function checkAdminAccess() {
+  if (!adminToken) {
+    location.replace("/login.html");
+    return false;
+  }
+
+  try {
+    const response = await fetch(
+      API + "/auth/me",
+      {
+        headers: {
+          Authorization:
+            "Bearer " + adminToken
+        }
+      }
+    );
+
+    const json = await response.json();
+
+    if (
+      !response.ok ||
+      !json.success ||
+      json.user?.role !== "admin"
+    ) {
+      location.replace("/");
+      return false;
+    }
+
+    return true;
+
+  } catch (error) {
+    console.error(error);
+    location.replace("/login.html");
+    return false;
+  }
+}
+
+const ADMIN_TOKEN_KEY = "shoplux_token";
+const originalFetch = window.fetch.bind(window);
+
+window.fetch = function(input, init = {}) {
+  const url =
+    typeof input === "string"
+      ? input
+      : input?.url || "";
+
+  if (url.startsWith(API + "/admin")) {
+    const token = localStorage.getItem(ADMIN_TOKEN_KEY);
+    const headers = new Headers(init.headers || {});
+
+    if (token) {
+      headers.set("Authorization", `Bearer ${token}`);
+    }
+
+    init = { ...init, headers };
+  }
+
+  return originalFetch(input, init);
+};
+
+async function requireAdminPage() {
+  const token = localStorage.getItem(ADMIN_TOKEN_KEY);
+
+  if (!token) {
+    window.location.replace("/");
+    return false;
+  }
+
+  try {
+    const response = await originalFetch(API + "/auth/me", {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+
+    const json = await response.json();
+
+    if (!response.ok || !json.success || json.user?.role !== "admin") {
+      window.location.replace("/");
+      return false;
+    }
+
+    return true;
+  } catch (error) {
+    console.error("ADMIN PAGE AUTH ERROR:", error);
+    window.location.replace("/");
+    return false;
+  }
+}
+
+
+/* =========================================================
+   PRODUCT
+========================================================= */
 
 let products = [];
 let currentImages = [];
@@ -539,12 +1111,11 @@ function updateFields() {
 
   renderSubcategories();
   renderSizes();
+
 }
 
 
-function renderSubcategories(
-  selected = ""
-) {
+function renderSubcategories(selected = "") {
 
   const productType =
     type.value;
@@ -568,16 +1139,34 @@ function renderSubcategories(
         </option>
       `
     ).join("");
+
 }
 
-
-function renderSizes(
-  selected = []
-) {
-
+function renderSizes(selected = []) {
   let sizes = [];
 
-  if (
+  // QUẦN
+  if (type.value === "quan") {
+
+    // Quần nữ
+    if (gender.value === "nu") {
+      sizes = [
+        "24", "25", "26", "27",
+        "28", "29", "30", "31", "32"
+      ];
+    }
+
+    // Quần nam
+    else {
+      sizes = [
+        "28", "29", "30", "31",
+        "32", "33", "34", "36", "38"
+      ];
+    }
+  }
+
+  // GIÀY DÉP
+  else if (
     type.value === "giay-dep" ||
     (
       type.value === "bong-da" &&
@@ -585,16 +1174,24 @@ function renderSizes(
     )
   ) {
     sizes = [
-      "36","37","38","39",
-      "40","41","42","43","44"
+      "36", "37", "38", "39",
+      "40", "41", "42", "43", "44"
     ];
-  } else if (
-    type.value === "phu-kien"
-  ) {
+  }
+
+  // PHỤ KIỆN
+  else if (type.value === "phu-kien") {
     sizes = [];
-  } else {
+  }
+
+  // ÁO + QUẦN ÁO BÓNG ĐÁ
+  else {
     sizes = [
-      "S","M","L","XL","XXL"
+      "S",
+      "M",
+      "L",
+      "XL",
+      "XXL"
     ];
   }
 
@@ -612,8 +1209,11 @@ function renderSizes(
             <input
               type="checkbox"
               value="${size}"
-              ${selected.includes(size) ? "checked" : ""}
+              ${selected.map(String).includes(String(size))
+                ? "checked"
+                : ""}
             >
+
             ${size}
           </label>
         `).join("")
@@ -624,7 +1224,7 @@ function renderSizes(
       `;
 }
 
-
+  
 subcategory.addEventListener(
   "change",
   () => renderSizes()
@@ -640,31 +1240,31 @@ function selectedSizes() {
   ].map(
     input => input.value
   );
+
 }
 
 
 function fileToBase64(file) {
 
-  return new Promise(
-    resolve => {
+  return new Promise(resolve => {
 
-      const reader =
-        new FileReader();
+    const reader =
+      new FileReader();
 
-      reader.onload =
-        () => resolve(reader.result);
+    reader.onload =
+      () => resolve(reader.result);
 
-      reader.readAsDataURL(file);
+    reader.readAsDataURL(file);
 
-    }
-  );
+  });
+
 }
 
 
 async function readImages() {
 
   const files =
-    [...images.files].slice(0, 4);
+    [...images.files].slice(0, 10);
 
   currentImages =
     await Promise.all(
@@ -672,6 +1272,7 @@ async function readImages() {
     );
 
   renderPreview();
+
 }
 
 
@@ -692,6 +1293,7 @@ function renderPreview() {
           >
 
           <button
+            type="button"
             onclick="removeImage(${index})"
             class="
               absolute
@@ -710,6 +1312,7 @@ function renderPreview() {
         </div>
       `
     ).join("");
+
 }
 
 
@@ -721,26 +1324,44 @@ function removeImage(index) {
   );
 
   renderPreview();
+
 }
 
 
 async function loadProducts() {
 
-  const response =
-    await fetch(
-      API + "/products"
-    );
+  try {
 
-  const json =
-    await response.json();
+    const response =
+      await fetch(
+        API + "/products"
+      );
 
-  products =
-    json.data || [];
+    const json =
+      await response.json();
 
-  productCount.textContent =
-    `${products.length} sản phẩm`;
+    products =
+      json.data || [];
 
-  renderProductList();
+    productCount.textContent =
+      `${products.length} sản phẩm`;
+
+    renderProductList();
+
+    refreshDashboard();
+
+  } catch (error) {
+
+    console.error(error);
+
+    productList.innerHTML = `
+      <div class="text-red-600">
+        Không thể tải sản phẩm.
+      </div>
+    `;
+
+  }
+
 }
 
 
@@ -756,6 +1377,7 @@ function renderProductList() {
             "https://placehold.co/100";
 
           return `
+
             <div
               class="
                 border
@@ -776,6 +1398,7 @@ function renderProductList() {
                 "
               >
 
+
               <div class="flex-1">
 
                 <div
@@ -788,26 +1411,21 @@ function renderProductList() {
                   ${product.brand || ""}
                 </div>
 
-                <div
-                  class="
-                    font-black
-                    mt-1
-                  "
-                >
-                  ${product.name}
+
+                <div class="font-black mt-1">
+                  ${product.name || ""}
                 </div>
 
+
                 <div
-                  class="
-                    font-bold
-                    mt-1
-                  "
+                  class="font-bold mt-1"
                   style="color:#70452d"
                 >
                   ${Number(
                     product.price || 0
                   ).toLocaleString("vi-VN")} ₫
                 </div>
+
 
                 <div
                   class="
@@ -852,6 +1470,7 @@ function renderProductList() {
               </button>
 
             </div>
+
           `;
 
         }).join("")
@@ -860,6 +1479,7 @@ function renderProductList() {
           Chưa có sản phẩm.
         </div>
       `;
+
 }
 
 
@@ -868,10 +1488,11 @@ async function saveProduct() {
   const id =
     editId.value;
 
+
   const payload = {
 
     name:
-      name.value.trim(),
+      document.getElementById("name").value.trim(),
 
     brand:
       brand.value,
@@ -895,6 +1516,20 @@ async function saveProduct() {
 
     sizes:
       selectedSizes(),
+    
+    colors: [],
+
+    colorName:
+      document
+      .getElementById("colorName")
+      .value
+      .trim(),
+
+    variantGroup:
+      document
+      .getElementById("variantGroup")
+      .value
+      .trim(),
 
     images:
       currentImages,
@@ -909,10 +1544,13 @@ async function saveProduct() {
     !payload.name ||
     !payload.price
   ) {
+
     alert(
       "Vui lòng nhập tên và giá sản phẩm"
     );
+
     return;
+
   }
 
 
@@ -922,39 +1560,59 @@ async function saveProduct() {
       : `${API}/admin/products`;
 
 
-  const response =
-    await fetch(
-      url,
-      {
-        method:
-          id ? "PUT" : "POST",
+  try {
 
-        headers: {
-          "Content-Type":
-            "application/json"
-        },
+    const response =
+      await fetch(
+        url,
+        {
+          method:
+            id ? "PUT" : "POST",
 
-        body:
-          JSON.stringify(payload)
-      }
-    );
+          headers: {
+            "Content-Type":
+              "application/json"
+          },
 
-
-  const json =
-    await response.json();
+          body:
+            JSON.stringify(payload)
+        }
+      );
 
 
-  if (!json.success) {
+    const json =
+      await response.json();
+
+
+    if (
+      !response.ok ||
+      !json.success
+    ) {
+
+      alert(
+        json.message ||
+        "Không thể lưu sản phẩm"
+      );
+
+      return;
+
+    }
+
+
+    resetForm();
+
+    await loadProducts();
+
+  } catch (error) {
+
+    console.error(error);
+
     alert(
-      json.message ||
-      "Không thể lưu sản phẩm"
+      "Không thể kết nối máy chủ."
     );
-    return;
+
   }
 
-
-  resetForm();
-  await loadProducts();
 }
 
 
@@ -973,7 +1631,7 @@ function editProduct(id) {
   editId.value =
     product.id;
 
-  name.value =
+  document.getElementById("name").value =
     product.name || "";
 
   brand.value =
@@ -1015,6 +1673,12 @@ function editProduct(id) {
     product.sizes || []
   );
 
+  document.getElementById("colorName").value =
+    product.colorName || "";
+
+  document.getElementById("variantGroup").value =
+    product.variantGroup || "";
+
 
   currentImages =
     (
@@ -1023,7 +1687,7 @@ function editProduct(id) {
         : product.image
           ? [product.image]
           : []
-    ).slice(0, 4);
+    ).slice(0, 10);
 
 
   renderPreview();
@@ -1044,6 +1708,7 @@ function editProduct(id) {
     top: 0,
     behavior: "smooth"
   });
+
 }
 
 
@@ -1051,7 +1716,7 @@ function resetForm() {
 
   editId.value = "";
 
-  name.value = "";
+  document.getElementById("name").value = "";
 
   brand.value = "Nike";
 
@@ -1080,9 +1745,13 @@ function resetForm() {
     "hidden"
   );
 
+document.getElementById("colorName").value = "";
+document.getElementById("variantGroup").value = "";
 
   updateFields();
+
   renderPreview();
+
 }
 
 
@@ -1097,34 +1766,2423 @@ async function deleteProduct(id) {
   }
 
 
-  const response =
-    await fetch(
-      `${API}/admin/products/${id}`,
-      {
-        method: "DELETE"
-      }
-    );
+  try {
+
+    const response =
+      await fetch(
+        `${API}/admin/products/${id}`,
+        {
+          method: "DELETE"
+        }
+      );
 
 
-  const json =
-    await response.json();
+    const json =
+      await response.json();
 
 
-  if (!json.success) {
+    if (
+      !response.ok ||
+      !json.success
+    ) {
+
+      alert(
+        json.message ||
+        "Không thể xóa sản phẩm"
+      );
+
+      return;
+
+    }
+
+
+    await loadProducts();
+
+  } catch (error) {
+
+    console.error(error);
+
     alert(
-      "Không thể xóa sản phẩm"
+      "Không thể kết nối máy chủ."
     );
+
+  }
+
+}
+
+
+
+/* =========================================================
+   ORDERS
+========================================================= */
+
+let adminOrders = [];
+
+
+function orderStatusInfo(status) {
+
+  const statuses = {
+
+    pending: {
+      text: "Chờ xác nhận",
+      className:
+        "bg-yellow-100 text-yellow-800"
+    },
+
+    confirmed: {
+      text: "Đã xác nhận",
+      className:
+        "bg-blue-100 text-blue-800"
+    },
+
+    shipping: {
+      text: "Đang giao hàng",
+      className:
+        "bg-purple-100 text-purple-800"
+    },
+
+    delivered: {
+      text: "Đã giao hàng",
+      className:
+        "bg-green-100 text-green-800"
+    },
+
+    cancelled: {
+      text: "Đã hủy",
+      className:
+        "bg-red-100 text-red-800"
+    }
+
+  };
+
+
+  return statuses[status] || {
+    text:
+      status || "Không xác định",
+
+    className:
+      "bg-gray-100 text-gray-700"
+  };
+
+}
+
+
+function formatOrderDate(value) {
+
+  if (!value) {
+    return "";
+  }
+
+  return new Date(value)
+    .toLocaleString("vi-VN");
+
+}
+
+
+function formatMoney(value) {
+
+  return Number(value || 0)
+    .toLocaleString("vi-VN") + " ₫";
+
+}
+
+
+async function loadAdminOrders() {
+
+  const container =
+    document.getElementById(
+      "adminOrderList"
+    );
+
+  const count =
+    document.getElementById(
+      "orderCount"
+    );
+
+
+  try {
+
+    const response =
+      await fetch(
+        API + "/admin/orders"
+      );
+
+
+    const json =
+      await response.json();
+
+
+    if (
+      !response.ok ||
+      !json.success
+    ) {
+
+      throw new Error(
+        json.message ||
+        "Không thể tải đơn hàng"
+      );
+
+    }
+
+
+    adminOrders =
+      json.orders ||
+      json.data ||
+      [];
+
+
+    count.textContent =
+      `${adminOrders.length} đơn hàng`;
+
+
+    renderAdminOrders();
+
+    refreshDashboard();
+
+
+  } catch (error) {
+
+    console.error(error);
+
+    container.innerHTML = `
+      <div
+        class="
+          text-center
+          py-10
+          text-red-600
+        "
+      >
+        ${error.message}
+      </div>
+    `;
+
+  }
+
+}
+
+
+function renderAdminOrders() {
+
+  const container =
+    document.getElementById(
+      "adminOrderList"
+    );
+
+
+  if (!adminOrders.length) {
+
+    container.innerHTML = `
+      <div
+        class="
+          text-center
+          py-12
+          text-gray-400
+        "
+      >
+        Chưa có đơn hàng.
+      </div>
+    `;
+
+    return;
+
+  }
+
+
+  container.innerHTML =
+    adminOrders.map(order => {
+
+      const status =
+        orderStatusInfo(
+          order.status
+        );
+
+
+      return `
+
+        <div
+          class="
+            border
+            p-5
+            bg-white
+          "
+          style="border-color:#e8d5a3"
+        >
+
+          <div
+            class="
+              grid
+              lg:grid-cols-[1fr_1fr_1fr_auto_auto]
+              gap-5
+              items-start
+            "
+          >
+
+
+            <div>
+
+              <div class="text-xs text-gray-400">
+                MÃ ĐƠN
+              </div>
+
+              <div class="font-black mt-1">
+                ${order.code}
+              </div>
+
+              <div
+                class="
+                  text-xs
+                  text-gray-400
+                  mt-1
+                "
+              >
+                ${formatOrderDate(
+                  order.created_at ||
+                  order.createdAt
+                )}
+              </div>
+
+            </div>
+
+
+            <div>
+
+              <div class="text-xs text-gray-400">
+                KHÁCH HÀNG
+              </div>
+
+              <div class="font-bold mt-1">
+                ${order.fullname || ""}
+              </div>
+
+              <div
+                class="
+                  text-sm
+                  text-gray-500
+                  mt-1
+                "
+              >
+                ${order.phone || ""}
+              </div>
+
+
+              <div
+  class="
+    text-xs
+    text-gray-400
+    mt-3
+  "
+>
+  ĐỊA CHỈ GIAO HÀNG
+</div>
+
+<div
+  class="
+    text-sm
+    text-gray-600
+    mt-1
+    leading-6
+  "
+>
+  ${order.address || ""}
+  ${
+    order.city
+      ? ", " + order.city
+      : ""
+  }
+</div>
+
+            </div>
+
+
+            <div>
+
+              <div class="text-xs text-gray-400">
+                TỔNG TIỀN
+              </div>
+
+              <div
+                class="font-black mt-1"
+                style="color:#70452d"
+              >
+                ${formatMoney(
+                  order.total
+                )}
+              </div>
+
+
+              <span
+                class="
+                  inline-block
+                  mt-2
+                  px-3
+                  py-1
+                  text-xs
+                  font-bold
+                  ${status.className}
+                "
+              >
+                ${status.text}
+              </span>
+
+            </div>
+
+
+            <div>
+
+              <label
+                class="
+                  block
+                  text-xs
+                  font-bold
+                  mb-2
+                "
+              >
+                TRẠNG THÁI
+              </label>
+
+
+              <select
+                onchange="
+                  updateOrderStatus(
+                    '${order.code}',
+                    this.value
+                  )
+                "
+                class="
+                  border
+                  p-3
+                  bg-white
+                  w-[180px]
+                  h-[46px]
+                  font-bold
+                "
+                style="
+                  border-color:#c9a227
+                "
+              >
+
+                <option
+                  value="pending"
+                  ${
+                    order.status === "pending"
+                      ? "selected"
+                      : ""
+                  }
+                >
+                  Chờ xác nhận
+                </option>
+
+
+                <option
+                  value="confirmed"
+                  ${
+                    order.status === "confirmed"
+                      ? "selected"
+                      : ""
+                  }
+                >
+                  Đã xác nhận
+                </option>
+
+
+                <option
+                  value="shipping"
+                  ${
+                    order.status === "shipping"
+                      ? "selected"
+                      : ""
+                  }
+                >
+                  Đang giao hàng
+                </option>
+
+
+                <option
+                  value="delivered"
+                  ${
+                    order.status === "delivered"
+                      ? "selected"
+                      : ""
+                  }
+                >
+                  Đã giao hàng
+                </option>
+
+
+                <option
+                  value="cancelled"
+                  ${
+                    order.status === "cancelled"
+                      ? "selected"
+                      : ""
+                  }
+                >
+                  Đã hủy
+                </option>
+
+              </select>
+
+                        </div>
+
+
+            <div>
+
+  <label
+    class="
+      block
+      text-xs
+      font-bold
+      mb-2
+    "
+  >
+    THANH TOÁN
+  </label>
+
+  <select
+    onchange="
+      updatePaymentStatus(
+        '${order.code}',
+        this.value
+      )
+    "
+    class="
+      border
+      p-3
+      bg-white
+      min-w-[180px]
+      font-bold
+    "
+    style="
+      border-color:#c9a227
+    "
+  >
+
+    <option
+      value="unpaid"
+      ${
+        order.payment_status === "unpaid"
+          ? "selected"
+          : ""
+      }
+    >
+      Chưa thanh toán
+    </option>
+
+    <option
+      value="paid"
+      ${
+        order.payment_status === "paid"
+          ? "selected"
+          : ""
+      }
+    >
+      Đã thanh toán
+    </option>
+
+  </select>
+
+  <div
+    class="
+      text-xs
+      text-gray-500
+      mt-2
+    "
+  >
+    ${
+      order.payment_method === "bank"
+        ? "Chuyển khoản"
+        : "Tiền mặt / COD"
+    }
+  </div>
+
+</div>
+
+          </div>
+
+
+          ${
+  order.note
+    ? `
+      <div
+        class="
+          mt-5
+          border
+          p-4
+          bg-[#f7f1e7]
+        "
+        style="border-color:#e8d5a3"
+      >
+
+        <div
+          class="
+            text-xs
+            font-black
+            tracking-[2px]
+            mb-2
+          "
+        >
+          GHI CHÚ ĐƠN HÀNG
+        </div>
+
+        <div
+          class="
+            text-sm
+            text-gray-600
+            whitespace-pre-wrap
+          "
+        >
+          ${escapeHtml(order.note)}
+        </div>
+
+      </div>
+    `
+    : ""
+}
+
+          ${
+            Array.isArray(order.items) &&
+            order.items.length
+              ? `
+                <div
+                  class="mt-5 pt-5 border-t"
+                  style="border-color:#e8d5a3"
+                >
+                  <div
+                    class="
+                      text-xs
+                      font-black
+                      tracking-[2px]
+                      mb-4
+                    "
+                  >
+                    SẢN PHẨM
+                  </div>
+
+                  <div class="space-y-3">
+
+                    ${order.items.map(item => `
+                      <div
+                        class="
+                          flex
+                          items-center
+                          gap-4
+                          bg-[#faf7f1]
+                          p-3
+                        "
+                      >
+                        <img
+                          src="${
+                            item.image ||
+                            "https://placehold.co/100"
+                          }"
+                          class="
+                            w-20
+                            h-20
+                            object-cover
+                            shrink-0
+                          "
+                        >
+
+                        <div class="flex-1 min-w-0">
+
+                          <div class="font-black">
+                            ${item.product_name || "Sản phẩm"}
+                          </div>
+
+                          ${
+                            item.color
+                              ? `
+                                <div class="text-sm text-gray-600 mt-1">
+                                  Màu:
+                                  <span class="font-bold">
+                                    ${item.color}
+                                  </span>
+                                </div>
+                              `
+                              : ""
+                          }
+
+                          ${
+                            item.size
+                              ? `
+                                <div class="text-sm text-gray-600 mt-1">
+                                  Size:
+                                  <span class="font-bold">
+                                    ${item.size}
+                                  </span>
+                                </div>
+                              `
+                              : ""
+                          }
+
+                          <div class="text-sm text-gray-600 mt-1">
+                            Số lượng:
+                            <span class="font-bold">
+                              ${item.quantity || item.qty || 1}
+                            </span>
+                          </div>
+
+                        </div>
+
+                        <div
+                          class="font-black text-right shrink-0"
+                          style="color:#70452d"
+                        >
+                          ${formatMoney(item.price)}
+                        </div>
+
+                      </div>
+                    `).join("")}
+
+                  </div>
+                </div>
+              `
+              : ""
+          }
+
+        </div>
+
+      `;
+
+    }).join("");
+
+}
+
+async function updatePaymentStatus(
+  code,
+  paymentStatus
+) {
+
+  try {
+
+    const response =
+      await fetch(
+        `${API}/admin/orders/${encodeURIComponent(code)}/payment-status`,
+        {
+          method: "PATCH",
+
+          headers: {
+            "Content-Type":
+              "application/json"
+          },
+
+          body:
+            JSON.stringify({
+              paymentStatus
+            })
+        }
+      );
+
+
+    const json =
+      await response.json();
+
+
+    if (
+      !response.ok ||
+      !json.success
+    ) {
+
+      throw new Error(
+        json.message ||
+        "Không thể cập nhật thanh toán"
+      );
+
+    }
+
+
+    await loadAdminOrders();
+
+
+  } catch (error) {
+
+    console.error(
+      "UPDATE PAYMENT STATUS ERROR:",
+      error
+    );
+
+    alert(error.message);
+
+    await loadAdminOrders();
+
+  }
+
+}
+
+async function updateOrderStatus(
+  code,
+  status
+) {
+
+  try {
+
+    const response =
+      await fetch(
+        `${API}/admin/orders/${encodeURIComponent(code)}/status`,
+        {
+          method: "PATCH",
+
+          headers: {
+            "Content-Type":
+              "application/json"
+          },
+
+          body:
+            JSON.stringify({
+              status
+            })
+        }
+      );
+
+
+    const json =
+      await response.json();
+
+
+    if (
+      !response.ok ||
+      !json.success
+    ) {
+
+      throw new Error(
+        json.message ||
+        "Không thể cập nhật trạng thái"
+      );
+
+    }
+
+
+    await loadAdminOrders();
+
+
+  } catch (error) {
+
+    console.error(error);
+
+    alert(
+      error.message
+    );
+
+    await loadAdminOrders();
+
+  }
+
+}
+
+
+
+/* =========================================================
+   COUPONS
+========================================================= */
+
+let adminCoupons = [];
+
+
+function money(value) {
+
+  return Number(value || 0)
+    .toLocaleString("vi-VN") + " ₫";
+
+}
+
+
+function dateInput(value) {
+
+  if (!value) {
+    return "";
+  }
+
+
+  const date =
+    new Date(value);
+
+
+  const pad =
+    number =>
+      String(number)
+        .padStart(2, "0");
+
+
+  return (
+    date.getFullYear() +
+    "-" +
+    pad(date.getMonth() + 1) +
+    "-" +
+    pad(date.getDate()) +
+    "T" +
+    pad(date.getHours()) +
+    ":" +
+    pad(date.getMinutes())
+  );
+
+}
+
+
+function couponTypeText(coupon) {
+
+  if (
+    coupon.type === "percent"
+  ) {
+
+    return `Giảm ${Number(
+      coupon.value
+    )}%`;
+
+  }
+
+
+  if (
+    coupon.type === "fixed"
+  ) {
+
+    return `Giảm ${money(
+      coupon.value
+    )}`;
+
+  }
+
+
+  return "Miễn phí vận chuyển";
+
+}
+
+
+async function loadCoupons() {
+
+  try {
+
+    const response =
+      await fetch(
+        API + "/admin/coupons"
+      );
+
+
+    const json =
+      await response.json();
+
+
+    if (
+      !response.ok ||
+      !json.success
+    ) {
+
+      throw new Error(
+        json.message ||
+        "Không thể tải mã giảm giá"
+      );
+
+    }
+
+
+    adminCoupons =
+      json.coupons ||
+      json.data ||
+      [];
+
+
+    couponCount.textContent =
+      `${adminCoupons.length} mã`;
+
+
+    statCoupons.textContent =
+      adminCoupons.length;
+
+
+    renderCoupons();
+
+    refreshDashboard();
+
+
+  } catch (error) {
+
+    console.error(error);
+
+    couponList.innerHTML = `
+      <div class="text-red-600 py-6">
+        ${error.message}
+      </div>
+    `;
+
+  }
+
+}
+
+
+function renderCoupons() {
+
+  if (!adminCoupons.length) {
+
+    couponList.innerHTML = `
+      <div
+        class="
+          text-center
+          py-10
+          text-gray-400
+        "
+      >
+        Chưa có mã giảm giá.
+      </div>
+    `;
+
+    return;
+
+  }
+
+
+  couponList.innerHTML =
+    adminCoupons.map(coupon => {
+
+
+      const limit =
+        coupon.usage_limit == null
+          ? "Không giới hạn"
+          : Number(
+              coupon.usage_limit
+            );
+
+
+      const used =
+        Number(
+          coupon.used_count || 0
+        );
+
+
+      const remaining =
+        coupon.usage_limit == null
+          ? "∞"
+          : Math.max(
+              0,
+              Number(
+                coupon.usage_limit
+              ) - used
+            );
+
+
+      return `
+
+        <div
+          class="
+            border
+            border-[#e8d5a3]
+            p-4
+          "
+        >
+
+          <div
+            class="
+              flex
+              flex-wrap
+              justify-between
+              gap-4
+            "
+          >
+
+            <div>
+
+              <div class="font-black text-lg">
+                ${coupon.code}
+              </div>
+
+
+              <div
+                class="
+                  text-sm
+                  text-[#70452d]
+                  font-bold
+                  mt-1
+                "
+              >
+                ${couponTypeText(coupon)}
+              </div>
+
+
+              <div
+                class="
+                  text-xs
+                  text-gray-500
+                  mt-2
+                "
+              >
+                Đơn tối thiểu:
+                ${money(coupon.min_order)}
+              </div>
+
+
+              <div
+                class="
+                  text-xs
+                  text-gray-500
+                  mt-1
+                "
+              >
+                Đã dùng:
+                ${used}
+
+                · Giới hạn:
+                ${limit}
+
+                · Còn lại:
+                ${remaining}
+              </div>
+
+
+              <div
+                class="
+                  text-xs
+                  text-gray-500
+                  mt-1
+                "
+              >
+
+                ${
+                  coupon.start_at
+                    ? new Date(
+                        coupon.start_at
+                      ).toLocaleString(
+                        "vi-VN"
+                      )
+                    : "Bắt đầu ngay"
+                }
+
+                →
+
+                ${
+                  coupon.end_at
+                    ? new Date(
+                        coupon.end_at
+                      ).toLocaleString(
+                        "vi-VN"
+                      )
+                    : "Không hết hạn"
+                }
+
+              </div>
+
+            </div>
+
+
+            <div
+              class="
+                flex
+                flex-wrap
+                gap-2
+                items-start
+              "
+            >
+
+              <button
+                onclick="toggleCoupon(${coupon.id})"
+                class="
+                  px-3
+                  py-2
+                  ${
+                    coupon.active
+                      ? "bg-green-700"
+                      : "bg-gray-500"
+                  }
+                  text-white
+                "
+              >
+                ${
+                  coupon.active
+                    ? "ĐANG BẬT"
+                    : "ĐANG TẮT"
+                }
+              </button>
+
+
+              <button
+                onclick="editCoupon(${coupon.id})"
+                class="
+                  px-3
+                  py-2
+                  bg-[#70452d]
+                  text-white
+                "
+              >
+                SỬA
+              </button>
+
+
+              <button
+                onclick="deleteCoupon(${coupon.id})"
+                class="
+                  px-3
+                  py-2
+                  bg-[#1f120c]
+                  text-[#e8d5a3]
+                "
+              >
+                XÓA
+              </button>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      `;
+
+    }).join("");
+
+}
+
+
+async function saveCoupon() {
+
+  const id =
+    couponId.value;
+
+
+  const payload = {
+
+    code:
+      couponCode.value
+        .trim()
+        .toUpperCase(),
+
+    type:
+      couponType.value,
+
+    value:
+      Number(
+        couponValue.value || 0
+      ),
+
+    min_order:
+      Number(
+        couponMinOrder.value || 0
+      ),
+
+    max_discount:
+      couponMaxDiscount.value === ""
+        ? null
+        : Number(
+            couponMaxDiscount.value
+          ),
+
+    start_at:
+      couponStartAt.value ||
+      null,
+
+    end_at:
+      couponEndAt.value ||
+      null,
+
+    usage_limit:
+      couponUsageLimit.value === ""
+        ? null
+        : Number(
+            couponUsageLimit.value
+          ),
+
+    active:
+      couponActive.checked
+
+  };
+
+
+  if (!payload.code) {
+
+    alert(
+      "Vui lòng nhập mã giảm giá"
+    );
+
+    return;
+
+  }
+
+
+  if (
+    payload.type === "percent" &&
+    (
+      payload.value < 1 ||
+      payload.value > 100
+    )
+  ) {
+
+    alert(
+      "Giảm theo % phải từ 1 đến 100."
+    );
+
+    return;
+
+  }
+
+
+  if (
+    payload.usage_limit !== null &&
+    payload.usage_limit < 1
+  ) {
+
+    alert(
+      "Số lượt sử dụng phải lớn hơn 0."
+    );
+
+    return;
+
+  }
+
+
+  if (
+    payload.start_at &&
+    payload.end_at &&
+    new Date(payload.end_at) <=
+    new Date(payload.start_at)
+  ) {
+
+    alert(
+      "Thời gian hết hạn phải sau thời gian bắt đầu."
+    );
+
+    return;
+
+  }
+
+
+  try {
+
+    const response =
+      await fetch(
+        id
+          ? `${API}/admin/coupons/${id}`
+          : `${API}/admin/coupons`,
+        {
+          method:
+            id ? "PUT" : "POST",
+
+          headers: {
+            "Content-Type":
+              "application/json"
+          },
+
+          body:
+            JSON.stringify(payload)
+        }
+      );
+
+
+    const json =
+      await response.json();
+
+
+    if (
+      !response.ok ||
+      !json.success
+    ) {
+
+      alert(
+        json.message ||
+        "Không thể lưu mã"
+      );
+
+      return;
+
+    }
+
+
+    resetCouponForm();
+
+    await loadCoupons();
+
+
+  } catch (error) {
+
+    console.error(error);
+
+    alert(
+      "Không thể kết nối máy chủ."
+    );
+
+  }
+
+}
+
+
+function editCoupon(id) {
+
+  const coupon =
+    adminCoupons.find(
+      item =>
+        Number(item.id) ===
+        Number(id)
+    );
+
+
+  if (!coupon) {
     return;
   }
 
 
-  await loadProducts();
+  couponId.value =
+    coupon.id;
+
+  couponCode.value =
+    coupon.code || "";
+
+  couponType.value =
+    coupon.type || "percent";
+
+  couponValue.value =
+    coupon.value ?? 0;
+
+  couponMinOrder.value =
+    coupon.min_order ?? 0;
+
+  couponMaxDiscount.value =
+    coupon.max_discount ?? "";
+
+  couponStartAt.value =
+    dateInput(
+      coupon.start_at
+    );
+
+  couponEndAt.value =
+    dateInput(
+      coupon.end_at
+    );
+
+  couponUsageLimit.value =
+    coupon.usage_limit ?? "";
+
+  couponActive.checked =
+    !!coupon.active;
+
+
+  couponFormTitle.textContent =
+    "SỬA MÃ GIẢM GIÁ";
+
+
+  couponCancel.classList.remove(
+    "hidden"
+  );
+
+
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth"
+  });
+
 }
 
 
-updateFields();
-loadProducts();
+function resetCouponForm() {
 
+  couponId.value = "";
+
+  couponCode.value = "";
+
+  couponType.value =
+    "percent";
+
+  couponValue.value = "";
+
+  couponMinOrder.value =
+    0;
+
+  couponMaxDiscount.value =
+    "";
+
+  couponStartAt.value =
+    "";
+
+  couponEndAt.value =
+    "";
+
+  couponUsageLimit.value =
+    "";
+
+  couponActive.checked =
+    true;
+
+
+  couponFormTitle.textContent =
+    "TẠO MÃ GIẢM GIÁ";
+
+
+  couponCancel.classList.add(
+    "hidden"
+  );
+
+}
+
+
+async function toggleCoupon(id) {
+
+  try {
+
+    const response =
+      await fetch(
+        `${API}/admin/coupons/${id}/toggle`,
+        {
+          method: "PATCH"
+        }
+      );
+
+
+    const json =
+      await response.json();
+
+
+    if (
+      !response.ok ||
+      !json.success
+    ) {
+
+      alert(
+        json.message ||
+        "Không thể đổi trạng thái"
+      );
+
+      return;
+
+    }
+
+
+    await loadCoupons();
+
+
+  } catch (error) {
+
+    console.error(error);
+
+    alert(
+      "Không thể kết nối máy chủ."
+    );
+
+  }
+
+}
+
+
+async function deleteCoupon(id) {
+
+  if (
+    !confirm(
+      "Bạn chắc chắn muốn xóa mã giảm giá này?"
+    )
+  ) {
+    return;
+  }
+
+
+  try {
+
+    const response =
+      await fetch(
+        `${API}/admin/coupons/${id}`,
+        {
+          method: "DELETE"
+        }
+      );
+
+
+    const json =
+      await response.json();
+
+
+    if (
+      !response.ok ||
+      !json.success
+    ) {
+
+      alert(
+        json.message ||
+        "Không thể xóa mã"
+      );
+
+      return;
+
+    }
+
+
+    await loadCoupons();
+
+
+  } catch (error) {
+
+    console.error(error);
+
+    alert(
+      "Không thể kết nối máy chủ."
+    );
+
+  }
+
+}
+
+
+
+/* =========================================================
+   CUSTOMERS
+========================================================= */
+
+let adminCustomers = [];
+
+function escapeHtml(value) {
+  return String(value ?? "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
+async function loadCustomers() {
+  const list = document.getElementById("customerList");
+  const count = document.getElementById("customerCount");
+
+  try {
+    const response = await fetch(API + "/admin/customers");
+    const json = await response.json();
+
+    if (!response.ok || !json.success) {
+      throw new Error(json.message || "Không thể tải khách hàng");
+    }
+
+    adminCustomers = json.data || json.customers || [];
+    if (count) count.textContent = `${adminCustomers.length} khách hàng`;
+
+    renderCustomers();
+    refreshDashboard();
+  } catch (error) {
+    console.error(error);
+    if (list) {
+      list.innerHTML = `<tr><td colspan="7" class="p-10 text-center text-red-600">${escapeHtml(error.message)}</td></tr>`;
+    }
+  }
+}
+
+function renderCustomers() {
+
+  const list =
+    document.getElementById(
+      "customerList"
+    );
+
+  if (!list) return;
+
+
+  if (!adminCustomers.length) {
+
+    list.innerHTML = `
+      <tr>
+        <td
+          colspan="7"
+          class="
+            p-10
+            text-center
+            text-gray-400
+          "
+        >
+          Chưa có khách hàng.
+        </td>
+      </tr>
+    `;
+
+    return;
+  }
+
+
+  list.innerHTML =
+    adminCustomers
+      .map(customer => {
+
+        const genderText =
+          customer.gender === "nam"
+            ? "Nam"
+            : customer.gender === "nu"
+              ? "Nữ"
+              : customer.gender === "khac"
+                ? "Khác"
+                : "Chưa cập nhật";
+
+
+        const birthdayText =
+          customer.birthday
+            ? new Date(
+                customer.birthday
+              ).toLocaleDateString(
+                "vi-VN"
+              )
+            : "Chưa cập nhật";
+
+
+        const linkedAccounts =
+          Array.isArray(
+            customer.linkedAccounts
+          )
+            ? customer.linkedAccounts
+            : [];
+
+
+        const linkedText =
+          linkedAccounts.length
+            ? linkedAccounts
+                .map(item => {
+
+                  const provider =
+                    escapeHtml(
+                      item.provider ||
+                      "Tài khoản"
+                    );
+
+                  const account =
+                    escapeHtml(
+                      item.account || ""
+                    );
+
+                  return `
+                    <div
+                      class="
+                        flex
+                        items-center
+                        gap-2
+                        mt-1
+                      "
+                    >
+                      <span
+                        class="
+                          font-bold
+                          text-[#70452d]
+                        "
+                      >
+                        ${provider}
+                      </span>
+
+                      ${
+                        account
+                          ? `
+                            <span
+                              class="
+                                text-gray-500
+                                break-all
+                              "
+                            >
+                              ${account}
+                            </span>
+                          `
+                          : ""
+                      }
+                    </div>
+                  `;
+
+                })
+                .join("")
+            : `
+                <span
+                  class="
+                    text-gray-400
+                  "
+                >
+                  Chưa liên kết
+                </span>
+              `;
+
+
+        const avatarHTML =
+          customer.avatar
+            ? `
+                <img
+                  src="${escapeHtml(
+                    customer.avatar
+                  )}"
+                  alt="Avatar"
+                  class="
+                    w-16
+                    h-16
+                    rounded-full
+                    object-cover
+                    shrink-0
+                    border-2
+                    border-[#e8d5a3]
+                  "
+                >
+              `
+            : `
+                <div
+                  class="
+                    w-16
+                    h-16
+                    rounded-full
+                    shrink-0
+                    flex
+                    items-center
+                    justify-center
+                    text-xl
+                  "
+                  style="
+                    background:#3b2416;
+                    color:#e8d5a3;
+                  "
+                >
+                  <i
+                    class="
+                      fa-regular
+                      fa-user
+                    "
+                  ></i>
+                </div>
+              `;
+
+
+        return `
+          <tr
+            class="
+              border-b
+              border-[#efe4d2]
+              hover:bg-[#f7f1e7]
+              align-top
+            "
+          >
+
+            <!-- KHÁCH HÀNG -->
+
+            <td class="p-4">
+
+              <div
+                class="
+                  flex
+                  items-center
+                  gap-4
+                  min-w-[230px]
+                "
+              >
+
+                ${avatarHTML}
+
+                <div>
+
+                  <div
+                    class="
+                      font-black
+                      text-[#1f120c]
+                    "
+                  >
+                    ${escapeHtml(
+                      customer.fullname ||
+                      "Chưa cập nhật"
+                    )}
+                  </div>
+
+                  <div
+                    class="
+                      text-xs
+                      text-gray-400
+                      mt-1
+                    "
+                  >
+                    ID #${Number(
+                      customer.id
+                    )}
+                  </div>
+
+                  <div
+                    class="
+                      text-xs
+                      mt-1
+                    "
+                    style="
+                      color:#70452d
+                    "
+                  >
+                    ${genderText}
+                    •
+                    ${birthdayText}
+                  </div>
+
+                </div>
+
+              </div>
+
+            </td>
+
+
+            <!-- LIÊN HỆ -->
+
+            <td class="p-4">
+
+              <div
+                class="
+                  min-w-[220px]
+                "
+              >
+
+                <div
+                  class="
+                    font-bold
+                    break-all
+                  "
+                >
+                  ${escapeHtml(
+                    customer.email || ""
+                  )}
+                </div>
+
+                <div
+                  class="
+                    text-sm
+                    text-gray-500
+                    mt-2
+                  "
+                >
+                  <i
+                    class="
+                      fa-solid
+                      fa-phone
+                      mr-2
+                    "
+                    style="
+                      color:#c9a227
+                    "
+                  ></i>
+
+                  ${escapeHtml(
+                    customer.phone ||
+                    "Chưa cập nhật"
+                  )}
+                </div>
+
+              </div>
+
+            </td>
+
+
+            <!-- TÀI KHOẢN LIÊN KẾT -->
+
+            <td class="p-4">
+
+              <div
+                class="
+                  min-w-[180px]
+                  text-sm
+                "
+              >
+                ${linkedText}
+              </div>
+
+            </td>
+
+
+            <!-- NGÀY THAM GIA -->
+
+            <td
+              class="
+                p-4
+                whitespace-nowrap
+              "
+            >
+              ${
+                formatOrderDate(
+                  customer.created_at
+                ) || "-"
+              }
+            </td>
+
+
+            <!-- SỐ ĐƠN -->
+
+            <td
+              class="
+                p-4
+                text-center
+                font-black
+              "
+            >
+              ${Number(
+                customer.order_count || 0
+              )}
+            </td>
+
+
+            <!-- TỔNG CHI TIÊU -->
+
+            <td
+              class="
+                p-4
+                text-right
+                font-black
+                text-[#70452d]
+                whitespace-nowrap
+              "
+            >
+              ${formatMoney(
+                customer.total_spent
+              )}
+            </td>
+
+
+            <!-- ĐƠN GẦN NHẤT -->
+
+            <td
+              class="
+                p-4
+                whitespace-nowrap
+              "
+            >
+              ${
+                customer.last_order_at
+                  ? formatOrderDate(
+                      customer.last_order_at
+                    )
+                  : "Chưa có đơn"
+              }
+            </td>
+
+          </tr>
+        `;
+
+      })
+      .join("");
+
+}
+
+/* =========================================================
+   DASHBOARD
+========================================================= */
+
+function refreshDashboard() {
+
+  const statProducts =
+    document.getElementById(
+      "statProducts"
+    );
+
+  const statOrders =
+    document.getElementById(
+      "statOrders"
+    );
+
+  const statRevenue =
+    document.getElementById(
+      "statRevenue"
+    );
+
+  const statCoupons =
+    document.getElementById(
+      "statCoupons"
+    );
+
+  const recentOrders =
+    document.getElementById(
+      "recentOrders"
+    );
+
+
+  statProducts.textContent =
+    products.length;
+
+
+  statOrders.textContent =
+    adminOrders.length;
+
+
+  const revenue =
+  adminOrders
+    .filter(order => {
+
+      // Đơn đã hủy không tính doanh thu
+      if (
+        order.status === "cancelled"
+      ) {
+        return false;
+      }
+
+
+      // Chuyển khoản:
+      // đã thanh toán là tính doanh thu ngay
+      if (
+        order.payment_method === "bank"
+      ) {
+
+        return (
+          order.payment_status === "paid"
+        );
+
+      }
+
+
+      // COD:
+      // phải giao thành công
+      // và đã thanh toán
+      if (
+        order.payment_method === "cod"
+      ) {
+
+        return (
+          order.status === "delivered" &&
+          order.payment_status === "paid"
+        );
+
+      }
+
+
+      return false;
+
+    })
+    .reduce(
+      (sum, order) =>
+        sum +
+        Number(
+          order.total || 0
+        ),
+      0
+    );
+
+
+  statRevenue.textContent =
+    money(revenue);
+
+
+  statCoupons.textContent =
+    adminCoupons.length;
+
+  const statCustomers =
+    document.getElementById("statCustomers");
+
+  if (statCustomers) {
+    statCustomers.textContent = adminCustomers.length;
+  }
+
+
+  recentOrders.innerHTML =
+    adminOrders
+      .slice(0, 5)
+      .map(order => `
+
+        <div
+          class="
+            border-b
+            border-[#efe4d2]
+            pb-3
+            flex
+            flex-wrap
+            justify-between
+            gap-4
+          "
+        >
+
+          <span>
+            <b>${order.code}</b>
+            ·
+            ${order.fullname || ""}
+          </span>
+
+          <b>
+            ${money(order.total)}
+          </b>
+
+        </div>
+
+      `)
+      .join("") ||
+      `
+        <div class="text-gray-400">
+          Chưa có đơn hàng.
+        </div>
+      `;
+
+}
+
+
+
+
+/* =========================================================
+   SETTINGS
+========================================================= */
+
+let shopSettings = null;
+
+async function loadSettings() {
+  const storeName = document.getElementById("settingStoreName");
+  const shippingFee = document.getElementById("settingShippingFee");
+  const freeShippingThreshold =
+    document.getElementById("settingFreeShippingThreshold");
+  const message = document.getElementById("settingsMessage");
+
+  try {
+    const response = await fetch(API + "/settings");
+    const json = await response.json();
+
+    if (!response.ok || !json.success) {
+      throw new Error(
+        json.message || "Không thể tải cài đặt"
+      );
+    }
+
+    shopSettings = json.settings || {};
+
+    if (storeName) {
+      storeName.value =
+        shopSettings.store_name || "ShopLux";
+    }
+
+    if (shippingFee) {
+      shippingFee.value =
+        Number(shopSettings.shipping_fee || 0);
+    }
+
+    if (freeShippingThreshold) {
+      freeShippingThreshold.value =
+        Number(
+          shopSettings.free_shipping_threshold || 0
+        );
+    }
+
+    if (message) {
+      message.textContent = "";
+    }
+
+  } catch (error) {
+    console.error(error);
+
+    if (message) {
+      message.textContent = error.message;
+      message.className =
+        "text-sm mt-4 text-red-600";
+    }
+  }
+}
+
+
+async function saveSettings() {
+  const storeName =
+    document.getElementById("settingStoreName");
+
+  const shippingFee =
+    document.getElementById("settingShippingFee");
+
+  const freeShippingThreshold =
+    document.getElementById(
+      "settingFreeShippingThreshold"
+    );
+
+  const button =
+    document.getElementById("saveSettingsButton");
+
+  const message =
+    document.getElementById("settingsMessage");
+
+  const payload = {
+    store_name: storeName.value.trim(),
+    shipping_fee: Math.max(
+      0,
+      Number(shippingFee.value || 0)
+    ),
+    free_shipping_threshold: Math.max(
+      0,
+      Number(freeShippingThreshold.value || 0)
+    )
+  };
+
+  if (!payload.store_name) {
+    message.textContent =
+      "Vui lòng nhập tên cửa hàng.";
+    message.className =
+      "text-sm mt-4 text-red-600";
+    return;
+  }
+
+  try {
+    button.disabled = true;
+    button.textContent = "ĐANG LƯU...";
+
+    const response = await fetch(
+      API + "/admin/settings",
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(payload)
+      }
+    );
+
+    const json = await response.json();
+
+    if (!response.ok || !json.success) {
+      throw new Error(
+        json.message || "Không thể lưu cài đặt"
+      );
+    }
+
+    shopSettings = json.settings || payload;
+
+    message.textContent =
+      "Đã lưu cài đặt thành công.";
+    message.className =
+      "text-sm mt-4 text-green-700";
+
+  } catch (error) {
+    console.error(error);
+
+    message.textContent = error.message;
+    message.className =
+      "text-sm mt-4 text-red-600";
+
+  } finally {
+    button.disabled = false;
+    button.textContent = "LƯU CÀI ĐẶT";
+  }
+}
+
+
+/* =========================================================
+   SIDEBAR
+========================================================= */
+
+function showPage(name) {
+
+  document
+    .querySelectorAll(
+      ".page"
+    )
+    .forEach(
+      page =>
+        page.classList.add(
+          "hidden"
+        )
+    );
+
+
+  const target =
+    document.getElementById(
+      "page-" + name
+    );
+
+
+  if (target) {
+
+    target.classList.remove(
+      "hidden"
+    );
+
+  }
+
+
+  document
+    .querySelectorAll(
+      ".nav"
+    )
+    .forEach(button => {
+
+      button.classList.toggle(
+        "bg-[#5c3824]",
+        button.dataset.page === name
+      );
+
+    });
+
+
+  if (
+    name === "dashboard"
+  ) {
+
+    refreshDashboard();
+
+  }
+
+
+  if (
+    name === "coupons"
+  ) {
+
+    loadCoupons();
+
+  }
+
+
+  if (
+    name === "orders"
+  ) {
+
+    loadAdminOrders();
+
+  }
+
+  if (
+    name === "customers"
+  ) {
+
+    loadCustomers();
+
+  }
+
+  if (
+    name === "settings"
+  ) {
+
+    loadSettings();
+
+  }
+
+
+  window.scrollTo(
+    0,
+    0
+  );
+
+}
+
+
+document
+  .querySelectorAll(
+    ".nav"
+  )
+  .forEach(button => {
+
+    button.addEventListener(
+      "click",
+      () =>
+        showPage(
+          button.dataset.page
+        )
+    );
+
+  });
+
+
+
+/* =========================================================
+   START
+========================================================= */
+
+async function startAdmin() {
+
+  const allowed = await requireAdminPage();
+
+  if (!allowed) {
+    return;
+  }
+
+  updateFields();
+
+  await Promise.all([
+    loadProducts(),
+    loadAdminOrders(),
+    loadCoupons(),
+    loadCustomers(),
+    loadSettings()
+  ]);
+
+  refreshDashboard();
+
+}
+
+
+async function bootAdmin() {
+  const allowed =
+    await checkAdminAccess();
+
+  if (!allowed) {
+    return;
+  }
+
+  await startAdmin();
+}
+
+bootAdmin();
 </script>
 
 </body>
