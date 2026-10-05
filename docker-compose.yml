@@ -1,5 +1,4 @@
 services:
-
   app:
     build:
       context: .
@@ -10,46 +9,7 @@ services:
     ports:
       - "10000:10000"
 
-    environment:
-      PORT: 10000
-      DATABASE_URL: postgresql://shoplux:shoplux123@db:5432/shoplux
-      JWT_SECRET: shoplux-dev-secret
-
-    depends_on:
-      db:
-        condition: service_healthy
+    env_file:
+      - .env
 
     restart: unless-stopped
-
-
-  db:
-    image: postgres:16-alpine
-
-    container_name: shoplux-db
-
-    environment:
-      POSTGRES_USER: shoplux
-      POSTGRES_PASSWORD: shoplux123
-      POSTGRES_DB: shoplux
-
-    ports:
-      - "5432:5432"
-
-    volumes:
-      - shoplux_postgres_data:/var/lib/postgresql/data
-
-    healthcheck:
-      test:
-        [
-          "CMD-SHELL",
-          "pg_isready -U shoplux -d shoplux"
-        ]
-      interval: 5s
-      timeout: 5s
-      retries: 10
-
-    restart: unless-stopped
-
-
-volumes:
-  shoplux_postgres_data:
