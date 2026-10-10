@@ -41,9 +41,9 @@ pipeline {
         sshagent(credentials: ['shoplux-ec2-key']) {
             sh '''
                 mkdir -p ~/.ssh
-                ssh-keyscan -H 13.250.52.12 >> ~/.ssh/known_hosts
+                ssh-keyscan -H 18.143.151.138 >> ~/.ssh/known_hosts
 
-                ssh ubuntu@13.250.52.12 '
+                ssh ubuntu@18.143.151.138 '
                     cd ~/ci-cd-demo &&
                     git fetch origin &&
                     git reset --hard origin/main &&
