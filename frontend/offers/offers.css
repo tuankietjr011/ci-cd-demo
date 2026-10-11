@@ -1,0 +1,27 @@
+:root {
+      --brown: #3b2416;
+      --brown-dark: #1f120c;
+      --gold: #c9a227;
+      --champagne: #e8d5a3;
+      --ivory: #f7f1e7;
+    }
+
+    body {
+      margin: 0;
+      background: var(--ivory);
+      color: var(--brown-dark);
+      font-family: Arial, sans-serif;
+    }
+
+    .luxury-font {
+      font-family: Georgia, "Times New Roman", serif;
+    }
+
+    .coupon-card {
+      transition: .25s;
+    }
+
+    .coupon-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 35px rgba(31, 18, 12, .12);
+    }

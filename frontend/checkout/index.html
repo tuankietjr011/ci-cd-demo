@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+<base href="/">
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>Thanh toán | ShopLux</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <link rel="stylesheet" href="/checkout/checkout.css">
+</head>
+
+
+<body>
+
+  <!-- HEADER -->
+
+  <header
+    class="border-b bg-[#fffdf8]"
+    style="border-color:#e8d5a3"
+  >
+    <div
+      class="
+        max-w-7xl
+        mx-auto
+        px-4
+        py-6
+        flex
+        items-center
+        justify-between
+      "
+    >
+
+      <a href="/">
+        <div
+          class="
+            luxury-font
+            text-3xl
+            font-bold
+            tracking-[4px]
+          "
+          style="color:#3b2416"
+        >
+          SHOPLUX
+        </div>
+
+        <div
+          class="
+            text-[9px]
+            tracking-[4px]
+            text-center
+            mt-1
+          "
+          style="color:#70452d"
+        >
+          MAISON • LUXURY FASHION
+        </div>
+      </a>
+
+
+      <a
+        href="/"
+        class="
+          text-sm
+          font-bold
+          hover:underline
+        "
+      >
+        TIẾP TỤC MUA SẮM
+      </a>
+
+    </div>
+  </header>
+
+
+  <!-- MAIN -->
+
+  <main
+    class="
+      max-w-7xl
+      mx-auto
+      px-4
+      py-12
+    "
+  >
+
+    <div class="text-center mb-10">
+
+      <div
+        class="
+          text-[10px]
+          tracking-[5px]
+        "
+        style="color:#70452d"
+      >
+        SHOPLUX MAISON
+      </div>
+
+      <h1
+        class="
+          luxury-font
+          text-3xl
+          md:text-4xl
+          mt-3
+        "
+      >
+        THANH TOÁN
+      </h1>
+
+    </div>
+
+
+    <div
+      class="
+        grid
+        lg:grid-cols-[1fr_420px]
+        gap-8
+      "
+    >
+
+      <!-- SHIPPING -->
+
+      <section
+        class="
+          bg-[#fffdf8]
+          border
+          p-6
+          md:p-8
+        "
+        style="border-color:#e8d5a3"
+      >
+
+        <h2
+          class="
+            luxury-font
+            text-2xl
+            mb-7
+          "
+        >
+          Thông tin giao hàng
+        </h2>
+
+
+        <form id="checkoutForm">
+
+          
+
+            <!-- ============================================== -->
+<!-- SAVED DELIVERY ADDRESS -->
+<!-- ============================================== -->
+
+<div
+  id="savedAddressSection"
+>
+
+  <div
+    class="
+      flex
+      flex-wrap
+      justify-between
+      items-center
+      gap-3
+      mb-4
+    "
+  >
+
+    <div>
+
+      <div
+        class="
+          text-xs
+          font-bold
+          tracking-[1px]
+        "
+      >
+        ĐỊA CHỈ NHẬN HÀNG
+      </div>
+
+      <div
+        class="
+          text-xs
+          text-gray-400
+          mt-1
+        "
+      >
+        Chọn địa chỉ đã lưu trong tài khoản
+      </div>
+
+    </div>
+
+
+    <div
+      class="
+        flex
+        flex-wrap
+        gap-2
+      "
+    >
+
+      <button
+        id="editShippingAddress"
+        type="button"
+        onclick="editSelectedAddress()"
+        class="
+          border
+          px-4
+          py-2
+          text-xs
+          font-bold
+        "
+        style="
+          border-color:#3b2416;
+          color:#3b2416;
+        "
+      >
+        <i class="fa-solid fa-pen mr-1"></i>
+        SỬA
+      </button>
+
+
+      <button
+        type="button"
+        onclick="useOtherAddress()"
+        class="
+          border
+          px-4
+          py-2
+          text-xs
+          font-bold
+        "
+        style="
+          border-color:#c9a227;
+          color:#70452d;
+        "
+      >
+        <i class="fa-solid fa-location-dot mr-1"></i>
+        ĐỊA CHỈ KHÁC
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <div
+    id="savedAddressList"
+    class="space-y-3"
+  >
+
+    <div
+      class="
+        border
+        p-5
+        text-sm
+        text-gray-400
+      "
+      style="border-color:#e8d5a3"
+    >
+      Đang tải địa chỉ giao hàng...
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- ============================================== -->
+<!-- OTHER ADDRESS - KHÔNG LƯU -->
+<!-- ============================================== -->
+
+<div
+  id="otherAddressSection"
+  class="
+    hidden
+    border
+    p-5
+    mt-5
+  "
+  style="border-color:#e8d5a3"
+>
+
+  <div
+    class="
+      flex
+      justify-between
+      items-center
+      gap-3
+      mb-5
+    "
+  >
+
+    <div>
+
+      <div class="font-bold">
+        ĐỊA CHỈ KHÁC
+      </div>
+
+      <div
+        class="
+          text-xs
+          text-gray-400
+          mt-1
+        "
+      >
+        Chỉ sử dụng cho đơn hàng này, không lưu vào tài khoản
+      </div>
+
+    </div>
+
+
+    <button
+      type="button"
+      onclick="cancelOtherAddress()"
+      class="
+        text-xs
+        font-bold
+        underline
+      "
+    >
+      HỦY
+    </button>
+
+  </div>
+
+
+  <div
+    class="
+      grid
+      md:grid-cols-2
+      gap-5
+    "
+  >
+
+    <div>
+
+      <label
+        class="
+          block
+          text-xs
+          font-bold
+          mb-2
+        "
+      >
+        HỌ VÀ TÊN
+      </label>
+
+      <input
+        id="fullname"
+        class="
+          w-full
+          border
+          p-3
+          outline-none
+          bg-white
+        "
+        style="border-color:#e8d5a3"
+      >
+
+    </div>
+
+
+    <div>
+
+      <label
+        class="
+          block
+          text-xs
+          font-bold
+          mb-2
+        "
+      >
+        SỐ ĐIỆN THOẠI
+      </label>
+
+      <input
+        id="phone"
+        type="tel"
+        class="
+          w-full
+          border
+          p-3
+          outline-none
+          bg-white
+        "
+        style="border-color:#e8d5a3"
+      >
+
+    </div>
+
+  </div>
+
+
+  <div class="mt-5">
+
+    <label
+      class="
+        block
+        text-xs
+        font-bold
+        mb-2
+      "
+    >
+      ĐỊA CHỈ
+    </label>
+
+    <input
+      id="address"
+      placeholder="Số nhà, tên đường, phường/xã..."
+      class="
+        w-full
+        border
+        p-3
+        outline-none
+        bg-white
+      "
+      style="border-color:#e8d5a3"
+    >
+
+  </div>
+
+
+  <div class="mt-5">
+
+    <label
+      class="
+        block
+        text-xs
+        font-bold
+        mb-2
+      "
+    >
+      TỈNH / THÀNH PHỐ
+    </label>
+
+    <input
+      id="city"
+      placeholder="Ví dụ: Đà Nẵng"
+      class="
+        w-full
+        border
+        p-3
+        outline-none
+        bg-white
+      "
+      style="border-color:#e8d5a3"
+    >
+
+  </div>
+
+</div>
+
+
+
+
+          <!-- PAYMENT -->
+
+          <div
+            class="
+              mt-9
+              pt-7
+              border-t
+            "
+            style="border-color:#e8d5a3"
+          >
+
+            <h2
+              class="
+                luxury-font
+                text-2xl
+                mb-5
+              "
+            >
+              Phương thức thanh toán
+            </h2>
+
+
+            <label
+              class="
+                flex
+                items-center
+                gap-3
+                border
+                p-4
+                cursor-pointer
+              "
+              style="border-color:#e8d5a3"
+            >
+
+              <input
+                type="radio"
+                name="payment"
+                value="cod"
+                checked
+              >
+
+              <div>
+                <div class="font-bold">
+                  Thanh toán khi nhận hàng
+                </div>
+
+                <div
+                  class="
+                    text-sm
+                    text-gray-500
+                    mt-1
+                  "
+                >
+                  Thanh toán tiền mặt khi nhận hàng.
+                </div>
+              </div>
+
+            </label>
+
+
+            <label
+              class="
+                flex
+                items-center
+                gap-3
+                border
+                p-4
+                mt-3
+                cursor-pointer
+              "
+              style="border-color:#e8d5a3"
+            >
+
+              <input
+                type="radio"
+                name="payment"
+                value="bank"
+              >
+
+              <div>
+                <div class="font-bold">
+                  Chuyển khoản ngân hàng
+                </div>
+
+                <div
+                  class="
+                    text-sm
+                    text-gray-500
+                    mt-1
+                  "
+                >
+                  Đơn hàng sẽ ghi nhận phương thức chuyển khoản.
+                </div>
+              </div>
+
+            </label>
+
+
+
+          <div class="mt-8 flex justify-end">
+
+  <button
+    id="submitOrder"
+    type="submit"
+    class="
+      min-w-[220px]
+      px-10
+      py-4
+      font-bold
+      tracking-[2px]
+    "
+    style="
+      background:#3b2416;
+      color:#e8d5a3;
+    "
+  >
+    ĐẶT HÀNG
+  </button>
+
+</div>
+
+        </form>
+
+      </section>
+
+
+      <!-- ORDER SUMMARY -->
+
+      <aside
+        class="
+          bg-[#fffdf8]
+          border
+          p-6
+          h-fit
+          lg:sticky
+          lg:top-6
+        "
+        style="border-color:#e8d5a3"
+      >
+
+        <h2
+          class="
+            luxury-font
+            text-2xl
+          "
+        >
+          Đơn hàng
+        </h2>
+
+
+        <div
+          id="orderItems"
+          class="
+            mt-6
+            space-y-5
+          "
+        ></div>
+
+        <!-- ============================================== -->
+<!-- ORDER NOTE -->
+<!-- ============================================== -->
+
+<div
+  class="
+    mt-7
+    pt-7
+    border-t
+  "
+  style="border-color:#e8d5a3"
+>
+
+  <label
+    class="
+      block
+      text-xs
+      font-bold
+      tracking-[1px]
+      mb-2
+    "
+  >
+    GHI CHÚ ĐƠN HÀNG
+  </label>
+
+
+  <textarea
+    id="orderNote"
+    rows="4"
+    maxlength="1000"
+    placeholder="Ví dụ: Gọi trước khi giao, giao giờ hành chính, để hàng tại bảo vệ..."
+    class="
+      w-full
+      border
+      p-3
+      outline-none
+      bg-white
+      resize-y
+    "
+    style="border-color:#e8d5a3"
+  ></textarea>
+
+
+  <div
+    class="
+      text-[11px]
+      text-gray-400
+      mt-1
+    "
+  >
+    Ghi chú này chỉ áp dụng cho đơn hàng hiện tại.
+  </div>
+
+</div>
+
+<!-- COUPON -->
+
+<div
+  class="mt-6 pt-5 border-t"
+  style="border-color:#e8d5a3"
+>
+  <label
+    class="block text-xs font-bold mb-2"
+  >
+    MÃ GIẢM GIÁ
+  </label>
+
+  <div class="flex gap-2">
+
+    <input
+      id="couponCode"
+      type="text"
+      placeholder="Ví dụ: SHOPLUX10"
+      class="
+        flex-1
+        min-w-0
+        border
+        p-3
+        outline-none
+        uppercase
+        bg-white
+      "
+      style="border-color:#e8d5a3"
+    >
+
+    <button
+      id="applyCoupon"
+      type="button"
+      class="
+        px-4
+        font-bold
+        text-sm
+      "
+      style="
+        background:#3b2416;
+        color:#e8d5a3;
+      "
+    >
+      ÁP DỤNG
+    </button>
+
+  </div>
+
+  <div
+    id="couponMessage"
+    class="text-sm mt-2"
+  ></div>
+
+</div>
+
+        <div
+          class="
+            mt-7
+            pt-5
+            border-t
+            space-y-3
+          "
+          style="border-color:#e8d5a3"
+        >
+
+          <div
+            class="
+              flex
+              justify-between
+              text-sm
+            "
+          >
+            <span>Tạm tính</span>
+
+            <span id="subtotal">
+              0 ₫
+            </span>
+          </div>
+
+
+          <div
+            class="
+              flex
+              justify-between
+              text-sm
+            "
+          >
+            <span>Phí vận chuyển</span>
+
+            <span id="shippingFee">
+              0 ₫
+            </span>
+          </div>
+<div
+  id="discountRow"
+  class="
+    hidden
+    flex
+    justify-between
+    text-sm
+  "
+>
+  <span>Giảm giá</span>
+
+  <span
+    id="discountAmount"
+    style="color:#8b1e1e"
+  >
+    -0 ₫
+  </span>
+</div>
+
+          <div
+            class="
+              flex
+              justify-between
+              pt-4
+              border-t
+              font-bold
+              text-lg
+            "
+            style="border-color:#e8d5a3"
+          >
+            <span>TỔNG CỘNG</span>
+
+            <span
+              id="total"
+              style="color:#70452d"
+            >
+              0 ₫
+            </span>
+          </div>
+
+        </div>
+
+      </aside>
+
+    </div>
+
+  </main>
+
+
+<script src="/checkout/checkout.js"></script>
+
+</body>
+</html>

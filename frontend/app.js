@@ -54,14 +54,45 @@ let cart = loadUserCart();
 // FAVORITES
 // ======================================================
 
-let favorites = JSON.parse(
-  localStorage.getItem("shoplux_favorites") || "[]"
-);
+function getFavoritesStorageKey() {
+  const token = localStorage.getItem("shoplux_token");
 
+  let user = null;
+
+  try {
+    user = JSON.parse(
+      localStorage.getItem("shoplux_user") || "null"
+    );
+  } catch (error) {
+    return null;
+  }
+
+  if (!token || !user?.id) {
+    return null;
+  }
+
+  return `shoplux_favorites_user_${user.id}`;
+}
+
+const favoritesKey = getFavoritesStorageKey();
+
+let favorites = [];
+
+if (favoritesKey) {
+  try {
+    favorites = JSON.parse(
+      localStorage.getItem(favoritesKey) || "[]"
+    );
+  } catch (error) {
+    favorites = [];
+  }
+}
 
 function saveFavorites() {
+  if (!favoritesKey) return;
+
   localStorage.setItem(
-    "shoplux_favorites",
+    favoritesKey,
     JSON.stringify(favorites)
   );
 }

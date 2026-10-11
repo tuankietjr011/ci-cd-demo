@@ -1,0 +1,1033 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+<base href="/">
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>Thông Tin Cá Nhân | ShopLux</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+  >
+</head>
+
+
+<body class="bg-[#f7f1e7] text-[#1f120c] min-h-screen">
+
+  <!-- HEADER -->
+
+  <header class="bg-[#3b2416] text-[#fffdf8]">
+
+    <div
+      class="
+        max-w-7xl
+        mx-auto
+        px-5
+        py-6
+        flex
+        items-center
+        justify-between
+        gap-5
+      "
+    >
+
+      <a
+        href="/"
+        class="shrink-0"
+      >
+
+        <div
+          class="
+            font-serif
+            text-3xl
+            tracking-[5px]
+          "
+          style="color:#e8d5a3"
+        >
+          SHOPLUX
+        </div>
+
+        <div
+          class="
+            text-[9px]
+            tracking-[4px]
+            mt-1
+          "
+        >
+          MAISON • LUXURY FASHION
+        </div>
+
+      </a>
+
+
+      <a
+        href="/"
+        class="
+          border
+          px-5
+          py-3
+          text-sm
+          font-bold
+          tracking-[1px]
+        "
+        style="
+          border-color:#c9a227;
+          color:#e8d5a3;
+        "
+      >
+        <i class="fa-solid fa-arrow-left mr-2"></i>
+        VỀ CỬA HÀNG
+      </a>
+
+    </div>
+
+  </header>
+
+
+  <!-- CONTENT -->
+
+  <main
+    class="
+      max-w-6xl
+      mx-auto
+      px-5
+      py-10
+    "
+  >
+
+    <div class="mb-8">
+
+      <p
+        class="
+          text-xs
+          font-bold
+          tracking-[3px]
+          mb-2
+        "
+        style="color:#c9a227"
+      >
+        SHOPLUX MEMBER
+      </p>
+
+      <h1
+        class="
+          font-serif
+          text-3xl
+          md:text-4xl
+        "
+      >
+        THÔNG TIN CÁ NHÂN
+      </h1>
+
+    </div>
+
+
+    <div
+      class="
+        grid
+        lg:grid-cols-[300px_1fr]
+        gap-6
+      "
+    >
+
+      <!-- AVATAR -->
+
+      <section
+        class="
+          bg-[#fffdf8]
+          border
+          p-7
+          text-center
+        "
+        style="border-color:#e8d5a3"
+      >
+
+        <div
+          class="
+            relative
+            w-40
+            h-40
+            mx-auto
+            mb-5
+          "
+        >
+
+          <div
+            id="avatarFallback"
+            class="
+              w-full
+              h-full
+              rounded-full
+              flex
+              items-center
+              justify-center
+              text-5xl
+            "
+            style="
+              background:#3b2416;
+              color:#e8d5a3;
+            "
+          >
+            <i class="fa-regular fa-user"></i>
+          </div>
+
+
+          <img
+            id="avatarImage"
+            alt="Avatar"
+            class="
+              hidden
+              w-full
+              h-full
+              rounded-full
+              object-cover
+              border-4
+            "
+            style="border-color:#e8d5a3"
+          >
+
+
+          <label
+            id="avatarEditButton"
+            class="
+              hidden
+              absolute
+              right-1
+              bottom-1
+              w-11
+              h-11
+              rounded-full
+              items-center
+              justify-center
+              cursor-pointer
+              shadow-lg
+            "
+            style="
+              background:#c9a227;
+              color:#1f120c;
+            "
+            title="Đổi ảnh đại diện"
+          >
+
+            <i class="fa-solid fa-camera"></i>
+
+            <input
+              id="avatarInput"
+              type="file"
+              accept="image/*"
+              class="hidden"
+              onchange="readAvatar(event)"
+            >
+
+          </label>
+
+        </div>
+
+
+        <h2
+          id="profileName"
+          class="
+            font-serif
+            text-2xl
+            mb-1
+          "
+        >
+          ShopLux Member
+        </h2>
+
+
+        <p
+          id="profileEmail"
+          class="
+            text-sm
+            text-gray-500
+            break-all
+          "
+        ></p>
+
+
+        <div
+          class="
+            h-px
+            my-6
+          "
+          style="background:#e8d5a3"
+        ></div>
+
+
+        <button
+          id="editButton"
+          onclick="enableEdit()"
+          class="
+            w-full
+            py-3
+            font-bold
+            tracking-[1px]
+          "
+          style="
+            background:#3b2416;
+            color:#e8d5a3;
+          "
+        >
+          <i class="fa-solid fa-pen mr-2"></i>
+          SỬA THÔNG TIN
+        </button>
+
+      </section>
+
+
+      <!-- PROFILE FORM -->
+
+      <section
+        class="
+          bg-[#fffdf8]
+          border
+          p-6
+          md:p-8
+        "
+        style="border-color:#e8d5a3"
+      >
+
+        <div
+          class="
+            flex
+            justify-between
+            items-center
+            gap-4
+            mb-7
+          "
+        >
+
+          <h2
+            class="
+              font-serif
+              text-2xl
+            "
+          >
+            HỒ SƠ CỦA TÔI
+          </h2>
+
+          <span
+            id="profileStatus"
+            class="
+              text-xs
+              text-gray-400
+            "
+          >
+            Thông tin thành viên
+          </span>
+
+        </div>
+
+
+        <div
+          class="
+            grid
+            md:grid-cols-2
+            gap-5
+          "
+        >
+
+          <!-- FULLNAME -->
+
+          <div>
+
+            <label
+              class="
+                block
+                text-xs
+                font-bold
+                tracking-[1px]
+                mb-2
+              "
+            >
+              HỌ VÀ TÊN
+            </label>
+
+            <input
+              id="fullname"
+              disabled
+              class="
+                w-full
+                border
+                p-3
+                bg-[#f7f1e7]
+                disabled:opacity-100
+              "
+              style="border-color:#e8d5a3"
+            >
+
+          </div>
+
+
+          <!-- GENDER -->
+
+          <div>
+
+            <label
+              class="
+                block
+                text-xs
+                font-bold
+                tracking-[1px]
+                mb-2
+              "
+            >
+              GIỚI TÍNH
+            </label>
+
+            <select
+              id="gender"
+              disabled
+              class="
+                w-full
+                border
+                p-3
+                bg-[#f7f1e7]
+                disabled:opacity-100
+              "
+              style="border-color:#e8d5a3"
+            >
+
+              <option value="">
+                Chưa cập nhật
+              </option>
+
+              <option value="nam">
+                Nam
+              </option>
+
+              <option value="nu">
+                Nữ
+              </option>
+
+              <option value="khac">
+                Khác
+              </option>
+
+            </select>
+
+          </div>
+
+
+          <!-- BIRTHDAY -->
+
+          <div>
+
+            <label
+              class="
+                block
+                text-xs
+                font-bold
+                tracking-[1px]
+                mb-2
+              "
+            >
+              NGÀY SINH
+            </label>
+
+            <input
+              id="birthday"
+              type="date"
+              disabled
+              class="
+                w-full
+                border
+                p-3
+                bg-[#f7f1e7]
+                disabled:opacity-100
+              "
+              style="border-color:#e8d5a3"
+            >
+
+          </div>
+
+
+          <!-- PHONE -->
+
+          <div>
+
+            <label
+              class="
+                block
+                text-xs
+                font-bold
+                tracking-[1px]
+                mb-2
+              "
+            >
+              SỐ ĐIỆN THOẠI
+            </label>
+
+            <input
+              id="phone"
+              type="tel"
+              disabled
+              class="
+                w-full
+                border
+                p-3
+                bg-[#f7f1e7]
+                disabled:opacity-100
+              "
+              style="border-color:#e8d5a3"
+            >
+
+          </div>
+
+
+          <!-- EMAIL -->
+
+          <div class="md:col-span-2">
+
+            <label
+              class="
+                block
+                text-xs
+                font-bold
+                tracking-[1px]
+                mb-2
+              "
+            >
+              EMAIL
+            </label>
+
+            <input
+              id="email"
+              disabled
+              class="
+                w-full
+                border
+                p-3
+                bg-gray-100
+                text-gray-500
+              "
+              style="border-color:#e8d5a3"
+            >
+
+            <p
+              class="
+                text-[11px]
+                text-gray-400
+                mt-2
+              "
+            >
+              Email đăng nhập không thay đổi tại trang hồ sơ.
+            </p>
+
+          </div>
+
+        </div>
+
+        <!-- ================================================= -->
+<!-- DELIVERY ADDRESSES -->
+<!-- ================================================= -->
+
+<div
+  class="
+    mt-8
+    pt-7
+    border-t
+  "
+  style="border-color:#e8d5a3"
+>
+
+  <div
+    class="
+      flex
+      flex-wrap
+      justify-between
+      items-center
+      gap-4
+      mb-4
+    "
+  >
+
+    <div>
+
+      <h3 class="font-bold">
+        ĐỊA CHỈ GIAO HÀNG
+      </h3>
+
+      <p
+        class="
+          text-xs
+          text-gray-400
+          mt-1
+        "
+      >
+        Lưu nhiều địa chỉ để sử dụng khi thanh toán
+      </p>
+
+    </div>
+
+
+    <button
+      type="button"
+      onclick="openAddressForm()"
+      class="
+        border
+        px-4
+        py-2
+        text-xs
+        font-bold
+      "
+      style="
+        border-color:#c9a227;
+        color:#3b2416;
+      "
+    >
+      <i class="fa-solid fa-plus mr-1"></i>
+      THÊM ĐỊA CHỈ
+    </button>
+
+  </div>
+
+
+  <!-- FORM THÊM / SỬA -->
+
+  <div
+    id="deliveryAddressForm"
+    class="
+      hidden
+      border
+      p-5
+      mb-5
+      bg-[#f7f1e7]
+    "
+    style="border-color:#e8d5a3"
+  >
+
+    <input
+      id="deliveryAddressId"
+      type="hidden"
+    >
+
+
+    <div
+      class="
+        grid
+        md:grid-cols-2
+        gap-4
+      "
+    >
+
+      <div>
+
+        <label
+          class="
+            block
+            text-xs
+            font-bold
+            mb-2
+          "
+        >
+          TÊN ĐỊA CHỈ
+        </label>
+
+        <input
+          id="deliveryLabel"
+          placeholder="Ví dụ: Nhà riêng, Công ty"
+          class="
+            w-full
+            border
+            p-3
+            bg-white
+            outline-none
+          "
+          style="border-color:#e8d5a3"
+        >
+
+      </div>
+
+
+      <div>
+
+        <label
+          class="
+            block
+            text-xs
+            font-bold
+            mb-2
+          "
+        >
+          TÊN NGƯỜI NHẬN
+        </label>
+
+        <input
+          id="deliveryRecipient"
+          placeholder="Nguyễn Hoàng"
+          class="
+            w-full
+            border
+            p-3
+            bg-white
+            outline-none
+          "
+          style="border-color:#e8d5a3"
+        >
+
+      </div>
+
+
+      <div>
+
+        <label
+          class="
+            block
+            text-xs
+            font-bold
+            mb-2
+          "
+        >
+          SỐ ĐIỆN THOẠI GIAO HÀNG
+        </label>
+
+        <input
+          id="deliveryPhone"
+          type="tel"
+          placeholder="Ví dụ: 0382786544"
+          class="
+            w-full
+            border
+            p-3
+            bg-white
+            outline-none
+          "
+          style="border-color:#e8d5a3"
+        >
+
+      </div>
+
+
+      <div>
+
+        <label
+          class="
+            block
+            text-xs
+            font-bold
+            mb-2
+          "
+        >
+          TỈNH / THÀNH PHỐ
+        </label>
+
+        <input
+          id="deliveryCity"
+          placeholder="Ví dụ: Đà Nẵng"
+          class="
+            w-full
+            border
+            p-3
+            bg-white
+            outline-none
+          "
+          style="border-color:#e8d5a3"
+        >
+
+      </div>
+
+
+      <div class="md:col-span-2">
+
+        <label
+          class="
+            block
+            text-xs
+            font-bold
+            mb-2
+          "
+        >
+          ĐỊA CHỈ CHI TIẾT
+        </label>
+
+        <input
+          id="deliveryAddress"
+          placeholder="Số nhà, tên đường, phường/xã..."
+          class="
+            w-full
+            border
+            p-3
+            bg-white
+            outline-none
+          "
+          style="border-color:#e8d5a3"
+        >
+
+      </div>
+
+    </div>
+
+
+    <label
+      class="
+        flex
+        items-center
+        gap-2
+        mt-4
+        text-sm
+        cursor-pointer
+      "
+    >
+
+      <input
+        id="deliveryDefault"
+        type="checkbox"
+        class="
+          w-4
+          h-4
+          accent-[#3b2416]
+        "
+      >
+
+      Đặt làm địa chỉ mặc định
+
+    </label>
+
+
+    <div
+      class="
+        flex
+        justify-end
+        gap-3
+        mt-5
+      "
+    >
+
+    <button
+  id="backToCheckoutBtn"
+  type="button"
+  onclick="backToCheckout()"
+  class="
+    hidden
+    border
+    px-5
+    py-3
+    text-sm
+    font-bold
+  "
+  style="
+    border-color:#c9a227;
+    color:#70452d;
+  "
+>
+  <i class="fa-solid fa-arrow-left mr-1"></i>
+  QUAY LẠI THANH TOÁN
+</button>
+
+      <button
+        type="button"
+        onclick="closeAddressForm()"
+        class="
+          border
+          px-5
+          py-3
+          text-sm
+          font-bold
+        "
+        style="
+          border-color:#3b2416;
+          color:#3b2416;
+        "
+      >
+        HỦY
+      </button>
+
+
+      <button
+        type="button"
+        onclick="saveDeliveryAddress()"
+        class="
+          px-5
+          py-3
+          text-sm
+          font-bold
+        "
+        style="
+          background:#3b2416;
+          color:#e8d5a3;
+        "
+      >
+        LƯU ĐỊA CHỈ
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <!-- DANH SÁCH ĐỊA CHỈ -->
+
+  <div
+    id="deliveryAddresses"
+    class="space-y-3"
+  >
+
+    <div
+      class="
+        border
+        p-4
+        text-sm
+        text-gray-400
+      "
+      style="border-color:#e8d5a3"
+    >
+      Đang tải địa chỉ giao hàng...
+    </div>
+
+  </div>
+
+</div>
+
+<script src="/profile/profile.js"></script>
+        <!-- LINKED ACCOUNTS -->
+
+        <div
+          class="
+            mt-8
+            pt-7
+            border-t
+          "
+          style="border-color:#e8d5a3"
+        >
+
+          <div
+            class="
+              flex
+              justify-between
+              items-center
+              gap-4
+              mb-4
+            "
+          >
+
+            <div>
+
+              <h3 class="font-bold">
+                TÀI KHOẢN LIÊN KẾT
+              </h3>
+
+              <p
+                class="
+                  text-xs
+                  text-gray-400
+                  mt-1
+                "
+              >
+                Google, Facebook hoặc tài khoản khác
+              </p>
+
+            </div>
+
+
+            <button
+              id="addLinkedButton"
+              onclick="addLinkedAccount()"
+              class="
+                hidden
+                border
+                px-4
+                py-2
+                text-xs
+                font-bold
+              "
+              style="
+                border-color:#c9a227;
+                color:#3b2416;
+              "
+            >
+              + THÊM
+            </button>
+
+          </div>
+
+
+          <div
+            id="linkedAccounts"
+            class="space-y-3"
+          ></div>
+
+        </div>
+
+
+        <!-- SAVE -->
+
+        <div
+          id="editActions"
+          class="
+            hidden
+            flex
+            flex-wrap
+            justify-end
+            gap-3
+            mt-8
+          "
+        >
+
+          <button
+            onclick="cancelEdit()"
+            class="
+              border
+              px-7
+              py-3
+              font-bold
+            "
+            style="
+              border-color:#3b2416;
+              color:#3b2416;
+            "
+          >
+            HỦY
+          </button>
+
+
+          <button
+            id="saveButton"
+            onclick="saveProfile()"
+            class="
+              px-7
+              py-3
+              font-bold
+            "
+            style="
+              background:#3b2416;
+              color:#e8d5a3;
+            "
+          >
+            <i class="fa-solid fa-floppy-disk mr-2"></i>
+            LƯU THÔNG TIN
+          </button>
+
+        </div>
+
+
+        <p
+          id="message"
+          class="
+            text-sm
+            mt-5
+            text-right
+          "
+        ></p>
+
+      </section>
+
+    </div>
+
+  </main>
+
+
+<script src="/profile/profile-1.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+<base href="/">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Đơn hàng của tôi | ShopLux</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <link rel="stylesheet" href="/orders/orders.css">
+</head>
+
+<body>
+
+<header
+  class="border-b"
+  style="
+    background:#3b2416;
+    color:#fffdf8;
+    border-color:#c9a227;
+  "
+>
+  <div
+    class="
+      max-w-6xl
+      mx-auto
+      px-4
+      py-6
+      flex
+      items-center
+      justify-between
+    "
+  >
+
+    <a href="/" class="text-center">
+
+      <div
+        class="
+          luxury-font
+          text-3xl
+          font-bold
+          tracking-[5px]
+        "
+        style="color:#e8d5a3"
+      >
+        SHOPLUX
+      </div>
+
+      <div
+        class="
+          text-[9px]
+          tracking-[4px]
+          mt-1
+        "
+      >
+        MAISON • LUXURY FASHION
+      </div>
+
+    </a>
+
+    <a
+      href="/"
+      class="
+        text-sm
+        font-bold
+        tracking-[1px]
+      "
+      style="color:#e8d5a3"
+    >
+      TRANG CHỦ
+    </a>
+
+  </div>
+</header>
+
+
+<main class="max-w-6xl mx-auto px-4 py-12">
+
+  <div class="text-center mb-10">
+
+    <div
+      class="text-[10px] tracking-[5px]"
+      style="color:#70452d"
+    >
+      SHOPLUX MEMBER
+    </div>
+
+    <h1
+      class="
+        luxury-font
+        text-3xl
+        md:text-4xl
+        mt-3
+      "
+    >
+      ĐƠN HÀNG CỦA TÔI
+    </h1>
+
+    <p class="text-gray-500 mt-3">
+      Theo dõi trạng thái các đơn hàng của bạn
+    </p>
+
+  </div>
+
+
+  <!-- LOADING -->
+
+  <div
+    id="loading"
+    class="text-center py-16 text-gray-500"
+  >
+    Đang tải đơn hàng...
+  </div>
+
+
+  <!-- EMPTY -->
+
+  <div
+    id="emptyOrders"
+    class="
+      hidden
+      bg-[#fffdf8]
+      border
+      text-center
+      py-16
+      px-6
+    "
+    style="border-color:#e8d5a3"
+  >
+
+    <div class="luxury-font text-2xl">
+      Bạn chưa có đơn hàng
+    </div>
+
+    <p class="text-gray-500 mt-3">
+      Hãy khám phá các sản phẩm của ShopLux.
+    </p>
+
+    <a
+      href="/"
+      class="
+        inline-block
+        mt-6
+        px-8
+        py-3
+        font-bold
+        tracking-[1px]
+      "
+      style="
+        background:#3b2416;
+        color:#e8d5a3;
+      "
+    >
+      MUA SẮM NGAY
+    </a>
+
+  </div>
+
+
+  <!-- ORDERS -->
+
+  <div
+    id="orders"
+    class="space-y-6"
+  ></div>
+
+</main>
+
+
+<script src="/orders/orders.js"></script>
+
+
+<!-- ORDER DETAIL MODAL -->
+
+<div
+  id="orderDetailModal"
+  class="
+    hidden
+    fixed
+    inset-0
+    bg-black/70
+    z-[500]
+    items-center
+    justify-center
+    p-4
+  "
+>
+
+  <div
+    class="
+      bg-[#fffdf8]
+      w-full
+      max-w-2xl
+      max-h-[85vh]
+      overflow-auto
+      shadow-2xl
+    "
+  >
+
+    <div
+      class="
+        flex
+        justify-between
+        items-center
+        p-6
+        border-b
+      "
+      style="border-color:#e8d5a3"
+    >
+
+      <h2
+        class="
+          luxury-font
+          text-2xl
+        "
+      >
+        Chi tiết đơn hàng
+      </h2>
+
+      <button
+        onclick="closeOrderDetail()"
+        class="text-3xl"
+      >
+        ×
+      </button>
+
+    </div>
+
+
+    <div
+      id="orderDetailContent"
+      class="p-6"
+    ></div>
+
+  </div>
+
+</div>
+
+</body>
+</html>

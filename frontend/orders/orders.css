@@ -1,0 +1,18 @@
+:root {
+      --brown: #3b2416;
+      --brown-dark: #1f120c;
+      --gold: #c9a227;
+      --champagne: #e8d5a3;
+      --ivory: #f7f1e7;
+    }
+
+    body {
+      margin: 0;
+      background: var(--ivory);
+      color: var(--brown-dark);
+      font-family: Arial, sans-serif;
+    }
+
+    .luxury-font {
+      font-family: Georgia, "Times New Roman", serif;
+    }

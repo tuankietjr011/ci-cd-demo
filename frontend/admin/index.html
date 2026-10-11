@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<base href="/">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ShopLux Admin Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-[#f7f1e7] text-[#1f120c]">
+
+<div class="min-h-screen lg:flex">
+
+  <!-- SIDEBAR -->
+  <aside
+    class="
+      lg:fixed lg:inset-y-0 lg:left-0 lg:w-64
+      bg-[#3b2416] text-[#e8d5a3]
+      p-6 flex flex-col z-20
+    "
+  >
+
+    <div class="mb-10">
+      <div class="text-2xl font-black tracking-[3px]">
+        SHOPLUX
+      </div>
+
+      <div class="text-[10px] tracking-[4px] mt-1">
+        MAISON ADMIN
+      </div>
+    </div>
+
+    <nav class="space-y-2 flex-1">
+
+      <button
+        class="nav w-full text-left px-4 py-3 font-bold bg-[#5c3824]"
+        data-page="dashboard"
+      >
+        TỔNG QUAN
+      </button>
+
+      <button
+        class="nav w-full text-left px-4 py-3 font-bold hover:bg-[#5c3824]"
+        data-page="products"
+      >
+        QUẢN LÝ SẢN PHẨM
+      </button>
+
+      <button
+        class="nav w-full text-left px-4 py-3 font-bold hover:bg-[#5c3824]"
+        data-page="orders"
+      >
+        QUẢN LÝ ĐƠN HÀNG
+      </button>
+
+      <button
+        class="nav w-full text-left px-4 py-3 font-bold hover:bg-[#5c3824]"
+        data-page="coupons"
+      >
+        MÃ GIẢM GIÁ
+      </button>
+
+      <button
+        class="nav w-full text-left px-4 py-3 font-bold hover:bg-[#5c3824]"
+        data-page="customers"
+      >
+        KHÁCH HÀNG
+      </button>
+
+      <button
+        class="nav w-full text-left px-4 py-3 font-bold hover:bg-[#5c3824]"
+        data-page="settings"
+      >
+        CÀI ĐẶT
+      </button>
+
+    </nav>
+
+    <a
+      href="/"
+      class="
+        border border-[#c9a227]
+        text-center
+        px-4 py-3
+        font-bold
+      "
+    >
+      XEM CỬA HÀNG
+    </a>
+
+  </aside>
+
+
+  <!-- CONTENT -->
+  <main class="flex-1 lg:ml-64 p-5 lg:p-8">
+
+    <!-- DASHBOARD -->
+    <section id="page-dashboard" class="page">
+
+      <h1 class="text-3xl font-black mb-2">
+        TỔNG QUAN
+      </h1>
+
+      <p class="text-gray-500 mb-7">
+        Tình hình hoạt động của ShopLux
+      </p>
+
+      <div
+        class="
+          grid
+          sm:grid-cols-2
+          xl:grid-cols-5
+          gap-4
+          mb-8
+        "
+      >
+
+        <div class="bg-white border border-[#e8d5a3] p-6">
+          <p class="text-xs text-gray-500 font-bold">
+            SẢN PHẨM
+          </p>
+
+          <p
+            id="statProducts"
+            class="text-3xl font-black mt-2"
+          >
+            0
+          </p>
+        </div>
+
+
+        <div class="bg-white border border-[#e8d5a3] p-6">
+          <p class="text-xs text-gray-500 font-bold">
+            ĐƠN HÀNG
+          </p>
+
+          <p
+            id="statOrders"
+            class="text-3xl font-black mt-2"
+          >
+            0
+          </p>
+        </div>
+
+
+        <div class="bg-white border border-[#e8d5a3] p-6">
+          <p class="text-xs text-gray-500 font-bold">
+            DOANH THU ĐÃ GIAO
+          </p>
+
+          <p
+            id="statRevenue"
+            class="text-2xl font-black mt-2 whitespace-nowrap"
+          >
+            0 ₫
+          </p>
+        </div>
+
+
+        <div class="bg-white border border-[#e8d5a3] p-6">
+          <p class="text-xs text-gray-500 font-bold">
+            MÃ GIẢM GIÁ
+          </p>
+
+          <p id="statCoupons" class="text-3xl font-black mt-2">0</p>
+        </div>
+
+        <div class="bg-white border border-[#e8d5a3] p-6">
+          <p class="text-xs text-gray-500 font-bold">KHÁCH HÀNG</p>
+          <p id="statCustomers" class="text-3xl font-black mt-2">0</p>
+        </div>
+
+      </div>
+
+
+      <div class="bg-white border border-[#e8d5a3] p-6">
+
+        <h2 class="font-black text-xl mb-4">
+          ĐƠN HÀNG GẦN ĐÂY
+        </h2>
+
+        <div
+          id="recentOrders"
+          class="space-y-3 text-sm text-gray-500"
+        >
+          Đang tải...
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- PRODUCTS -->
+    <section id="page-products" class="page hidden">
+
+      <h1 class="text-3xl font-black mb-7">
+        QUẢN LÝ SẢN PHẨM
+      </h1>
+
+      <div class="grid xl:grid-cols-5 gap-5">
+
+        <!-- PRODUCT FORM -->
+        <div
+          class="
+            xl:col-span-2
+            bg-white
+            border border-[#e8d5a3]
+            p-6
+          "
+        >
+
+          <h2
+            id="formTitle"
+            class="text-xl font-black mb-5"
+          >
+            THÊM SẢN PHẨM
+          </h2>
+
+          <input id="editId" type="hidden">
+
+
+          <label class="font-bold text-sm">
+            Tên sản phẩm
+          </label>
+
+          <input
+            id="name"
+            class="border p-3 w-full mt-2 mb-4"
+          >
+
+
+          <label class="font-bold text-sm">
+            Thương hiệu
+          </label>
+
+          <select
+            id="brand"
+            class="border p-3 w-full mt-2 mb-4"
+          >
+            <option>Nike</option>
+            <option>adidas</option>
+            <option>Louis Vuitton</option>
+            <option>Gucci</option>
+            <option>Dior</option>
+          </select>
+
+
+          <div class="grid grid-cols-2 gap-3">
+
+            <div>
+
+              <label class="font-bold text-sm">
+                Giá bán
+              </label>
+
+              <input
+                id="price"
+                type="number"
+                class="border p-3 w-full mt-2 mb-4"
+              >
+
+            </div>
+
+            <div>
+
+              <label class="font-bold text-sm">
+                Giá gốc
+              </label>
+
+              <input
+                id="originalPrice"
+                type="number"
+                class="border p-3 w-full mt-2 mb-4"
+              >
+
+            </div>
+
+          </div>
+
+
+          <label class="font-bold text-sm">
+            Loại sản phẩm
+          </label>
+
+          <select
+            id="type"
+            onchange="updateFields()"
+            class="border p-3 w-full mt-2 mb-4"
+          >
+            <option value="ao">Áo</option>
+            <option value="quan">Quần</option>
+            <option value="giay-dep">Giày Dép</option>
+            <option value="phu-kien">Phụ Kiện</option>
+            <option value="bong-da">Đồ Bóng Đá</option>
+          </select>
+
+
+          <div id="genderWrap">
+
+            <label class="font-bold text-sm">
+              Giới tính
+            </label>
+
+            <select
+              id="gender"
+              onchange="renderSubcategories(); renderSizes();"
+              class="border p-3 w-full mt-2 mb-4"
+            >
+              <option value="nam">Nam</option>
+              <option value="nu">Nữ</option>
+            </select>
+
+          </div>
+
+
+          <label class="font-bold text-sm">
+            Phân khúc
+          </label>
+
+          <select
+            id="subcategory"
+            class="border p-3 w-full mt-2 mb-4"
+          ></select>
+          
+          <div class="grid grid-cols-2 gap-3 mb-5">
+
+  <div>
+    <label class="font-bold text-sm">
+      Tên màu
+    </label>
+
+    <input
+      id="colorName"
+      type="text"
+      placeholder="Ví dụ: Nâu"
+      class="border p-3 w-full mt-2"
+    >
+  </div>
+
+  <div>
+    <label class="font-bold text-sm">
+      Nhóm biến thể
+    </label>
+
+    <input
+      id="variantGroup"
+      type="text"
+      placeholder="Ví dụ: lv-fluffy-monogram"
+      class="border p-3 w-full mt-2"
+    >
+  </div>
+
+</div>
+
+          <label class="font-bold text-sm">
+            Size
+          </label>
+
+          <div
+            id="sizeList"
+            class="flex flex-wrap gap-2 mt-3 mb-5"
+          ></div>
+
+          <label class="font-bold text-sm">
+            Ảnh sản phẩm (tối đa 10)
+          </label>
+
+          <input
+            id="images"
+            type="file"
+            accept="image/*"
+            multiple
+            onchange="readImages()"
+            class="border p-3 w-full mt-2"
+          >
+
+          <div
+            id="preview"
+            class="grid grid-cols-4 gap-2 my-4"
+          ></div>
+
+
+          <label class="font-bold text-sm">
+            Mô tả
+          </label>
+
+          <textarea
+            id="desc"
+            rows="4"
+            class="border p-3 w-full mt-2 mb-5"
+          ></textarea>
+
+
+          <div class="flex gap-3">
+
+            <button
+              id="saveButton"
+              onclick="saveProduct()"
+              class="
+                flex-1
+                py-4
+                font-black
+                bg-[#3b2416]
+                text-[#e8d5a3]
+              "
+            >
+              ĐĂNG SẢN PHẨM
+            </button>
+
+            <button
+              id="cancelButton"
+              onclick="resetForm()"
+              class="
+                hidden
+                bg-gray-500
+                text-white
+                px-5
+              "
+            >
+              HỦY
+            </button>
+
+          </div>
+
+        </div>
+
+
+        <!-- PRODUCT LIST -->
+        <div
+          class="
+            xl:col-span-3
+            bg-white
+            border border-[#e8d5a3]
+            p-6
+          "
+        >
+
+          <div class="flex justify-between mb-5">
+
+            <h2 class="text-xl font-black">
+              DANH SÁCH SẢN PHẨM
+            </h2>
+
+            <span
+              id="productCount"
+              class="text-sm text-gray-500"
+            ></span>
+
+          </div>
+
+          <div
+            id="productList"
+            class="space-y-3"
+          ></div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- ORDERS -->
+    <section id="page-orders" class="page hidden">
+
+      <div class="flex justify-between items-center mb-7">
+
+        <div>
+
+          <h1 class="text-3xl font-black">
+            QUẢN LÝ ĐƠN HÀNG
+          </h1>
+
+          <p class="text-gray-500 mt-1">
+            Cập nhật trạng thái đơn hàng ShopLux
+          </p>
+
+        </div>
+
+        <span
+          id="orderCount"
+          class="text-sm text-gray-500"
+        ></span>
+
+      </div>
+
+
+      <div
+        id="adminOrderList"
+        class="space-y-4"
+      >
+
+        <div class="text-center py-10">
+          Đang tải...
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- COUPONS -->
+    <section id="page-coupons" class="page hidden">
+
+      <h1 class="text-3xl font-black mb-7">
+        MÃ GIẢM GIÁ
+      </h1>
+
+
+      <div class="grid xl:grid-cols-5 gap-5">
+
+        <!-- COUPON FORM -->
+        <div
+          class="
+            xl:col-span-2
+            bg-white
+            border border-[#e8d5a3]
+            p-6
+          "
+        >
+
+          <h2
+            id="couponFormTitle"
+            class="text-xl font-black mb-5"
+          >
+            TẠO MÃ GIẢM GIÁ
+          </h2>
+
+          <input
+            id="couponId"
+            type="hidden"
+          >
+
+
+          <label class="font-bold text-sm">
+            Mã giảm giá
+          </label>
+
+          <input
+            id="couponCode"
+            class="
+              border
+              p-3
+              w-full
+              mt-2
+              mb-4
+              uppercase
+            "
+            placeholder="SHOPLUX10"
+          >
+
+
+          <label class="font-bold text-sm">
+            Loại
+          </label>
+
+          <select
+            id="couponType"
+            class="border p-3 w-full mt-2 mb-4"
+          >
+            <option value="percent">
+              Giảm theo %
+            </option>
+
+            <option value="fixed">
+              Giảm số tiền
+            </option>
+
+            <option value="shipping">
+              Miễn phí vận chuyển
+            </option>
+          </select>
+
+
+          <div class="grid grid-cols-2 gap-3">
+
+            <div>
+
+              <label class="font-bold text-sm">
+                Giá trị
+              </label>
+
+              <input
+                id="couponValue"
+                type="number"
+                class="border p-3 w-full mt-2 mb-4"
+              >
+
+            </div>
+
+
+            <div>
+
+              <label class="font-bold text-sm">
+                Đơn tối thiểu
+              </label>
+
+              <input
+                id="couponMinOrder"
+                type="number"
+                value="0"
+                class="border p-3 w-full mt-2 mb-4"
+              >
+
+            </div>
+
+          </div>
+
+
+          <label class="font-bold text-sm">
+            Giảm tối đa
+          </label>
+
+          <input
+            id="couponMaxDiscount"
+            type="number"
+            class="border p-3 w-full mt-2 mb-4"
+            placeholder="Để trống nếu không giới hạn"
+          >
+
+
+          <div class="grid grid-cols-2 gap-3">
+
+            <div>
+
+              <label class="font-bold text-sm">
+                Bắt đầu
+              </label>
+
+              <input
+                id="couponStartAt"
+                type="datetime-local"
+                class="border p-3 w-full mt-2 mb-4"
+              >
+
+            </div>
+
+
+            <div>
+
+              <label class="font-bold text-sm">
+                Hết hạn
+              </label>
+
+              <input
+                id="couponEndAt"
+                type="datetime-local"
+                class="border p-3 w-full mt-2 mb-4"
+              >
+
+            </div>
+
+          </div>
+
+
+          <label class="font-bold text-sm">
+            Số lượt sử dụng tối đa
+          </label>
+
+          <input
+            id="couponUsageLimit"
+            type="number"
+            min="1"
+            class="border p-3 w-full mt-2 mb-4"
+            placeholder="Để trống = không giới hạn"
+          >
+
+
+          <label class="flex items-center gap-2 mb-5">
+
+            <input
+              id="couponActive"
+              type="checkbox"
+              checked
+            >
+
+            <span class="font-bold text-sm">
+              Đang hoạt động
+            </span>
+
+          </label>
+
+
+          <div class="flex gap-3">
+
+            <button
+              onclick="saveCoupon()"
+              class="
+                flex-1
+                py-4
+                font-black
+                bg-[#3b2416]
+                text-[#e8d5a3]
+              "
+            >
+              LƯU MÃ
+            </button>
+
+            <button
+              id="couponCancel"
+              onclick="resetCouponForm()"
+              class="
+                hidden
+                bg-gray-500
+                text-white
+                px-5
+              "
+            >
+              HỦY
+            </button>
+
+          </div>
+
+        </div>
+
+
+        <!-- COUPON LIST -->
+        <div
+          class="
+            xl:col-span-3
+            bg-white
+            border border-[#e8d5a3]
+            p-6
+          "
+        >
+
+          <div class="flex justify-between mb-5">
+
+            <h2 class="text-xl font-black">
+              DANH SÁCH MÃ
+            </h2>
+
+            <span
+              id="couponCount"
+              class="text-sm text-gray-500"
+            ></span>
+
+          </div>
+
+          <div
+            id="couponList"
+            class="space-y-3"
+          >
+            Đang tải...
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- CUSTOMERS -->
+    <section id="page-customers" class="page hidden">
+      <div class="flex flex-wrap justify-between items-center gap-4 mb-7">
+        <div>
+          <h1 class="text-3xl font-black">KHÁCH HÀNG</h1>
+          <p class="text-gray-500 mt-1">Danh sách khách hàng ShopLux</p>
+        </div>
+        <span id="customerCount" class="text-sm text-gray-500">0 khách hàng</span>
+      </div>
+
+      <div class="bg-white border border-[#e8d5a3] overflow-x-auto">
+        <table class="w-full min-w-[1350px] text-sm">
+          <thead class="bg-[#3b2416] text-[#e8d5a3]">
+  <tr>
+
+    <th class="p-4 text-left">
+      KHÁCH HÀNG
+    </th>
+
+    <th class="p-4 text-left">
+      LIÊN HỆ
+    </th>
+
+    <th class="p-4 text-left">
+      TÀI KHOẢN LIÊN KẾT
+    </th>
+
+    <th class="p-4 text-left">
+      NGÀY THAM GIA
+    </th>
+
+    <th class="p-4 text-center">
+      SỐ ĐƠN
+    </th>
+
+    <th class="p-4 text-right">
+      TỔNG CHI TIÊU
+    </th>
+
+    <th class="p-4 text-left">
+      ĐƠN GẦN NHẤT
+    </th>
+
+  </tr>
+</thead>
+          <tbody id="customerList">
+            <tr><td colspan="7" class="p-10 text-center text-gray-400">Đang tải...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+
+    <!-- SETTINGS -->
+    <section id="page-settings" class="page hidden">
+
+      <div class="mb-7">
+        <h1 class="text-3xl font-black">CÀI ĐẶT</h1>
+        <p class="text-gray-500 mt-1">
+          Cấu hình chung cho cửa hàng ShopLux
+        </p>
+      </div>
+
+      <div class="max-w-3xl bg-white border border-[#e8d5a3] p-6 lg:p-8">
+
+        <h2 class="font-black text-xl mb-6">
+          CẤU HÌNH CỬA HÀNG
+        </h2>
+
+        <label class="font-bold text-sm">Tên cửa hàng</label>
+        <input
+          id="settingStoreName"
+          type="text"
+          class="border p-3 w-full mt-2 mb-5"
+          placeholder="ShopLux"
+        >
+
+        <label class="font-bold text-sm">Phí vận chuyển</label>
+        <div class="relative mt-2 mb-5">
+          <input
+            id="settingShippingFee"
+            type="number"
+            min="0"
+            class="border p-3 pr-12 w-full"
+            placeholder="30000"
+          >
+          <span class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 font-bold">
+            ₫
+          </span>
+        </div>
+
+        <label class="font-bold text-sm">
+          Ngưỡng miễn phí vận chuyển
+        </label>
+
+        <div class="relative mt-2 mb-2">
+          <input
+            id="settingFreeShippingThreshold"
+            type="number"
+            min="0"
+            class="border p-3 pr-12 w-full"
+            placeholder="1000000"
+          >
+          <span class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 font-bold">
+            ₫
+          </span>
+        </div>
+
+        <p class="text-xs text-gray-400 mb-6">
+          Đơn hàng đạt từ ngưỡng này trở lên sẽ được miễn phí vận chuyển.
+        </p>
+
+        <button
+          id="saveSettingsButton"
+          onclick="saveSettings()"
+          class="bg-[#3b2416] text-[#e8d5a3] px-7 py-4 font-black"
+        >
+          LƯU CÀI ĐẶT
+        </button>
+
+        <p id="settingsMessage" class="text-sm mt-4"></p>
+
+      </div>
+
+    </section>
+
+  </main>
+
+</div>
+
+
+<script src="/admin/admin.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+<base href="/">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Sản phẩm yêu thích | ShopLux</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <link rel="stylesheet" href="/favorites/favorites.css">
+</head>
+
+<body>
+
+<header
+  class="border-b"
+  style="
+    background:#3b2416;
+    color:#fffdf8;
+    border-color:#c9a227;
+  "
+>
+  <div
+    class="
+      max-w-7xl
+      mx-auto
+      px-4
+      py-6
+      flex
+      justify-between
+      items-center
+    "
+  >
+
+    <a href="/" class="text-center">
+
+      <div
+        class="
+          luxury-font
+          text-3xl
+          font-bold
+          tracking-[5px]
+        "
+        style="color:#e8d5a3"
+      >
+        SHOPLUX
+      </div>
+
+      <div
+        class="
+          text-[9px]
+          tracking-[4px]
+          mt-1
+        "
+      >
+        MAISON • LUXURY FASHION
+      </div>
+
+    </a>
+
+    <a
+      href="/"
+      class="font-bold"
+      style="color:#e8d5a3"
+    >
+      TRANG CHỦ
+    </a>
+
+  </div>
+</header>
+
+
+<main class="max-w-7xl mx-auto px-4 py-12">
+
+  <div class="text-center mb-10">
+
+    <div
+      class="text-[10px] tracking-[5px]"
+      style="color:#70452d"
+    >
+      SHOPLUX MEMBER
+    </div>
+
+    <h1
+      class="
+        luxury-font
+        text-4xl
+        mt-3
+      "
+    >
+<h1 class="luxury-font text-4xl mt-3">
+  SẢN PHẨM YÊU THÍCH
+</h1>
+  </h1>
+
+    <p
+      id="favoriteCount"
+      class="text-gray-500 mt-3"
+    ></p>
+
+  </div>
+
+
+  <div
+    id="emptyFavorites"
+    class="
+      hidden
+      text-center
+      bg-[#fffdf8]
+      border
+      py-16
+    "
+    style="border-color:#e8d5a3"
+  >
+
+    <div
+      class="
+        text-5xl
+        mb-5
+      "
+      style="color:#70452d"
+    >
+      ♡
+    </div>
+
+    <div
+      class="
+        luxury-font
+        text-2xl
+      "
+    >
+      Chưa có sản phẩm yêu thích
+    </div>
+
+    <a
+      href="/"
+      class="
+        inline-block
+        mt-7
+        px-8
+        py-3
+        font-bold
+      "
+      style="
+        background:#3b2416;
+        color:#e8d5a3;
+      "
+    >
+      TIẾP TỤC MUA SẮM
+    </a>
+
+  </div>
+
+
+  <div
+    id="favoriteList"
+    class="
+      grid
+      grid-cols-1
+      sm:grid-cols-2
+      lg:grid-cols-4
+      gap-6
+    "
+  ></div>
+
+</main>
+
+
+<script src="/favorites/favorites.js"></script>
+
+</body>
+</html>
