@@ -83,30 +83,30 @@ function productSearchText(product) {
   return normalizeText([
     product.name,
     product.brand,
-    product.desc,
     product.type,
     TYPE_NAMES[product.type],
     product.subcategory,
     subName,
     genderName
-  ].join(" "));
+  ].filter(Boolean).join(" "));
 }
 
-
 function searchProducts(products, keyword) {
-  if (!keyword) return products;
+  if (!keyword || !keyword.trim()) return products;
 
-  const search = normalizeText(keyword);
-
-  const words = search
-    .split(/\s+/)
+  const words = normalizeText(keyword)
+    .split(/[^a-z0-9]+/)
     .filter(Boolean);
 
   return products.filter(product => {
     const text = productSearchText(product);
 
+    const productWords = text
+      .split(/[^a-z0-9]+/)
+      .filter(Boolean);
+
     return words.every(word =>
-      text.includes(word)
+      productWords.includes(word)
     );
   });
 }
