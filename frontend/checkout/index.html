@@ -556,7 +556,48 @@
 
             </label>
 
+  <!-- CHỌN NGÂN HÀNG -->
+<div
+  id="bankPaymentOptions"
+  class="hidden mt-4 border p-5"
+  style="
+    border-color:#c9a227;
+    background:#fffdf8;
+  "
+>
+  <h3
+    class="font-bold mb-4"
+    style="color:#3b2416"
+  >
+    CHỌN NGÂN HÀNG CHUYỂN KHOẢN
+  </h3>
 
+  <select
+    id="selectedBank"
+    class="w-full border p-3"
+    style="border-color:#c9a227"
+  >
+    <option value="TCB">
+      Techcombank - 7583888666
+    </option>
+
+    <option value="MB">
+      MB Bank - 6838345678
+    </option>
+  </select>
+
+  <div class="mt-4 text-sm leading-7">
+    <p>
+      Chủ tài khoản:
+      <strong>TRINH HOANG TUAN KIET</strong>
+    </p>
+
+    <p class="text-gray-500">
+      Mã QR thanh toán sẽ hiển thị sau khi
+      bạn đặt hàng thành công.
+    </p>
+  </div>
+</div>
 
           <div class="mt-8 flex justify-end">
 
@@ -815,6 +856,39 @@
 
 
 <script src="/checkout/checkout.js"></script>
+
+<script>
+  const paymentRadios =
+    document.querySelectorAll(
+      'input[name="payment"]'
+    );
+
+  const bankOptions =
+    document.getElementById(
+      "bankPaymentOptions"
+    );
+
+  function toggleBankPayment() {
+    const selected =
+      document.querySelector(
+        'input[name="payment"]:checked'
+      )?.value;
+
+    bankOptions.classList.toggle(
+      "hidden",
+      selected !== "bank"
+    );
+  }
+
+  paymentRadios.forEach(radio => {
+    radio.addEventListener(
+      "change",
+      toggleBankPayment
+    );
+  });
+
+  toggleBankPayment();
+</script>
 
 </body>
 </html>

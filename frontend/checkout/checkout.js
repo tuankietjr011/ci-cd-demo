@@ -952,6 +952,117 @@ document
 
     }
   );
+  function showBankPaymentQR(order, bank, items) {
+  const accounts = {
+    TCB: {
+      bankId: "TCB",
+      account: "7583888666",
+      name: "Techcombank"
+    },
+    MB: {
+      bankId: "MB",
+      account: "6838345678",
+      name: "MB Bank"
+    }
+  };
+
+  const selected = accounts[bank];
+
+  if (!selected || !order?.code) {
+    alert("Không thể hiển thị thông tin chuyển khoản.");
+    return;
+  }
+
+  const amount = Number(order.total);
+
+  if (!Number.isFinite(amount) || amount <= 0) {
+    alert("Không xác định được số tiền chuyển khoản.");
+    return;
+  }
+
+  const productName = String(
+    items[0]?.name || items[0]?.product_name || "Don hang"
+  )
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/đ/g, "d")
+    .replace(/Đ/g, "D")
+    .replace(/[^a-zA-Z0-9 ]/g, "")
+    .trim();
+
+  const transferContent =
+    `SL ${order.code} ${productName}`.slice(0, 90);
+
+  const qrUrl =
+    `https://img.vietqr.io/image/` +
+    `${selected.bankId}-${selected.account}-compact2.png` +
+    `?amount=${encodeURIComponent(amount)}` +
+    `&addInfo=${encodeURIComponent(transferContent)}` +
+    `&accountName=${encodeURIComponent("TRINH HOANG TUAN KIET")}`;
+
+  const container = document.createElement("div");
+
+  container.style.cssText = `
+    max-width:520px;
+    margin:40px auto;
+    padding:28px;
+    background:#fffdf8;
+    border:1px solid #c9a227;
+    text-align:center;
+    color:#3b2416;
+  `;
+
+  const title = document.createElement("h2");
+  title.textContent = "THANH TOÁN CHUYỂN KHOẢN";
+  title.style.cssText = "font-size:22px;font-weight:bold;margin-bottom:16px";
+
+  const info = document.createElement("div");
+  info.style.cssText = "line-height:2;margin-bottom:20px";
+
+  const details = [
+    selected.name,
+    `Số tài khoản: ${selected.account}`,
+    "Chủ tài khoản: TRINH HOANG TUAN KIET",
+    `Số tiền: ${amount.toLocaleString("vi-VN")} ₫`,
+    `Nội dung: ${transferContent}`
+  ];
+
+  details.forEach(value => {
+    const line = document.createElement("p");
+    line.textContent = value;
+    info.appendChild(line);
+  });
+
+  const qr = document.createElement("img");
+  qr.src = qrUrl;
+  qr.alt = "Mã VietQR chuyển khoản ShopLux";
+  qr.style.cssText = "width:280px;max-width:100%;margin:0 auto 20px";
+
+  const button = document.createElement("button");
+  button.type = "button";
+  button.textContent = "TÔI ĐÃ CHUYỂN KHOẢN";
+  button.style.cssText = `
+    background:#3b2416;
+    color:#e8d5a3;
+    padding:14px 24px;
+    font-weight:bold;
+    width:100%;
+    cursor:pointer;
+  `;
+
+  button.addEventListener("click", () => {
+    alert(
+      "ShopLux chưa thể tự kiểm tra giao dịch ngân hàng.\n" +
+      "Vui lòng giữ lại biên lai chuyển khoản.\n" +
+      "Đơn hàng chưa được xác nhận đã thanh toán."
+    );
+  });
+
+  container.append(title, info, qr, button);
+
+  document.body.replaceChildren(container);
+  window.scrollTo(0, 0);
+}
 
 document
   .getElementById(
@@ -1061,6 +1172,18 @@ const note =
           'input[name="payment"]:checked'
         )?.value || "cod";
 
+        const selectedBank =
+  paymentMethod === "bank"
+    ? document.getElementById("selectedBank")?.value
+    : null;
+
+if (
+  paymentMethod === "bank" &&
+  !["TCB", "MB"].includes(selectedBank)
+) {
+  alert("Vui lòng chọn ngân hàng chuyển khoản.");
+  return;
+}
 
       if (
         !fullname ||
@@ -1240,21 +1363,27 @@ if (
         );
 
 
-        const order =
-          json.order;
+        const order = json.order;
 
+// Chuyển khoản: hiển thị mã VietQR
+if (paymentMethod === "bank") {
+  showBankPaymentQR(
+    order,
+    selectedBank,
+    checkoutItems
+  );
+  return;
+}
 
-        alert(
-          "Đặt hàng thành công!\nMã đơn: " +
-          order.code
-        );
+// COD: giữ nguyên chức năng cũ
+alert(
+  "Đặt hàng thành công!\nMã đơn: " +
+  order.code
+);
 
-
-        location.href =
-          "/?order=" +
-          encodeURIComponent(
-            order.code
-          );
+location.href =
+  "/?order=" +
+  encodeURIComponent(order.code);
 
 
       } catch (error) {
