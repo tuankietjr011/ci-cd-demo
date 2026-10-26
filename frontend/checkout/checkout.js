@@ -1050,13 +1050,47 @@ document
     cursor:pointer;
   `;
 
-  button.addEventListener("click", () => {
-    alert(
-      "ShopLux chưa thể tự kiểm tra giao dịch ngân hàng.\n" +
-      "Vui lòng giữ lại biên lai chuyển khoản.\n" +
-      "Đơn hàng chưa được xác nhận đã thanh toán."
+  button.addEventListener("click", async () => {
+  button.disabled = true;
+  button.textContent = "ĐANG GỬI XÁC NHẬN...";
+
+  try {
+    const token = localStorage.getItem("shoplux_token");
+
+    const response = await fetch(
+      `/api/orders/${encodeURIComponent(order.code)}/report-payment`,
+      {
+        method: "PATCH",
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      }
     );
-  });
+
+    const json = await response.json();
+
+    if (!response.ok || !json.success) {
+      throw new Error(
+        json.message || "Không thể gửi xác nhận chuyển khoản."
+      );
+    }
+
+    button.textContent = "ĐANG CHỜ XÁC MINH THANH TOÁN";
+    button.style.background = "#777";
+
+    alert(
+      "ShopLux đã ghi nhận thông báo chuyển khoản của bạn.\n" +
+      "Đơn hàng đang chờ Admin kiểm tra giao dịch ngân hàng.\n" +
+      "Vui lòng giữ lại biên lai chuyển khoản."
+    );
+
+  } catch (error) {
+    alert(error.message);
+
+    button.disabled = false;
+    button.textContent = "TÔI ĐÃ CHUYỂN KHOẢN";
+  }
+});
 
   container.append(title, info, qr, button);
 

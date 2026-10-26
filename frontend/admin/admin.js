@@ -1016,9 +1016,15 @@ async function loadAdminOrders() {
   try {
 
     const response =
-      await fetch(
-        API + "/admin/orders"
-      );
+  await fetch(
+    API + "/admin/orders",
+    {
+      headers: {
+        Authorization:
+          "Bearer " + localStorage.getItem("shoplux_token")
+      }
+    }
+  );
 
 
     const json =
@@ -1351,55 +1357,39 @@ function renderAdminOrders() {
     THANH TOÁN
   </label>
 
-  <select
-    onchange="
-      updatePaymentStatus(
-        '${order.code}',
-        this.value
-      )
-    "
-    class="
-      border
-      p-3
-      bg-white
-      min-w-[180px]
-      font-bold
-    "
-    style="
-      border-color:#c9a227
-    "
-  >
-
-    <option
-      value="unpaid"
-      ${
-        order.payment_status === "unpaid"
-          ? "selected"
-          : ""
-      }
-    >
-      Chưa thanh toán
-    </option>
-
-    <option
-      value="paid"
-      ${
-        order.payment_status === "paid"
-          ? "selected"
-          : ""
-      }
-    >
-      Đã thanh toán
-    </option>
-
-  </select>
-
+  <div
+  class="border p-3 bg-white min-w-[180px] font-bold"
+  style="border-color:#c9a227"
+>
+  ${
+    order.payment_status === "paid"
+      ? "Đã thanh toán"
+      : order.payment_status === "pending_verification"
+        ? "Chờ xác minh thanh toán"
+        : "Chưa thanh toán"
+  }
+</div>
   <div
     class="
       text-xs
       text-gray-500
       mt-2
     "
+    ${
+  order.payment_method === "bank" &&
+  order.payment_status === "pending_verification"
+    ? `
+      <button
+        type="button"
+        onclick="confirmBankPayment('${order.code}')"
+        class="mt-3 w-full p-3 font-bold text-white"
+        style="background:#3b2416"
+      >
+        XÁC NHẬN ĐÃ NHẬN TIỀN
+      </button>
+    `
+    : ""
+}
   >
     ${
       order.payment_method === "bank"
@@ -1575,9 +1565,10 @@ async function updatePaymentStatus(
           method: "PATCH",
 
           headers: {
-            "Content-Type":
-              "application/json"
-          },
+  "Content-Type": "application/json",
+  Authorization:
+    "Bearer " + localStorage.getItem("shoplux_token")
+},
 
           body:
             JSON.stringify({
@@ -3293,6 +3284,18 @@ async function bootAdmin() {
   }
 
   await startAdmin();
+}
+
+async function confirmBankPayment(code) {
+  const confirmed = confirm(
+    "Bạn đã kiểm tra tài khoản ngân hàng và chắc chắn nhận được tiền cho đơn " +
+    code +
+    " chưa?"
+  );
+
+  if (!confirmed) return;
+
+  await updatePaymentStatus(code, "paid");
 }
 
 bootAdmin();

@@ -382,10 +382,7 @@ app.post(
           : "cod";
 
 
-      const paymentStatus =
-        payment === "bank"
-          ? "paid"
-          : "unpaid";
+      const paymentStatus = "unpaid";
 
 
       const paidAt =
@@ -614,6 +611,53 @@ const orderResult =
 
   }
 );
+// CUSTOMER - REPORT BANK TRANSFER
+app.patch(
+  "/api/orders/:code/report-payment",
+  authenticateToken,
+  async (req, res) => {
+    try {
+      const code = String(req.params.code || "").trim();
 
+      const result = await pool.query(
+        `
+        UPDATE orders
+        SET
+          payment_status = 'pending_verification',
+          updated_at = CURRENT_TIMESTAMP
+        WHERE code = $1
+          AND user_id = $2
+          AND payment_method = 'bank'
+          AND payment_status = 'unpaid'
+          AND status <> 'cancelled'
+        RETURNING *
+        `,
+        [code, req.user.id]
+      );
+
+      if (result.rows.length === 0) {
+        return res.status(400).json({
+          success: false,
+          message:
+            "Không thể báo chuyển khoản cho đơn hàng này."
+        });
+      }
+
+      return res.json({
+        success: true,
+        message: "Đã gửi yêu cầu xác minh thanh toán.",
+        order: result.rows[0]
+      });
+
+    } catch (error) {
+      console.error("REPORT PAYMENT ERROR:", error);
+
+      return res.status(500).json({
+        success: false,
+        message: "Không thể gửi yêu cầu xác minh."
+      });
+    }
+  }
+);
 
 };

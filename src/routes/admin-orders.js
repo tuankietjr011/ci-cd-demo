@@ -90,6 +90,8 @@ app.get(
 
 app.get(
   "/api/admin/orders",
+  authenticateToken,
+  requireAdmin,
   async (req, res) => {
 
     try {
@@ -169,6 +171,8 @@ app.get(
 
 app.patch(
   "/api/admin/orders/:code/status",
+  authenticateToken,
+  requireAdmin,
   async (req, res) => {
 
     try {
@@ -295,6 +299,8 @@ app.patch(
 
 app.patch(
   "/api/admin/orders/:code/payment-status",
+  authenticateToken,
+  requireAdmin,
   async (req, res) => {
 
     try {
@@ -308,11 +314,7 @@ app.patch(
         ).trim();
 
 
-      const allowedPaymentStatuses = [
-        "unpaid",
-        "paid"
-      ];
-
+      const allowedPaymentStatuses = ["paid"];
 
       if (!code) {
 
@@ -340,34 +342,21 @@ app.patch(
 
 
       const result =
-        await pool.query(
-          `
-          UPDATE orders
-
-          SET
-            payment_status = $1,
-
-            paid_at =
-              CASE
-                WHEN $1 = 'paid'
-                  THEN COALESCE(
-                    paid_at,
-                    CURRENT_TIMESTAMP
-                  )
-                ELSE NULL
-              END,
-
-            updated_at = CURRENT_TIMESTAMP
-
-          WHERE code = $2
-
-          RETURNING *
-          `,
-          [
-            paymentStatus,
-            code
-          ]
-        );
+  await pool.query(
+    `
+    UPDATE orders
+    SET
+      payment_status = 'paid',
+      paid_at = COALESCE(paid_at, CURRENT_TIMESTAMP),
+      updated_at = CURRENT_TIMESTAMP
+    WHERE code = $1
+      AND payment_method = 'bank'
+      AND payment_status = 'pending_verification'
+      AND status <> 'cancelled'
+    RETURNING *
+    `,
+    [code]
+  );
 
 
       if (result.rows.length === 0) {

@@ -337,7 +337,19 @@ async function loadOrders() {
                   }
                 </div>
 
-
+                <div
+  class="text-sm font-bold mt-2"
+  style="color:#70452d"
+>
+  Thanh toán:
+  ${
+    order.payment_status === "paid"
+      ? "Đã thanh toán"
+      : order.payment_status === "pending_verification"
+        ? "Chờ xác minh thanh toán"
+        : "Chưa thanh toán"
+  }
+</div>
                 <div
                   class="
                     text-xs
