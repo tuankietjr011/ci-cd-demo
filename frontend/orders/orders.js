@@ -673,53 +673,6 @@ function renderOrderTracking(order) {
   </div>
 </div>
 
-        <div style="
-          display:flex;
-          gap:12px;
-          align-items:flex-start;
-        ">
-          <span style="color:#c9a227;">●</span>
-
-          <div>
-            <div style="font-weight:bold;color:#3b2416;">
-              ${escapeHTML(statusInfo(order.status).text)}
-            </div>
-
-            <div style="
-              font-size:12px;
-              color:#6b7280;
-              margin-top:4px;
-            ">
-              Trạng thái hiện tại
-            </div>
-          </div>
-        </div>
-
-        ${createdAt ? `
-          <div style="
-            display:flex;
-            gap:12px;
-            margin-top:16px;
-          ">
-            <span style="color:#c9a227;">●</span>
-
-            <div>
-              <div style="font-weight:bold;color:#3b2416;">
-                Đã đặt hàng
-              </div>
-
-              <div style="
-                font-size:12px;
-                color:#6b7280;
-                margin-top:4px;
-              ">
-                ${escapeHTML(formatDate(createdAt))}
-              </div>
-            </div>
-          </div>
-        ` : ""}
-      </div>
-
       <p style="
         margin-top:14px;
         font-size:12px;
