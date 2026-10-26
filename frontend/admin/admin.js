@@ -1358,8 +1358,14 @@ function renderAdminOrders() {
   </label>
 
   <div
-  class="border p-3 bg-white min-w-[180px] font-bold"
-  style="border-color:#c9a227"
+  class="border bg-white px-3 flex items-center font-bold whitespace-nowrap"
+  style="
+    border-color:#c9a227;
+    height:46px;
+    min-width:245px;
+    font-size:14px;
+    color:#1f1f1f;
+  "
 >
   ${
     order.payment_status === "paid"
@@ -1379,14 +1385,21 @@ function renderAdminOrders() {
   order.payment_method === "bank" &&
   order.payment_status === "pending_verification"
     ? `
-      <button
-        type="button"
-        onclick="confirmBankPayment('${order.code}')"
-        class="mt-3 w-full p-3 font-bold text-white"
-        style="background:#3b2416"
-      >
-        XÁC NHẬN ĐÃ NHẬN TIỀN
-      </button>
+    <button
+  type="button"
+  onclick="confirmBankPayment('${order.code}')"
+  class="mt-3 px-4 font-bold whitespace-nowrap"
+  style="
+    background:#3b2416;
+    color:#e8d5a3;
+    height:46px;
+    width:245px;
+    font-size:12px;
+    cursor:pointer;
+  "
+>
+  XÁC NHẬN ĐÃ NHẬN TIỀN
+</button>
     `
     : ""
 }

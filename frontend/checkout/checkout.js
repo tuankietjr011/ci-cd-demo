@@ -1092,7 +1092,31 @@ document
   }
 });
 
-  container.append(title, info, qr, button);
+const homeButton = document.createElement("button");
+
+homeButton.type = "button";
+homeButton.textContent = "← TRỞ VỀ TRANG CHỦ";
+
+homeButton.style.cssText = `
+  position:fixed;
+  top:20px;
+  left:20px;
+  z-index:9999;
+  background:#3b2416;
+  color:#e8d5a3;
+  border:1px solid #c9a227;
+  padding:12px 18px;
+  font-size:14px;
+  font-weight:bold;
+  cursor:pointer;
+  border-radius:6px;
+`;
+
+homeButton.addEventListener("click", () => {
+  window.location.href = "/";
+});
+
+container.append(title, info, qr, button, homeButton);
 
   document.body.replaceChildren(container);
   window.scrollTo(0, 0);
