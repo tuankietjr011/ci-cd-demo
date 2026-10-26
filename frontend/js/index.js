@@ -145,11 +145,17 @@ const total =
           "
           style="border-color:#c9a227"
         >
-          ${["S", "M", "L", "XL"]
-            .map(size => `
+          ${(
+  item.sizes?.length
+    ? item.sizes
+    : /^\d+$/.test(String(item.size))
+      ? ["36", "37", "38", "39", "40", "41", "42", "43", "44"]
+      : ["S", "M", "L", "XL", "XXL"]
+)
+  .map(size => `
               <option
                 value="${size}"
-                ${item.size === size ? "selected" : ""}
+                ${String(item.size) === String(size) ? "selected" : ""}
               >
                 ${size}
               </option>

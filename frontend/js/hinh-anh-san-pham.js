@@ -236,6 +236,7 @@ function addToCart(id) {
         productImages(product)[0],
 
       size: selectedSize,
+      sizes: product.sizes || [],
 
       qty: selectedQuantity
     });
