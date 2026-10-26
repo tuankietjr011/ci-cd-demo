@@ -210,12 +210,13 @@ async function loadOrders() {
                 </div>
 
                 <div
-                  class="
-                    luxury-font
-                    text-xl
-                    font-bold
-                    mt-1
-                  "
+                class="
+                font-sans
+                text-xl
+                font-bold
+                mt-1
+                tabular-nums
+              "
                   style="color:#3b2416"
                 >
                   ${escapeHTML(order.code)}
@@ -362,10 +363,11 @@ async function loadOrders() {
 
                 <div
                   class="
-                    luxury-font
+                    font-sans
                     text-2xl
                     font-bold
                     mt-1
+                    tabular-nums
                   "
                   style="color:#70452d"
                 >
@@ -515,6 +517,28 @@ function renderOrderTracking(order) {
   const current = statusLevels[order.status] ?? -1;
 
   const createdAt = order.created_at || order.createdAt;
+  const historySteps = [
+  {
+    label: "Đã đặt hàng",
+    completed: current >= 0,
+    time: createdAt
+  },
+  {
+    label: "Đã xác nhận",
+    completed: current >= 1,
+    time: order.confirmed_at
+  },
+  {
+    label: "Đang giao hàng",
+    completed: current >= 2,
+    time: order.shipping_at
+  },
+  {
+    label: "Đã giao hàng",
+    completed: current >= 3,
+    time: order.delivered_at
+  }
+];
 
   return `
     <section style="
@@ -588,18 +612,66 @@ function renderOrderTracking(order) {
       `}
 
       <div style="
-        margin-top:28px;
-        padding:18px;
-        background:#f7f1e7;
-        border-left:4px solid #c9a227;
+  margin-top:28px;
+  padding:18px;
+  background:#f7f1e7;
+  border-left:4px solid #c9a227;
+">
+  <div style="
+    font-weight:bold;
+    color:#3b2416;
+    margin-bottom:16px;
+  ">
+    LỊCH SỬ ĐƠN HÀNG
+  </div>
+
+  <div style="
+    max-height:220px;
+    overflow-y:scroll;
+    padding-right:12px;
+  ">
+    ${historySteps.map((step) => `
+      <div style="
+        display:flex;
+        align-items:flex-start;
+        gap:12px;
+        margin-bottom:20px;
       ">
-        <div style="
-          font-weight:bold;
-          color:#3b2416;
-          margin-bottom:8px;
+        <span style="
+          color:${step.completed ? "#16a34a" : "#9ca3af"};
+          font-size:20px;
+          line-height:24px;
         ">
-          LỊCH SỬ ĐƠN HÀNG
+          ${step.completed ? "✓" : "○"}
+        </span>
+
+        <div>
+          <div style="
+            font-weight:bold;
+            color:${step.completed ? "#3b2416" : "#9ca3af"};
+          ">
+            ${step.label}
+          </div>
+
+          <div style="
+            font-size:12px;
+            color:#6b7280;
+            margin-top:4px;
+            font-variant-numeric:lining-nums tabular-nums;
+          ">
+            ${
+              step.time
+                ? escapeHTML(formatDate(step.time))
+                : step.completed
+                  ? "Chưa có thời gian ghi nhận"
+                  : "Chưa hoàn thành"
+            }
+          </div>
         </div>
+      </div>
+    `).join("")}
+  </div>
+</div>
 
         <div style="
           display:flex;
@@ -724,10 +796,11 @@ async function viewOrder(code) {
 
         <div
           class="
-            luxury-font
+            font-sans
             text-2xl
             font-bold
             mt-1
+            tabular-nums
           "
         >
           ${escapeHTML(order.code)}
@@ -853,8 +926,8 @@ async function viewOrder(code) {
                   </div>
 
 
-                  <div class="font-bold">
-                    ${money(
+                  <div class="font-sans font-bold tabular-nums">
+                      ${money(
                       Number(
                         item.price || 0
                       ) *

@@ -220,7 +220,26 @@ app.patch(
 
     SET
       status = $1::varchar,
+      confirmed_at =
+  CASE
+    WHEN $1::varchar = 'confirmed'
+    THEN COALESCE(confirmed_at, CURRENT_TIMESTAMP)
+    ELSE confirmed_at
+  END,
 
+shipping_at =
+  CASE
+    WHEN $1::varchar = 'shipping'
+    THEN COALESCE(shipping_at, CURRENT_TIMESTAMP)
+    ELSE shipping_at
+  END,
+
+delivered_at =
+  CASE
+    WHEN $1::varchar = 'delivered'
+    THEN COALESCE(delivered_at, CURRENT_TIMESTAMP)
+    ELSE delivered_at
+  END,
       payment_status =
         CASE
           WHEN

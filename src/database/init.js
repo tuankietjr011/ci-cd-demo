@@ -132,6 +132,22 @@ await pool.query(`
   ADD COLUMN IF NOT EXISTS paid_at TIMESTAMP DEFAULT NULL
 `);
 
+// Thời gian hoàn thành từng trạng thái đơn hàng
+await pool.query(`
+  ALTER TABLE orders
+  ADD COLUMN IF NOT EXISTS confirmed_at TIMESTAMP DEFAULT NULL
+`);
+
+await pool.query(`
+  ALTER TABLE orders
+  ADD COLUMN IF NOT EXISTS shipping_at TIMESTAMP DEFAULT NULL
+`);
+
+await pool.query(`
+  ALTER TABLE orders
+  ADD COLUMN IF NOT EXISTS delivered_at TIMESTAMP DEFAULT NULL
+`);
+
 await pool.query(`
   CREATE TABLE IF NOT EXISTS order_items (
     id SERIAL PRIMARY KEY,

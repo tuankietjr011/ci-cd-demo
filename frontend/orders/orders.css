@@ -16,3 +16,14 @@
     .luxury-font {
       font-family: Georgia, "Times New Roman", serif;
     }
+/* Hiển thị chữ số thẳng hàng, không nhảy cao thấp */
+#ordersList,
+#orderDetailModal {
+  font-variant-numeric: lining-nums tabular-nums;
+}
+
+/* Dùng font số có chiều cao đồng đều */
+#ordersList .order-number,
+#orderDetailModal .order-number {
+  font-family: Arial, sans-serif;
+}
