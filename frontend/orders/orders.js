@@ -484,6 +484,172 @@ ${
 }
 
 
+function renderOrderTracking(order) {
+  const steps = [
+    { label: "Đã đặt hàng", icon: "✓" },
+    { label: "Đã xác nhận", icon: "✓" },
+    { label: "Đang giao hàng", icon: "🚚" },
+    { label: "Đã giao hàng", icon: "✓" }
+  ];
+
+  const statusLevels = {
+    pending: 0,
+    confirmed: 1,
+    shipping: 2,
+    delivered: 3
+  };
+
+  const cancelled = order.status === "cancelled";
+  const current = statusLevels[order.status] ?? -1;
+
+  const createdAt = order.created_at || order.createdAt;
+
+  return `
+    <section style="
+      background:#fffdf8;
+      border:1px solid #e8d5a3;
+      padding:24px;
+      margin-bottom:24px;
+    ">
+      <h3 style="
+        font-size:20px;
+        font-weight:bold;
+        color:#3b2416;
+        margin-bottom:8px;
+      ">
+        THEO DÕI ĐƠN HÀNG
+      </h3>
+
+      <p style="color:#70452d;font-size:13px;margin-bottom:24px;">
+        ${cancelled
+          ? "Đơn hàng đã bị hủy"
+          : "Trạng thái vận chuyển đơn hàng ShopLux"}
+      </p>
+
+      ${cancelled ? `
+        <div style="
+          padding:16px;
+          background:#fee2e2;
+          color:#991b1b;
+          font-weight:bold;
+        ">
+          Đơn hàng đã hủy
+        </div>
+      ` : `
+        <div style="
+          display:grid;
+          grid-template-columns:repeat(4,minmax(0,1fr));
+          gap:8px;
+        ">
+          ${steps.map((step, index) => {
+            const active = index <= current;
+
+            return `
+              <div style="text-align:center;min-width:0;">
+                <div style="
+                  width:42px;
+                  height:42px;
+                  margin:0 auto 12px;
+                  border-radius:50%;
+                  display:flex;
+                  align-items:center;
+                  justify-content:center;
+                  font-size:20px;
+                  background:${active ? "#c9a227" : "#eee8df"};
+                  color:${active ? "#3b2416" : "#9ca3af"};
+                  border:2px solid ${active ? "#c9a227" : "#ddd6cc"};
+                ">
+                  ${step.icon}
+                </div>
+
+                <div style="
+                  font-size:12px;
+                  font-weight:bold;
+                  color:${active ? "#3b2416" : "#9ca3af"};
+                ">
+                  ${step.label}
+                </div>
+              </div>
+            `;
+          }).join("")}
+        </div>
+      `}
+
+      <div style="
+        margin-top:28px;
+        padding:18px;
+        background:#f7f1e7;
+        border-left:4px solid #c9a227;
+      ">
+        <div style="
+          font-weight:bold;
+          color:#3b2416;
+          margin-bottom:8px;
+        ">
+          LỊCH SỬ ĐƠN HÀNG
+        </div>
+
+        <div style="
+          display:flex;
+          gap:12px;
+          align-items:flex-start;
+        ">
+          <span style="color:#c9a227;">●</span>
+
+          <div>
+            <div style="font-weight:bold;color:#3b2416;">
+              ${escapeHTML(statusInfo(order.status).text)}
+            </div>
+
+            <div style="
+              font-size:12px;
+              color:#6b7280;
+              margin-top:4px;
+            ">
+              Trạng thái hiện tại
+            </div>
+          </div>
+        </div>
+
+        ${createdAt ? `
+          <div style="
+            display:flex;
+            gap:12px;
+            margin-top:16px;
+          ">
+            <span style="color:#c9a227;">●</span>
+
+            <div>
+              <div style="font-weight:bold;color:#3b2416;">
+                Đã đặt hàng
+              </div>
+
+              <div style="
+                font-size:12px;
+                color:#6b7280;
+                margin-top:4px;
+              ">
+                ${escapeHTML(formatDate(createdAt))}
+              </div>
+            </div>
+          </div>
+        ` : ""}
+      </div>
+
+      <p style="
+        margin-top:14px;
+        font-size:12px;
+        color:#6b7280;
+      ">
+        Thông tin được cập nhật theo trạng thái đơn hàng
+        trên ShopLux. Chưa có dữ liệu vận chuyển từ
+        đơn vị giao hàng.
+      </p>
+    </section>
+  `;
+}
+
+
 async function viewOrder(code) {
 
   try {
@@ -535,6 +701,8 @@ async function viewOrder(code) {
     document.getElementById(
       "orderDetailContent"
     ).innerHTML = `
+
+    ${renderOrderTracking(order)}
 
       <div class="mb-6">
 
