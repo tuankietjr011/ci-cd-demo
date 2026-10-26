@@ -1375,42 +1375,36 @@ function renderAdminOrders() {
         : "Chưa thanh toán"
   }
 </div>
-  <div
-    class="
-      text-xs
-      text-gray-500
-      mt-2
-    "
-    ${
+  ${
   order.payment_method === "bank" &&
   order.payment_status === "pending_verification"
     ? `
-    <button
-  type="button"
-  onclick="confirmBankPayment('${order.code}')"
-  class="mt-3 px-4 font-bold whitespace-nowrap"
-  style="
-    background:#3b2416;
-    color:#e8d5a3;
-    height:46px;
-    width:245px;
-    font-size:12px;
-    cursor:pointer;
-  "
->
-  XÁC NHẬN ĐÃ NHẬN TIỀN
-</button>
+      <button
+        type="button"
+        onclick="confirmBankPayment('${order.code}')"
+        class="mt-3 px-4 font-bold whitespace-nowrap"
+        style="
+          background:#3b2416;
+          color:#e8d5a3;
+          height:46px;
+          width:245px;
+          font-size:12px;
+          cursor:pointer;
+        "
+      >
+        XÁC NHẬN ĐÃ NHẬN TIỀN
+      </button>
     `
     : ""
 }
-  >
-    ${
-      order.payment_method === "bank"
-        ? "Chuyển khoản"
-        : "Tiền mặt / COD"
-    }
-  </div>
 
+<div class="text-xs text-gray-500 mt-2">
+  ${
+    order.payment_method === "bank"
+      ? "Chuyển khoản ngân hàng"
+      : "Tiền mặt / COD"
+  }
+</div>
 </div>
 
           </div>
