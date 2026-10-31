@@ -1,0 +1,34 @@
+
+#shoplux-care-widget{position:fixed;right:24px;bottom:24px;z-index:99999;font-family:inherit;color:#2b211b}
+#shoplux-care-launcher{display:flex;align-items:center;gap:10px;border:0;border-radius:50px;padding:13px 20px;background:#3b2416;color:#fff;box-shadow:0 8px 28px #24130740;cursor:pointer;font-weight:700}
+#shoplux-care-launcher:hover{background:#1f120c;transform:translateY(-2px)}
+#shoplux-care-launcher svg{width:23px;height:23px}
+#shoplux-care-panel{position:absolute;right:0;bottom:70px;width:370px;max-width:calc(100vw - 32px);max-height:min(650px,calc(100vh - 120px));overflow:hidden;background:#fffdf9;border:1px solid #e8d5a3;border-radius:18px;box-shadow:0 18px 55px #24130730;display:none;flex-direction:column}
+#shoplux-care-panel.is-open{display:flex;animation:slCareIn .2s ease-out}
+@keyframes slCareIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.sl-care-header{background:linear-gradient(135deg,#1f120c,#50331e);color:#fff;padding:19px 20px;display:flex;align-items:center;justify-content:space-between}
+.sl-care-brand{display:flex;align-items:center;gap:11px}
+.sl-care-logo{width:39px;height:39px;border-radius:12px;background:#c9a227;color:#24170e;display:grid;place-items:center;font-family:Georgia,serif;font-size:21px;font-weight:bold}
+.sl-care-header small{display:block;color:#e8d5a3;margin-top:3px;font-size:11px;letter-spacing:1.2px}
+.sl-care-close,.sl-care-back{border:0;background:transparent;color:inherit;cursor:pointer;font-size:23px}
+.sl-care-body{padding:20px;overflow:auto}
+.sl-care-body h3{font-family:Georgia,serif;font-size:21px;color:#3b2416;margin:0 0 8px}
+.sl-care-intro{font-size:13px;color:#76685d;line-height:1.6;margin:0 0 17px}
+#sl-care-search{width:100%;box-sizing:border-box;padding:12px 14px;border:1px solid #e6ded2;border-radius:10px;background:#fff;font-size:13px;outline:none;margin-bottom:15px}
+#sl-care-search:focus{border-color:#c9a227;box-shadow:0 0 0 3px #c9a22720}
+.sl-care-options{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.sl-care-option{border:1px solid #eee5d8;background:#fff;border-radius:12px;padding:13px 11px;text-align:left;cursor:pointer;min-height:105px;transition:.18s}
+.sl-care-option:hover{border-color:#c9a227;background:#fffaf0;transform:translateY(-2px)}
+.sl-care-icon{width:34px;height:34px;border-radius:10px;background:#f5eddf;color:#8a6421;display:grid;place-items:center;margin-bottom:9px}
+.sl-care-icon svg{width:19px;height:19px}
+.sl-care-option strong{display:block;color:#3b2416;font-size:13px;margin-bottom:4px}
+.sl-care-option span:last-child{font-size:11px;color:#887b70;line-height:1.4}
+.sl-care-detail{font-size:13px;color:#62564c;line-height:1.75}
+.sl-care-detail p{margin:0 0 12px}
+.sl-care-detail ul{padding-left:19px;margin:8px 0 16px}
+.sl-care-detail li{margin:6px 0}
+.sl-care-action{display:inline-flex;align-items:center;justify-content:center;margin-top:8px;padding:11px 16px;border-radius:9px;background:#3b2416;color:white;text-decoration:none;font-weight:700;font-size:13px;border:0;cursor:pointer}
+.sl-care-action:hover{background:#1f120c}
+.sl-care-back{color:#8a6421;font-size:13px;font-weight:700;margin-bottom:15px}
+.sl-care-footer{text-align:center;padding:11px;border-top:1px solid #f0e9df;color:#9a8c7e;font-size:10px}
+@media(max-width:480px){#shoplux-care-widget{right:14px;bottom:14px}#shoplux-care-panel{position:fixed;left:12px;right:12px;bottom:78px;width:auto;max-width:none;max-height:calc(100dvh - 100px)}#shoplux-care-launcher{padding:12px 16px}.sl-care-body{padding:16px}}
